@@ -1,0 +1,29 @@
+ti metti nella cartella delle macro :
+fai source setDCDataReaderEnv.sh 
+poi ./compile.sh 1 se stai analizzano i dati presi in lab lecce.
+
+per run dei dati proto(ri metti dove stanno i file root)
+/home/federica/eclipse-workspace/test_beam_muon/ba-TB_analysis_muon/read_osc_data . 71 0 -10 1 >& file_run71.log &
+
+
+per FT-MEG
+
+nohup /home/federica/eclipse-workspace/test_beam/ba-TB_analysis/fcTranf . 4 0 -10  1 >& file_run4.log &
+
+0 è il primo evento
+-10 l'ultimo
+
+
+
+Per runnure read_FT.C
+root[0].x read_FT.C("TransFctData-run-00001.root;TransFctData-run-00002.root;TransFctData-run-00003-2.root;TransFctData-run-00004.root;TransFctData-run-00005.root;TransFctData-run-00007.root","prova.root","PROVA.txt")
+
+Per runnure read_resultFT.C
+.x read_resultFT.C("TotResult-log.txt","graficoF.root","DataFT1.dat")
+Tot result è il file creato dove abbiamo cancellato i punti "non buoni"
+graficoF.root è il grafico finale che viene fatto
+dataFT1 è il file che questa macro crea in cui mettiamo frequenza in HERTZ(!) guadagno in dB e differenza di fase in DEG(!)
+
+RUNNURE SIMULATIONSIGN
+/home/federica/eclipse-workspace/test_beam/ba-TB_analysis/simulatedSign . 0 1000 10 
+
