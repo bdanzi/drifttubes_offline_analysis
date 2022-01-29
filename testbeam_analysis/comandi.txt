@@ -1,0 +1,15 @@
+the run_4.root is referred to the data run taken in November 11th with 60 degree and HV+20.
+
+Here the line command for the analysis code:
+
+
+
+./read_data . 4 0 -10 1 >& file4.log &
+
+4 is the run number
+
+0 -10 is the number of events to be processed
+
+1 is a kind of option that actually I do not remember, I will check.
+
+
