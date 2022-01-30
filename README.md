@@ -11,7 +11,7 @@ source /cvmfs/cms.cern.ch/slc7_amd64_gcc700/lcg/root/6.12.07-gnimlf7/bin/thisroo
 
 These macros find voltage amplitude peaks without any filter algorithm is applied to the waveform.
 For each sample and each channel it is able to count how many events with an actual signal we have.
-Config files and executables are created for running on more than one ROOT file.
+Config files and executables are created to run on more than one ROOT file (not available here, too much large in size).
 
 ```
 bash submit_root_to_histos_root.sh
