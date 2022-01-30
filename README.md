@@ -10,8 +10,6 @@ source setDCDataReaderEnv.sh
 On lxplus:
 
 ```
-source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
-source /cvmfs/cms.cern.ch/slc7_amd64_gcc700/lcg/root/6.12.07-gnimlf7/bin/thisroot.sh 
 source setDCDataReaderEnv.sh
 ```
 
