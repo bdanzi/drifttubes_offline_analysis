@@ -63,6 +63,8 @@ per each event in the third column some physical quantities which are related to
   - Channel 13 Wire diameter of 25 micrometer 
   - Channel 14 Wire diameter of 40 micrometer 
 
+<img width="964" alt="Channel schematics" src="https://github.com/jaimehernan95/arrayReview-java/blob/master/images/%20arrayExample.png">
+
 
  
 
