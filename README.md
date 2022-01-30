@@ -1,4 +1,11 @@
 # Test Beam 2021 analysis
+## Setup
+
+On lxplus/Bari ReCAS:
+
+```
+source /cvmfs/cms.cern.ch/slc7_amd64_gcc700/lcg/root/6.12.07-gnimlf7/bin/thisroot.sh 
+```
 
 ## Instructions
 
