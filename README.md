@@ -23,14 +23,14 @@ Config files and executables are created to run on more than one ROOT file (not 
 bash submit_root_to_histos_root.sh
 ```
 
-It will produce:
+It will produce in `executables\`:
 - executable files `submit_executable_conversion*.sh` per each `run_*.root` file that has to be converted in a root file containing histos 
 with the most important physical variables
 - config files that can be run as job in recas for accelerating the process of the histos ROOT file generation
 ```
 bash submit_recas.sh 
 ```
-It will produce:
+It will produce in `executables\`::
 - executable file `submit_executable.sh`
 - config file that can be run as job in Recas
 ```
