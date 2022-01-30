@@ -48,7 +48,7 @@ per each event in the third column some physical quantities which are related to
 6) number of events per each channel which passes a voltage amplitude requirement for the waveform maximum of 5 mV
 
 ## Channels correspondance
-![Optional Text]("Schermata 2022-01-30 alle 15.42.17.png")
+
 - 0,1,2,3 : Trigger Counters
 - 4,5,6,7,8,9 : 6 Drift Tubes of 1 cm cell size respectively:
   - Channel 4 Wire diameter of 10 micrometer 
