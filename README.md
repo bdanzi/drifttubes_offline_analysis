@@ -48,12 +48,11 @@ per each event in the third column some physical quantities which are related to
 6) number of events per each channel which passes a voltage amplitude requirement for the waveform maximum of 5 mV
 
 ## Channels correspondance
-
-![alt text](https://drive.google.com/file/d/1o_qPCauyaPRXzRfVZ3F0wdpCVl8TL4O1/view)
+<img src=https://drive.google.com/file/d/1o_qPCauyaPRXzRfVZ3F0wdpCVl8TL4O1/view" width="350" title="hover text">
 - 0,1,2,3 : Trigger Counters
 - 4,5,6,7,8,9 : 6 Drift Tubes of 1 cm cell size respectively:
   - Channel 4 Wire diameter of 10 micrometer 
-  - Channel 5  Wire diameter of 15 micrometer 
+  - Channel 5 Wire diameter of 15 micrometer 
   - Channel 6 and 7 Wire diameter of 20 micrometer 
   - Channel 8 and 9 Wire diameter of 25 micrometer 
 - 10,11,12 : 3 Drift Tubes of 2 cm cell size respectively:
