@@ -66,7 +66,7 @@ per each event in the third column some physical quantities which are related to
   - Channel 14 Wire diameter of 40 micrometer 
 
 <img width="964" alt="Channel Schematics" src="https://github.com/bdanzi/drifttubes_offline_analysis/blob/master/Schermata%202022-01-30%20alle%2015.42.17.png">
-Credits for the Channel Schematics: Franco Grancagnolo
+Credits for the Channel Schematics: Franco Grancagnolo (https://agenda.infn.it/event/28676/)
 
 
  
