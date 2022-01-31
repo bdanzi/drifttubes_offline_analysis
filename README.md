@@ -4,15 +4,13 @@
 On Bari ReCAS:
 
 ```bash
-source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
-```
-```bash
-source setDCDataReaderEnv.sh
+$ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
+$ source setDCDataReaderEnv.sh
 ```
 On lxplus:
 
 ```bash
-source setDCDataReaderEnv.sh
+$ source setDCDataReaderEnv.sh
 ```
 
 ## Instructions
@@ -22,7 +20,7 @@ For each sample and each channel it is able to count how many events with an act
 Config files and executables are created to run on more than one ROOT file (not available here, too much large in size).
 
 ```bash
-bash submit_root_to_histos_root.sh
+$ bash submit_root_to_histos_root.sh
 ```
 
 It will produce in `executables\`:
@@ -30,13 +28,13 @@ It will produce in `executables\`:
 with the most important physical variables
 - config files that can be run as job in recas for accelerating the process of the histos ROOT file generation
 ```bash
-bash submit_recas.sh 
+$ bash submit_recas.sh 
 ```
 It will produce in `executables\`::
 - executable file `submit_executable.sh`
 - config file that can be run as job in Recas
 ```bash
-bash submit_executable.sh
+$ bash submit_executable.sh
 ```
 
 It will produce:
@@ -48,6 +46,7 @@ per each event in the third column some physical quantities which are related to
 4) wave functions w & w/o peak arrows
 5) minima
 6) number of events per each channel which passes a voltage amplitude requirement for the waveform maximum of 5 mV
+
 
 ## Channels correspondance
 
