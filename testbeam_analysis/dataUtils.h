@@ -37,11 +37,15 @@ struct wave {
 	int   nPtReg;
 	float regA;
 	float regB;
+	std::vector<float> deriv;
+	std::vector<float> sderiv;
 
 	wave() : bsln(0.0), rms(0.0), integ(0.0), max(-9999), integInR(0.0), maxInR(-9999), min(9999), minInR(9999)
 			, maxPos(-1), maxInRPos(-1), minPos(-1), minInRPos(-1)
 			, sumX(0.0), sumY(0.0), sumXY(0.0), sumX2(0.0), nPtReg(0), regA(0.0), regB(0.0) {
 		Y.clear();
+		deriv.clear();
+		sderiv.clear();
 	}/////inizializzazione
 
 	void clear() {
@@ -64,6 +68,8 @@ struct wave {
 		sumX2=0.0;
 		regA=0.0;
 		regB=0.0;
+		deriv.clear();
+		sderiv.clear();
 	}
 
 	int nPt() { return Y.size(); }
@@ -85,7 +91,7 @@ struct wave {
 
 	float n1At(int i) { return (Y[i]-(RegA()+RegB()*((float)i))); }
 	float nAt(int i) { return (Y[i]-bsln); }
-
+	 
 	float nnAt(int i, float cut=0.05) { //0.05 proto_cosmic
 		if (nMaxInR()>cut) { return nAt(i); }
 		else { return n1At(i); }
@@ -124,7 +130,7 @@ struct wave {
 		for (int ipt=0; ipt<nPt; ++ipt) {
 			tmpval=((1.0/65536.0)*arr[ipt]-0.5);
 			tmpval*=-1;
-			Y.push_back(tmpval+0.450);
+			Y.push_back(tmpval);
 			integ+=Y.back();            //l'integrale � in sostanza una somma, integ � inizializzata a zero e poi viene incrementata.
 			if (ipt<fbin_rms/*100*/) {
 				rms+=Y.back()*Y.back();    //.back mi restituisce l'ultimo elemento del vettore.
@@ -135,6 +141,7 @@ struct wave {
 			}
 			if (Y.back()>max) { max=Y.back(); maxPos=ipt; }
 			if (Y.back()<min) { min=Y.back(); minPos=ipt; }
+			
 			if (ipt>=skipFstBin && ipt<(nPt-skipLstBin)) {
 				integInR+=Y.back();
 				if (Y.back()>maxInR) { maxInR=Y.back(); maxInRPos=ipt; }
@@ -146,7 +153,15 @@ struct wave {
 				sumXY+=((float)ipt)*Y.back();
 				++nPtReg;
 			}
+			
 		}//fine ciclo sui punti.
+		for(int i=0;i<nPt;++i){
+	        deriv.push_back((Y[(i+1)>(nPt-1)?(nPt-1):(i+1)]-Y[(i-1)<0?0:(i-1)])/2);
+		}
+		for(int i=0;i<nPt;++i){
+	        sderiv.push_back((deriv[(i+1)>(nPt-1)?(nPt-1):(i+1)]-deriv[(i-1)<0?0:(i-1)])/2);
+		}
+
 	}//fine funzione riempimento.
 	//void fillWave(int nPt, float *arr) {
 	void fillWave(std::vector<float> &arr, int maxDim=-1, bool print=false) {
@@ -178,6 +193,12 @@ struct wave {
 				++nPtReg;
 			}
 //			if (print) std::cout<<"ipt "<<ipt<<" pnt "<<Y.back()<<" integ "<<integ<<std::endl;
+		}
+		for(int i=0;i<nPt;++i){
+	            deriv.push_back((Y[(i+1)>(nPt-1)?(nPt-1):(i+1)]-Y[(i-1)<0?0:(i-1)])/2);
+		}
+		for(int i=0;i<nPt;++i){
+	        sderiv.push_back((deriv[(i+1)>(nPt-1)?(nPt-1):(i+1)]-deriv[(i-1)<0?0:(i-1)])/2);
 		}
 	}
 
@@ -212,6 +233,8 @@ struct wave {
 
 typedef std::map<int,wave> WvCont;                    //typedef assegna un altro nome al tipo specificato.
 typedef std::map<std::pair<int,int>,wave> diffWvCont; //serve per fare la differenza
+	
+
 
 //struttura per costruire istogrammi
 struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
@@ -233,7 +256,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 	TH1F *hIntegNInRC4;
 
 	TH1F *hNeventSignals;
-	TH1F *hNPeaks;
+	TH1F *hNPeaks;	
 
 
 	TH1F *hRms;
@@ -263,6 +286,10 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 	TH1F *hMaxVNSmooth;
 
 	TH1F *hIntegNInRFullW;
+	//Derivative study
+	TH1F *hFirstDeriv;	
+    TH1F *hSecDeriv;
+
 	hstPerCh(int Ch=0, int SF=0) {
 		//gRootDir->cd();
 		//TDirectory fldch(Form("H-Ch%d",Ch),Form("folder for ch%d",Ch));
@@ -272,13 +299,19 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 			hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d",Ch),1000,-1e+7,1e+7);
 			hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d",Ch),1000,-10,10);
 			hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Peaks found - Ch %d",Ch),100,-0.5,99.5);
-			hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d",Ch),3,-0.5,1.5); 
+			hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d",Ch),2,-0.5,1.5); 
 
 			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),500,0,0.5);
 			hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,500,0,0.5);
 			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),2000,0,1000);
 			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),2000,0,1000);
 			hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("N Peaks found over noise - Ch %d",Ch),100,-0.5,99.5);
+
+
+			//hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d",Ch),10000,-0.01,0.01);
+			//hSecDeriv= new TH1F (Form("hSecDeriv_ch%d",Ch),Form("Second derivative- Ch %d",Ch),10000,-0.01,0.01);
+	    
+
 
 			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.5,0.5); 
 			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),1000,-10.,10.);//600,20.,80.
@@ -321,10 +354,12 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 			hNPeaks->GetYaxis()->SetTitle("Entries");
 			hNeventSignals->GetYaxis()->SetTitle("Entries");
         	hHPeaks->GetYaxis()->SetTitle("Entries");
+			hHPeaks->GetXaxis()->SetTitle("Height [V]");
         	hHNPeaks->GetYaxis()->SetTitle("Height of Peaks found");
 			hHNPeaks->GetXaxis()->SetTitle("Number of Peaks found");
         	hTPeaks->GetYaxis()->SetTitle("Entries");
         	hTFstPeaks->GetYaxis()->SetTitle("Entries");
+			hTFstPeaks->GetXaxis()->SetTitle("Time [ns]");
         	hNPeaks_1->GetYaxis()->SetTitle("Entries");
         	hBsl->GetYaxis()->SetTitle("Entries");
         	hInteg->GetYaxis()->SetTitle("Entries");
