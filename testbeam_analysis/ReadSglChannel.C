@@ -29,6 +29,7 @@ void ReadSglChannel(){
 	char filename[100];
 	TString fname("");
 	bool isInteractive = false;
+	bool isdoubleCanvas = false;
 	if(isInteractive){
 	
     printf("Enter *.root name:");
@@ -58,7 +59,7 @@ void ReadSglChannel(){
     		printf("Opening the file %s\n",fname.Data());
 	    	fscanf(fp,"%d",&channel); //number of channels for which I show plots (4-14)
 		    fscanf(fp,"%d",&ev); //number of events for which I show plots (0-...)
-			fclose(fp);
+			
 			
 
 			if (stat(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/",fname.Data()), &st) == -1) {
@@ -77,61 +78,74 @@ void ReadSglChannel(){
 			TCanvas *rms= new TCanvas("rms","rms",900,1200);
 			
 			peaks->Divide(2,3);
-			integ->Divide(4,2);
-			max->Divide(4,2);
+			//integ->Divide(4,2);
+			//max->Divide(4,2);
 			min->Divide(4,2);
-			rms->Divide(2,1);	
-			for(int i =0; i<=ev; ++i){
+			
+
+			if(isdoubleCanvas){
+			for(int i =0; i<ev; ++i){
 			TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_ev%i",i));
 			if (h1==0x0) { continue; }
 			h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i.pdf",fname.Data(),i));
+			  	}
 			}
-			
+			else if(!isdoubleCanvas){
+				
+			for(int i = 0; i<ev; ++i){
+				for(int j = 4; j<=channel; ++j){
+				TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_Ch%i_ev%i",j,i));
+				if (h1==0x0) { continue; }
+				h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.pdf",fname.Data(),i,j));
+					}
+				}
+			}
 			
 			for(int i = 4; i<=channel; ++i){ //looping over all channels
 			//for(int i =channel; i<=channel; ++i){ //looping over one channel
 			
 			
 			
-			TH1F *h2=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVN_ch%i",i,i));
-			if (h2==0x0) { continue; }
-			max->cd(1);
-			h2->Draw();
+			//TH1F *h2=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVN_ch%i",i,i));
+			//if (h2==0x0) { continue; }
+			//max->cd(1);
+			//h2->Draw();
 		
 			TH1F *h17=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxV_ch%i",i,i));
 			if (h17==0x0) { continue; }
-			max->cd(2);
+			max->cd();
+			//max->cd(2);
 			h17->Draw( );
 		
-			TH1F *h18=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInR_ch%i",i,i));
-			if (h18==0x0) { continue; }
-			max->cd(3);
-			h18->Draw( );
+			//TH1F *h18=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInR_ch%i",i,i));
+			//if (h18==0x0) { continue; }
+			//max->cd(3);
+			//h18->Draw( );
 		
-			TH1F *h19=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNInR_ch%i",i,i));
-			if (h19==0x0) { continue; }
-			max->cd(4);
-			h19->Draw( );
+			//TH1F *h19=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNInR_ch%i",i,i));
+			//if (h19==0x0) { continue; }
+			//max->cd(4);
+			//h19->Draw( );
 		
-			TH1F *h30=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVoriginalW_ch%i",i,i));
-			if (h30==0x0) { continue; }
-			max->cd(5);
-			h30->Draw( );
+			//TH1F *h30=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVoriginalW_ch%i",i,i));
+			//if (h30==0x0) { continue; }
+			//max->cd(5);
+			//h30->Draw( );
 		
-			TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNoriginalW_ch%i",i,i));
-			if (h31==0x0) { continue; }
-			max->cd(6);
-			h31->Draw( );
+			//TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNoriginalW_ch%i",i,i));
+			//if (h31==0x0) { continue; }
+			//max->cd(6);
+			//h31->Draw( );
 		
-			TH1F *h32=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInRoriginalW_ch%i",i,i));
-			if (h32==0x0) { continue; }
-			max->cd(7);
-			h32->Draw( );
+			//TH1F *h32=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInRoriginalW_ch%i",i,i));
+			//if (h32==0x0) { continue; }
+			//max->cd(7);
+			//h32->Draw( );
 		
-			TH1F *h33=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNInRoriginalW_ch%i",i,i));
-			if (h33==0x0) { continue; }
-			max->cd(8);
-			h33->Draw( );
+			//TH1F *h33=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVNInRoriginalW_ch%i",i,i));
+			//if (h33==0x0) { continue; }
+			//max->cd(8);
+			//h33->Draw( );
 		
 		
 			TH1F *h3=(TH1F*)file->Get(Form("H-Ch%i_signal/hBsl_ch%i",i,i));
@@ -169,55 +183,52 @@ void ReadSglChannel(){
 			peaks->cd(6);
 			h9->Draw( );
 		
-			TH1F *h10=(TH1F*)file->Get(Form("H-Ch%i_signal/hInteg_ch%i",i,i));
-			if (h10==0x0) { continue; }
-			integ->cd(1);
-			h10->Draw();
+			//TH1F *h10=(TH1F*)file->Get(Form("H-Ch%i_signal/hInteg_ch%i",i,i));
+			//if (h10==0x0) { continue; }
+			//integ->cd(1);
+			//h10->Draw();
 		
-			TH1F *h11=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegN_ch%i",i,i));
-			if (h11==0x0) { continue; }
-			integ->cd(2);
-			h11->Draw( );
+			//TH1F *h11=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegN_ch%i",i,i));
+			//if (h11==0x0) { continue; }
+			//integ->cd(2);
+			//h11->Draw( );
 			
 			TH1F *h12=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegInR_ch%i",i,i));
 			if (h12==0x0) { continue; }
-			integ->cd(3);
+			integ->cd();
+			//integ->cd(3);
 			h12->Draw( );
 			
-			TH1F *h13=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInR_ch%i",i,i));
-			if (h13==0x0) { continue; }
-			integ->cd(4);
-			h13->Draw( );
+			//TH1F *h13=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInR_ch%i",i,i));
+			//if (h13==0x0) { continue; }
+			//integ->cd(4);
+			//h13->Draw( );
 		
-			TH1F *h14=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRC1_ch%i",i,i));
-			if (h14==0x0) { continue; }
-			integ->cd(5);
-			h14->Draw( );
+			//TH1F *h14=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRC1_ch%i",i,i));
+			//if (h14==0x0) { continue; }
+			//integ->cd(5);
+			//h14->Draw( );
 			
-			TH1F *h15=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRC2_ch%i",i,i));
-			if (h15==0x0) { continue; }
-			integ->cd(6);
-			h15->Draw( );
+			//TH1F *h15=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRC2_ch%i",i,i));
+			//if (h15==0x0) { continue; }
+			//integ->cd(6);
+			//h15->Draw( );
 		
-			TH1F *h25=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRoriginalW_ch%i",i,i));
-			if (h25==0x0) { continue; }
-			integ->cd(7);
-			h25->Draw( );
+			//TH1F *h25=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRoriginalW_ch%i",i,i));
+			//if (h25==0x0) { continue; }
+			//integ->cd(7);
+			//h25->Draw( );
 			
-			TH1F *h26=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRoriginalW_ch%i",i,i));
-			if (h26==0x0) { continue; }
-			integ->cd(8);
-			h26->Draw( );
+			//TH1F *h26=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInRoriginalW_ch%i",i,i));
+			//if (h26==0x0) { continue; }
+			//integ->cd(8);
+			//h26->Draw( );
 		
 			TH1F *h16=(TH1F*)file->Get(Form("H-Ch%i_signal/hRms_ch%i",i,i));
 			if (h16==0x0) { continue; }
-			rms->cd(1);
+			rms->cd();
 			h16->Draw();
 		
-			TH1F *h24=(TH1F*)file->Get(Form("H-Ch%i_signal/hRmsOriginalW_ch%i",i,i));
-			if (h24==0x0) { continue; }
-			rms->cd(2);
-			h24->Draw( );
 		
 			TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hMinV_ch%i",i,i));
 			if (h20==0x0) { continue; }
@@ -271,6 +282,7 @@ void ReadSglChannel(){
 		
 			}
 		}
+		fclose(fp);
 	}
 
 
