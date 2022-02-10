@@ -301,7 +301,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 			hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Peaks found - Ch %d",Ch),100,-0.5,99.5);
 			hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d",Ch),2,-0.5,1.5); 
 
-			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),500,0,0.5);
+			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),500,0,0.3);
 			hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,500,0,0.5);
 			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),2000,0,1000);
 			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),2000,0,1000);
@@ -313,24 +313,24 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 	    
 
 
-			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.5,0.5); 
-			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),1000,-10.,10.);//600,20.,80.
+			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.5,0.2); 
+			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),10000,-0.5,0.5);//600,20.,80.
 			hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),1000,-10.,10.);
-			hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),1000,-10.,10.);
+			hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),10000,-0.01,1);
 			hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),1000,-10.,10.);
 			hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d",Ch),1000,-10.,10.);
 			hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d",Ch),1000,-10.,10.);
 			hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d",Ch),1000,-10.,20.);
 			hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d",Ch),1000,-10.,20.);
 			hIntegNInRFullW=new TH1F (Form("hIntegNInRFullW_ch%d",Ch),Form("Integral minius PDS for Full Waves - Ch %d",Ch),1000,-10.,10.);
-			hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d",Ch),500,0,0.05);
+			hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d",Ch),500,0,0.005);
 			//distribution of derivative for meg FE
 
-			hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.1);
-			hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.1);
-			hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d",Ch),300,-0.02,0.1);
-			hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.1);
-			hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.1);
+			hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.3);
+			hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.3);
+			hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d",Ch),300,-0.02,0.3);
+			hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.3);
+			hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.3);
 
 			hMinV = new TH1F (Form("hMinV_ch%d",Ch),Form("Min val - Ch %d",Ch),400,-0.02,0);
 			hMinVN = new TH1F (Form("hMinVN_ch%d",Ch),Form("Min val over base line - Ch %d",Ch),400,-0.02,0);
