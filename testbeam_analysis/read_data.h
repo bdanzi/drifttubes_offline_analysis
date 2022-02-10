@@ -75,7 +75,7 @@ read_data::read_data(TTree *tree) : fChain(0)
       f->GetObject("data",tree);
    }
   
-   _tmax = 853.3e-9;//1.0e-6;
+   _tmax = 853.3e-9;//1.0e-6;//853.3e-9;//1.0e-6;//853.3e-9;//1.0e-6;
    dim = 1024;
    nMaxCh = 14;//31
    Init(tree);
