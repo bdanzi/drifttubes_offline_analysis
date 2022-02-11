@@ -447,7 +447,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  
 	  
 	  if (((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
-	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak]+skipFstBin]);
+	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]);
 	    ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]+skipFstBin]);
 	    
 	    for (int ipk=0; ipk < NPeak; ++ipk){
@@ -464,12 +464,12 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	}
 		if (NPeak<20 && channel<=9) {
 			
-			 cout << "Event 1cm tube having low NPeak: " << jentry << " Ch: " << channel << "NPeaks: " <<NPeak<<"\n"; 
+			 cout << "Event 1cm tube having low NPeak: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<<"\n"; 
 		}
 
-		if (NPeak<50 && channel>=10) {
+		if (NPeak<50 && channel>=10 && channel<=12) {
 			
-			 cout << "Event 2cm tube having low NPeak: " << jentry << " Ch: " << channel << "NPeaks: " <<NPeak<<"\n"; 
+			 cout << "Event 2cm tube having low NPeak: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<<"\n"; 
 		}
         N_signalevents[channel]= 1.0;
 	
