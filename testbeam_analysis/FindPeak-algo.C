@@ -10,8 +10,9 @@ Int_t FindPeaks(Int_t jentry, Int_t skipFstBin, Int_t npt, Float_t *amplitude, F
   Int_t nPks=0;
   
   for (int ip=0; ip<(npt-64); ++ip) {
+    // Condition with data presented in Workshop: if (amplitude[ip]>(float)(2.5*rms) && (TMath::Abs(fderiv[ip-1]+fderiv[ip+1])< 0. || fderiv[ip]<0.) && sderiv[ip]< -sigd2/2  && (fderiv[ip-1]> 0. || fderiv[ip+1]<0. )
     //if (amplitude[ip]>(float)(rms) && fderiv[ip]< sigd1 && sderiv[ip]< sigd2  
-    if (amplitude[ip]>(float)(2.5*rms) && (TMath::Abs(fderiv[ip-1]+fderiv[ip+1])< 0. || fderiv[ip]<0.) && sderiv[ip]< -sigd2/2  && (fderiv[ip-1]> 0. || fderiv[ip+1]< 0. )
+    if (amplitude[ip]>(float)(3*rms) && ( fderiv[ip]< sigd1/2) && sderiv[ip]< 0.  && ((amplitude[ip]-amplitude[ip-1])>(rms) || (amplitude[ip+1]-amplitude[ip])<(rms)) && (fderiv[ip-1]> sigd1 || fderiv[ip+1]< -sigd1 )
 	//if (amplitude[ip]>(float)(rms*0.66) && fderiv[ip]< sigd1 && sderiv[ip]< 0. && (amplitude[ip]-amplitude[ip-1])>(rms) && (amplitude[ip+1]-amplitude[ip])<(rms) && fderiv[ip-1]> sigd1 && fderiv[ip+1]< sigd1 && sderiv[ip-1]<sigd2 && sderiv[ip+1]<sigd2 
 	) {
       
