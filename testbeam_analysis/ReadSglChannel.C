@@ -80,7 +80,7 @@ void ReadSglChannel(){
 			peaks->Divide(2,3);
 			//integ->Divide(4,2);
 			//max->Divide(4,2);
-			min->Divide(4,2);
+			min->Divide(4,1);
 			
 
 			if(isdoubleCanvas){
@@ -249,7 +249,7 @@ void ReadSglChannel(){
 			min->cd(4);
 			h23->Draw( );
 			
-			TH1F *h27=(TH1F*)file->Get(Form("H-Ch%i_signal/hMinVoriginalW_ch%i",i,i));
+			/*TH1F *h27=(TH1F*)file->Get(Form("H-Ch%i_signal/hMinVoriginalW_ch%i",i,i));
 			if (h27==0x0) { continue; }
 			min->cd(5);
 			h27->Draw( );
@@ -262,7 +262,7 @@ void ReadSglChannel(){
 			TH1F *h29=(TH1F*)file->Get(Form("H-Ch%i_signal/hMinVInRoriginalW_ch%i",i,i));
 			if (h29==0x0) { continue; }
 			min->cd(7);
-			h29->Draw( );
+			h29->Draw( );*/
 		
 		
 		
