@@ -9,10 +9,10 @@
 #include "TH2F.h"
 #include "TMath.h"
 
-static int skipFstBin = 100; //525 for El Cal   //100 dati proto
-static int skipLstBin = 50;  //475 for El Cal   //50	dati proto
-static int fbin_rms=100;
-static int fbin_bsl=100;
+static int skipFstBin = 1; //525 for El Cal   //100 dati proto
+static int skipLstBin = 1;  //475 for El Cal   //50	dati proto
+static int fbin_rms=30;
+static int fbin_bsl=30;
 static float invfbin=1.0/((float)fbin_rms);
 
 struct wave {
@@ -132,13 +132,17 @@ struct wave {
 			tmpval*=-1;
 			Y.push_back(tmpval);
 			integ+=Y.back();            //l'integrale � in sostanza una somma, integ � inizializzata a zero e poi viene incrementata.
-			if (ipt<fbin_rms/*100*/) {
-				rms+=Y.back()*Y.back();    //.back mi restituisce l'ultimo elemento del vettore.
-			}
+		
+			//Rms somma Y nei primi 100 bin
 			if (ipt==fbin_rms-1) {
 				bsln=integ*invfbin;
-				rms=sqrt(rms*invfbin-bsln*bsln);
+				//rms=sqrt(rms*invfbin-bsln*bsln);
+				
 			}
+			if (ipt==fbin_rms/*100*/) {
+				rms+=(Y.back()-bsln)*(Y.back()-bsln);    //.back mi restituisce l'ultimo elemento del vettore.
+			}
+
 			if (Y.back()>max) { max=Y.back(); maxPos=ipt; }
 			if (Y.back()<min) { min=Y.back(); minPos=ipt; }
 			
@@ -161,7 +165,7 @@ struct wave {
 		for(int i=0;i<nPt;++i){
 	        sderiv.push_back((deriv[(i+1)>(nPt-1)?(nPt-1):(i+1)]-deriv[(i-1)<0?0:(i-1)])/2);
 		}
-
+		rms=sqrt(rms*invfbin);
 	}//fine funzione riempimento.
 	//void fillWave(int nPt, float *arr) {
 	void fillWave(std::vector<float> &arr, int maxDim=-1, bool print=false) {
@@ -239,7 +243,7 @@ typedef std::map<std::pair<int,int>,wave> diffWvCont; //serve per fare la differ
 //struttura per costruire istogrammi
 struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 //isto che verranno riempiti con wave filtrate
-	
+	TH1F *hSum;
 	TH1F *hHPeaks;
 	TH2F *hHNPeaks;
 	TH1F *hTPeaks;
@@ -295,6 +299,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 		//TDirectory fldch(Form("H-Ch%d",Ch),Form("folder for ch%d",Ch));
 		//fldch.cd();
 		if (SF==0) {//senza smooth
+			hSum = new TH1F (Form("hSum_ch%d",Ch),Form("Sum amplitudes - Ch %d",Ch),1000,-1000,1000.); 
 			hP0=new TH1F (Form("hP0_ch%d",Ch),Form("HP0 - Ch %d",Ch),1000,-1,1);
 			hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d",Ch),1000,-1e+7,1e+7);
 			hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d",Ch),1000,-10,10);
@@ -303,9 +308,9 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 
 			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),500,0,0.3);
 			hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,500,0,0.5);
-			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),2000,0,1000);
-			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),2000,0,1000);
-			hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("N Peaks found over noise - Ch %d",Ch),100,-0.5,99.5);
+			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),500,0,1000);
+			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),500,0,1000);
+			hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Peak found - Ch %d",Ch),500,0,1000);
 
 
 			//hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d",Ch),10000,-0.01,0.01);
