@@ -6,12 +6,23 @@ On Bari ReCAS:
 ```bash
 $ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
 $ source setDCDataReaderEnv.sh
+$ bash compile.sh
+$ ./read_data . 4 0 -10 1
 ```
 On lxplus:
 
 ```bash
 $ source setDCDataReaderEnv.sh
+$ bash compile.sh
+$ ./read_data . 4 0 -10 1
 ```
+where in the last code line:
+
+- 4 is the run number
+
+- 0 -10 is the number of events to be processed
+
+- 1 is a kind of option that can be fixed.
 
 ## Instructions
 
