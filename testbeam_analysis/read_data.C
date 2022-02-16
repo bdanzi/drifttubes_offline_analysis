@@ -76,7 +76,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
   tmax=_tmax;  //to fix compilation problem
   double timeRes;
 #ifndef _OSC
-  skipFstBin=1; //275;//set Bins to Skip
+  skipFstBin=0; //275;//set Bins to Skip
   skipLstBin=10;//375
   fbin_rms=30;
   invfbin=1.0/((float)fbin_rms);
@@ -166,8 +166,8 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     cout << "New event is analyzed: "; 
     cout << jentry << "\n" << endl;
     cout << "Initial channel hits: \n"; 
-    for (int i = 0; i < N_signalevents.size(); i++) 
-      cout << "Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
+    //for (int i = 0; i < N_signalevents.size(); i++) 
+      //cout << "Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
     cout << "\n";
     
     
@@ -347,10 +347,10 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
           //cout <<"Waveform values:"<< "i-eth: " <<i <<" channel :"<<channel<<(Waves_signal_1[channel]).Y[i] << "\n"<<endl;
         }   
         //if(jentry==1 && channel==9){ 
-        cout << sumamplitude << "\n"<<endl;//}
-  ((hstPerCh*)HstPerCh[channel])->hSum->Fill(sumamplitude);	 
-  ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms);	      
-	((hstPerCh*)HstPerCh[channel])->hMaxV->Fill(((wave)Waves[channel]).max);
+        //cout << sumamplitude << "\n"<<endl;//}
+  	((hstPerCh*)HstPerCh[channel])->hSum->Fill(sumamplitude);	 
+  	((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms*1000);	      
+	((hstPerCh*)HstPerCh[channel])->hMaxV->Fill(((wave)Waves_signal_1[channel]).max);
 	((hstPerCh*)HstPerCh[channel])->hMaxVN->Fill(((wave)Waves_signal_1[channel]).nMax());
 	((hstPerCh*)HstPerCh[channel])->hMaxVInR->Fill(((wave)Waves_signal_1[channel]).maxInR);
 	((hstPerCh*)HstPerCh[channel])->hMaxVNInR->Fill(((wave)Waves_signal_1[channel]).nMaxInR());
@@ -390,11 +390,11 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	
         cout <<"Is signal \n"<<endl;
         N_signalevents[channel]= 1.0;
-        cout << channel << endl; 
-        cout <<"\n";   
+        //cout << channel << endl; 
+        //cout <<"\n";   
         ((hstPerCh*)HstPerCh[channel])->hNeventSignals->Fill(1.0);
 	NPeak = FindPeaks(jentry,skipFstBin,((wave)Waves_signal_1[channel]).nPtInR(),&((wave)Waves_signal_1[channel]).Y[skipFstBin],((wave)Waves_signal_1[channel]).rms,&((wave)Waves_signal_1[channel]).deriv[skipFstBin],&((wave)Waves_signal_1[channel]).sderiv[skipFstBin],pkPos,pkHgt);
-        //NPeak = FindPeaks(((wave)FltWaves[channel]).nPtInR(),&((wave)FltWaves[channel]).Y[skipFstBin],1.2e-3/*0.625*((wave)Waves[channel]).rms*/,6,3,pkPos,pkHgt);
+    //NPeak = FindPeaks(((wave)FltWaves[channel]).nPtInR(),&((wave)FltWaves[channel]).Y[skipFstBin],1.2e-3/*0.625*((wave)Waves[channel]).rms*/,6,3,pkPos,pkHgt);
 	//npt, Float_t *amplitude, Float_t sig, Int_t nrise,Int_t checkUpTo, Int_t *pkPos, Float_t *pkHgt) {
 	//cout<<"rms "<<((wave)Waves[channel]).rms<<endl;
 	//0.625*rms= 2 sigma
@@ -437,22 +437,26 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  } */
         
 	
-	if (NPeak>0) {
-	  ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
-	  
-	  for (int ipk=0; ipk <NPeak; ++ipk){
-	    ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
-	    ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
-	  }
-	  
+	if ((NPeak>10 && channel<=9)|| (NPeak>20 && channel>=10 && channel<=12)) {
 	  
 	  if (((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
-	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]);
+
+		for (int ipk=0; ipk <NPeak; ++ipk){
+	    ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
+	    ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
+	  	}
+		((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
+	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]); 
 	    ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]+skipFstBin]);
 	    
 	    for (int ipk=0; ipk < NPeak; ++ipk){
 	      ((hstPerCh*)HstPerCh[channel])->hTPeaks->Fill(X[pkPos[ipk]+skipFstBin]);
-	    }
+		  if(ipk<(NPeak-1)){
+			((hstPerCh*)HstPerCh[channel])->hTimeDifference->Fill((float)X[pkPos[ipk+1]+skipFstBin] - (float)X[pkPos[ipk]+skipFstBin]);
+		  //cout << (float)X[pkPos[ipk+1]+skipFstBin] - (float)X[pkPos[ipk]+skipFstBin] <<"\n"<<endl;
+		  }
+	      
+		}
 	    
 	    float minDist=1e+20;
 	    float tmpDist;
@@ -462,22 +466,25 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	    ((hstPerCh*)HstPerCh[channel])->hIntegNInRC2->Fill( ( ((wave)Waves_signal_1[channel]).nnIntegInR()/((float)NPeak) )/scaleInt );   
 	  }
 	}
-		if (NPeak<20 && channel<=9) {
+		if ((NPeak<10 || ((X[pkPos[0]+skipFstBin])< 20. || (X[pkPos[NPeak-1]+skipFstBin])> 300. || (X[pkPos[0]+skipFstBin])>350.)) && channel<=9) {
 			
-			 cout << "Event 1cm tube having low NPeak: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<<"\n"; 
+			 cout << "Event 1cm tube having low NPeak || Wrong Peak position: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<< " First Peak Position:"<< X[pkPos[0]+skipFstBin] <<" Last peak position:"<<X[pkPos[NPeak-1]+skipFstBin]<<"\n"; 
 		}
 
-		if (NPeak<50 && channel>=10 && channel<=12) {
+		if ((NPeak<20 || ((X[pkPos[0]+skipFstBin])< 20. || (X[pkPos[NPeak-1]+skipFstBin])> 650. || (X[pkPos[0]+skipFstBin])>600.)) && channel>=10 && channel<=12) {
 			
-			 cout << "Event 2cm tube having low NPeak: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<<"\n"; 
+			 cout << "Event 2cm tube having low NPeak || Wrong Peak position: " << jentry << " Ch: " << channel << " NPeaks: " <<NPeak<< " First Peak Position:"<< X[pkPos[0]+skipFstBin] <<" Last peak position:"<<X[pkPos[NPeak-1]+skipFstBin]<<"\n"; 
 		}
         N_signalevents[channel]= 1.0;
+
+
+
 	
       } //if for finding peaks
       
           
       
-      else if(!isTrg && Waves_signal_1[channel].max<=0.010 && channel<=nMaxCh){
+      else if(!isTrg && Waves_signal_1[channel].max<=10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){
 	cout <<"Is NOT signal \n"<<endl;
 	N_signalevents[channel]= 0.0; 
 	//cout << channel << endl; 
@@ -490,7 +497,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
         //cout << "Event: " << jentry << " Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
       cout << "\n"; 
       
-      bool savesignal_1=true;
+      bool savesignal_1=false;
       bool uniqueCanvas=false;
       Waves.clear();
       if (savesignal_1 && !isTrg && channel <=nMaxCh) { 
@@ -516,11 +523,11 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 			  tmpsignal_1.back()->Draw("APL");
 			  TLegend *leg= new TLegend(0.5,0.75,0.85,0.85); 
 			  leg->AddEntry(tmpsignal_1.back(),"Waveform"); 
-			  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].deriv[0]) );
+			  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].deriv[0]));
 			  tmpsignal_1.back()->SetLineColor(kBlue);
 			  tmpsignal_1.back()->Draw("Lsame");
 			  leg->AddEntry(tmpsignal_1.back(),"First Derivative (Bin method)");
-			  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].sderiv[0]) );
+			  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].sderiv[0]));
 			  tmpsignal_1.back()->SetLineColor(kRed);
 			  tmpsignal_1.back()->Draw("Lsame");
 			  leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method)");
@@ -542,7 +549,13 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 			  leg->Draw("same");
 			  counting_filter++;
 	}
-	else if(!uniqueCanvas && jentry<=100){
+	else if(!uniqueCanvas ){
+
+		for(int i=0; i<Waves[channel].nPt();i++){
+    Waves_signal_1[channel].deriv[i]=(Waves_signal_1[channel].deriv[i])*10.;
+	Waves_signal_1[channel].sderiv[i]=(Waves_signal_1[channel].sderiv[i])*10.;
+  	}
+	//else if(!uniqueCanvas && (X[pkPos[NPeak-1]+skipFstBin]< 20 || X[pkPos[NPeak-1]+skipFstBin]> 250 || X[pkPos[0]+skipFstBin]>350)){
 	  tmpCvsignal_1.push_back( new TCanvas(Form("CvSignal_1_Ch%d_ev%d",channel,jentry),Form("tmpSignal_1_Ch%d_ev%d",channel,jentry)) );
 	  tmpCvsignal_1.back()->cd();
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].Y[0]) );
@@ -555,36 +568,36 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpsignal_1.back()->SetMarkerSize(1);
 	  tmpsignal_1.back()->SetMarkerStyle(2);
 	  tmpsignal_1.back()->Draw("APL");
-	  TLegend *leg= new TLegend(0.5,0.75,0.85,0.85); 
+	  TLegend *leg= new TLegend(0.5,0.65,0.85,0.85); 
 	  leg->AddEntry(tmpsignal_1.back(),"Waveform"); 
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].deriv[0]) );
 	  tmpsignal_1.back()->SetLineColor(kBlue);
 	  tmpsignal_1.back()->Draw("Lsame");
-	  leg->AddEntry(tmpsignal_1.back(),"First Derivative (Bin method)");
+	  leg->AddEntry(tmpsignal_1.back(),"First Derivative (Bin method) x10");
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].sderiv[0]) );
 	  tmpsignal_1.back()->SetLineColor(kRed);
 	  tmpsignal_1.back()->Draw("Lsame");
-	  leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method)");
-	  TLine *line = new TLine(X[0], (Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 1],(Waves_signal_1[channel].rms)/(sqrt(2)));
+	  leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method) x10");
+	  TLine *line = new TLine(X[0], 20*(Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 1],20*(Waves_signal_1[channel].rms)/(sqrt(2)));
 	  line->SetLineColor(kOrange);
 	  line->SetLineWidth(2);
 	  line->Draw("same");
-	  leg->AddEntry(line,"Sigma of the First Derivative (Bin method)");
-	  TLine *line_1 = new TLine(X[0], (Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 1],(Waves_signal_1[channel].rms)/(2));
+	  leg->AddEntry(line,"Sigma of the First Derivative (Bin method) x20");
+	  TLine *line_1 = new TLine(X[0], 20*(Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 1],20*(Waves_signal_1[channel].rms)/(2));
 	  line_1->SetLineColor(kPink);
 	  line_1->SetLineWidth(2);
 	  line_1->Draw("same");
-	  leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method)");
-	  TLine *line_2 = new TLine(X[0], (Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 1],Waves_signal_1[channel].rms);
+	  leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method) x20");
+	  TLine *line_2 = new TLine(X[0], 20*(Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 1],20*Waves_signal_1[channel].rms);
 	  line_2->SetLineColor(kViolet);
 	  line_2->SetLineWidth(2);
 	  line_2->Draw("same");
-	  leg->AddEntry(line_2,"Rms (Bin method)");
+	  leg->AddEntry(line_2,"Rms (Bin method) x20");
 	  leg->Draw("same");
         }
 	
 	for (int ipk=0; ipk<NPeak; ipk++){
-	  TMarker *tm = new  TMarker(X[pkPos[ipk]+skipFstBin], pkHgt[ipk], 23);
+	  TMarker *tm = new  TMarker(X[pkPos[ipk]+skipFstBin]+0.5*0.833333, pkHgt[ipk], 23);
 	  tm->SetMarkerSize(1.5);
 	  tm->SetMarkerColor(2);
 	  tm->Draw();

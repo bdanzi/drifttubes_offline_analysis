@@ -92,7 +92,7 @@ void ReadSglChannel(){
 			}
 			else if(!isdoubleCanvas){
 				
-			for(int i = 0; i<ev; ++i){
+			for(int i = 0; i<100; ++i){
 				for(int j = 4; j<=channel; ++j){
 				TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_Ch%i_ev%i",j,i));
 				if (h1==0x0) { continue; }
@@ -166,7 +166,7 @@ void ReadSglChannel(){
 			TH1F *h6=(TH1F*)file->Get(Form("H-Ch%i_signal/hHNPeaks_ch%i",i,i));
 			if (h6==0x0) { continue; }
 			peaks->cd(3);
-			h6->Draw( );
+			h6->Draw( "colz");
 		
 			TH1F *h7=(TH1F*)file->Get(Form("H-Ch%i_signal/hTPeaks_ch%i",i,i));
 			if (h7==0x0) { continue; }

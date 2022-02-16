@@ -9,7 +9,7 @@
 #include "TH2F.h"
 #include "TMath.h"
 
-static int skipFstBin = 1; //525 for El Cal   //100 dati proto
+static int skipFstBin = 0; //525 for El Cal   //100 dati proto
 static int skipLstBin = 1;  //475 for El Cal   //50	dati proto
 static int fbin_rms=30;
 static int fbin_bsl=30;
@@ -146,7 +146,7 @@ struct wave {
 			if (Y.back()>max) { max=Y.back(); maxPos=ipt; }
 			if (Y.back()<min) { min=Y.back(); minPos=ipt; }
 			
-			if (ipt>=skipFstBin && ipt<(nPt-skipLstBin)) {
+			if (ipt>=20 && ipt<(nPt-324)) {
 				integInR+=Y.back();
 				if (Y.back()>maxInR) { maxInR=Y.back(); maxInRPos=ipt; }
 				if (Y.back()<minInR) { minInR=Y.back(); minInRPos=ipt; }
@@ -167,6 +167,7 @@ struct wave {
 		}
 		rms=sqrt(rms*invfbin);
 	}//fine funzione riempimento.
+	
 	//void fillWave(int nPt, float *arr) {
 	void fillWave(std::vector<float> &arr, int maxDim=-1, bool print=false) {
 		int nPt=arr.size();
@@ -243,6 +244,7 @@ typedef std::map<std::pair<int,int>,wave> diffWvCont; //serve per fare la differ
 //struttura per costruire istogrammi
 struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 //isto che verranno riempiti con wave filtrate
+	TH1F *hTimeDifference;
 	TH1F *hSum;
 	TH1F *hHPeaks;
 	TH2F *hHNPeaks;
@@ -299,18 +301,19 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 		//TDirectory fldch(Form("H-Ch%d",Ch),Form("folder for ch%d",Ch));
 		//fldch.cd();
 		if (SF==0) {//senza smooth
+			hTimeDifference = new TH1F (Form("hTimeDifference_ch%d",Ch),Form("Time Difference between Two Consecutive Peaks - Ch %d",Ch),500,0.,50.); 
 			hSum = new TH1F (Form("hSum_ch%d",Ch),Form("Sum amplitudes - Ch %d",Ch),1000,-1000,1000.); 
 			hP0=new TH1F (Form("hP0_ch%d",Ch),Form("HP0 - Ch %d",Ch),1000,-1,1);
 			hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d",Ch),1000,-1e+7,1e+7);
 			hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d",Ch),1000,-10,10);
-			hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Peaks found - Ch %d",Ch),100,-0.5,99.5);
+			hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Peaks found - Ch %d",Ch),100,-0.5,140);
 			hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d",Ch),2,-0.5,1.5); 
 
-			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),500,0,0.3);
-			hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,500,0,0.5);
-			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),500,0,1000);
-			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),500,0,1000);
-			hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Peak found - Ch %d",Ch),500,0,1000);
+			hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),125,0,0.2);
+			hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),125,0,100,125,0,0.5);
+			hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),125,0,800);
+			hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),125,0,800);
+			hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Peak found - Ch %d",Ch),125,0,800);
 
 
 			//hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d",Ch),10000,-0.01,0.01);
@@ -318,24 +321,24 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 	    
 
 
-			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.5,0.2); 
-			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),10000,-0.5,0.5);//600,20.,80.
-			hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),1000,-10.,10.);
-			hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),10000,-0.01,1);
-			hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),1000,-10.,10.);
-			hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d",Ch),1000,-10.,10.);
-			hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d",Ch),1000,-10.,10.);
-			hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d",Ch),1000,-10.,20.);
-			hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d",Ch),1000,-10.,20.);
-			hIntegNInRFullW=new TH1F (Form("hIntegNInRFullW_ch%d",Ch),Form("Integral minius PDS for Full Waves - Ch %d",Ch),1000,-10.,10.);
-			hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d",Ch),500,0,0.005);
+			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),200,-0.5,0.2); 
+			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-0.5,0.5);//600,20.,80.
+			hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
+			hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-10.,10.);
+			hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
+			hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d",Ch),200,-10.,10.);
+			hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d",Ch),200,-10.,10.);
+			hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d",Ch),200,-10.,20.);
+			hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d",Ch),200,-10.,20.);
+			hIntegNInRFullW=new TH1F (Form("hIntegNInRFullW_ch%d",Ch),Form("Integral minius PDS for Full Waves - Ch %d",Ch),200,-10.,10.);
+			hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d",Ch),125,0.,5.);
 			//distribution of derivative for meg FE
 
-			hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.3);
-			hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.3);
-			hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d",Ch),300,-0.02,0.3);
-			hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d",Ch),600,-0.02,0.3);
-			hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),300,-0.02,0.3);
+			hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d",Ch),150,-0.02,0.3);
+			hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),150,-0.02,0.3);
+			hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d",Ch),150,-0.02,0.3);
+			hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d",Ch),150,-0.02,0.3);
+			hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d",Ch),150,-0.02,0.3);
 
 			hMinV = new TH1F (Form("hMinV_ch%d",Ch),Form("Min val - Ch %d",Ch),400,-0.02,0);
 			hMinVN = new TH1F (Form("hMinVN_ch%d",Ch),Form("Min val over base line - Ch %d",Ch),400,-0.02,0);
@@ -402,6 +405,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 
 
 			/////////////////////////////////////////////////////////
+			hMaxV->GetXaxis()->SetTitle("Volt [V]");
 			hNPeaks->GetXaxis()->SetTitle("N Peaks");
 			hNPeaks->GetYaxis()->SetTitle("Entries");
 			hBsl->GetXaxis()->SetTitle("Baseline [V]");
@@ -412,7 +416,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 			hIntegNInRC1-> GetYaxis()->SetTitle("Entries");
 			hIntegNInRC2-> GetXaxis()->SetTitle("Integral [V]");
 			hIntegNInRC2-> GetYaxis()->SetTitle("Entries");
-			hRms->GetXaxis()->SetTitle("Rms [V]");
+			hRms->GetXaxis()->SetTitle("Rms [mV]");
 			hRms->GetYaxis()->SetTitle("Entries");
 
 			hMaxVNInR->GetXaxis()->SetTitle("Max_value [V]");
@@ -422,7 +426,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 
 			hIntegNInRoriginalW-> GetXaxis()->SetTitle("Integral [mA]");
 			hIntegNInRoriginalW-> GetYaxis()->SetTitle("Entries");
-
+			hNPeaks_1->GetXaxis()->SetTitle("Time [ns]");
 			hMinVNInRoriginalW->GetXaxis()->SetTitle("Min value [V]");
 			hMinVNInRoriginalW->GetYaxis()->SetTitle("Entries");
 			hMaxVNInRoriginalW->GetXaxis()->SetTitle("Min_value [V]");
