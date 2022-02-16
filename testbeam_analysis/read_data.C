@@ -166,8 +166,8 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     cout << "New event is analyzed: "; 
     cout << jentry << "\n" << endl;
     cout << "Initial channel hits: \n"; 
-    //for (int i = 0; i < N_signalevents.size(); i++) 
-      //cout << "Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
+    for (int i = 0; i < N_signalevents.size(); i++) 
+      cout << "Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
     cout << "\n";
     
     
@@ -210,7 +210,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     for (auto point : wd->getX742Data()) {
       counter=counter+1;
       //cout << "Counter:"<< counter <<"\n"<<endl;
-      cout << "Canale analizzato:" << point.first <<"\n"<<endl;
+      cout << "Channel analysed from the map:" << point.first <<"\n"<<endl;
       
       for (int channel=0; channel<=nMaxCh; channel++){
         
@@ -362,7 +362,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	
 	((hstPerCh*)HstPerCh[channel])->hIntegNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nIntegInR());
 	((hstPerCh*)HstPerCh[channel])->hBsl->Fill(((wave)Waves_signal_1[channel]).bsln);
-  //((hstPerCh*)HstPerCh[channel])->hMaxVNSmooth->Fill(((wave)tmpWSG_signal[channel]).nMax());
+  	//((hstPerCh*)HstPerCh[channel])->hMaxVNSmooth->Fill(((wave)tmpWSG_signal[channel]).nMax());
 	((hstPerCh*)HstPerCh[channel])->hInteg->Fill(((wave)Waves_signal_1[channel]).integ);
 	((hstPerCh*)HstPerCh[channel])->hIntegN->Fill(((wave)Waves_signal_1[channel]).nnInteg());
 	((hstPerCh*)HstPerCh[channel])->hIntegNInR->Fill(((wave)Waves_signal_1[channel]).nnIntegInR());
@@ -386,7 +386,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	
       }	
       
-      if(!isTrg && Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){ //nPtInR == Y.size - first,lastBin; search peak when max amplitude > 5 mV
+      if(!isTrg && Waves_signal_1[channel].maxInR>10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){ //nPtInR == Y.size - first,lastBin; search peak when max amplitude > 5 mV
 	
         cout <<"Is signal \n"<<endl;
         N_signalevents[channel]= 1.0;
@@ -398,43 +398,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	//npt, Float_t *amplitude, Float_t sig, Int_t nrise,Int_t checkUpTo, Int_t *pkPos, Float_t *pkHgt) {
 	//cout<<"rms "<<((wave)Waves[channel]).rms<<endl;
 	//0.625*rms= 2 sigma
-	
-        float sig=4e-3;//*2.5*((wave)Waves_signal_1[channel]).rms;//3.0*/*1.414**//*1.0e-3;/*/((wave)Waves_signal_1[channel]).rms;				
-	float sig2=1.*sig;//1.0*sig;
-	float sig3=1.414*sig;
-	float meanValueLocal;
-        /*
-	  for (int ipk=0; ipk <NPeak; ++ipk) {
-	  bool skip=false;
-	  bool doCheck=false;
-	  int iPkBin=skipFstBin+pkPos[ipk]; //Bin related to the bin found
-	  if ( ((wave)Waves_signal_1[channel]).nnAt(skipFstBin+pkPos[ipk]) > sig2 ) {
-	  if ( ( ((wave)Waves_signal_1[channel]).nMaxInR()>0.01 && iPkBin>((wave)Waves_signal_1[channel]).maxInRPos )) {
-	  doCheck=true;
-	  }
-	  } else {
-	  if ( ((wave)Waves_signal_1[channel]).nnAt(skipFstBin+pkPos[ipk]) < 3*sig ) {
-	  skip=true;
-	  }else {
-	  doCheck=true;
-	  }
-	  }
-	  
-	  if (doCheck) {
-	  for (int ick=1; ick <2; ++ick) {
-	  if ( fabs(((wave)Waves_signal_1[channel]).Y[iPkBin]-((wave)Waves_signal_1[channel]).Y[iPkBin-ick])>sig3
-	  || fabs(((wave)Waves_signal_1[channel]).Y[iPkBin]-((wave)Waves_signal_1[channel]).Y[iPkBin+ick])>sig3 ) {
-	  skip=true;
-	  break;
-	  }
-	  }
-	  }
-	  if (!skip) {
-	  pkPos_1[NPeak_1]=pkPos[ipk];
-	  pkHgt_1[NPeak_1]=pkHgt[ipk];
-	  ++NPeak_1;
-	  }
-	  } */
         
 	
 	if ((NPeak>10 && channel<=9)|| (NPeak>20 && channel>=10 && channel<=12)) {
@@ -484,7 +447,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       
           
       
-      else if(!isTrg && Waves_signal_1[channel].max<=10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){
+      else if(!isTrg && Waves_signal_1[channel].maxInR<=10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){
 	cout <<"Is NOT signal \n"<<endl;
 	N_signalevents[channel]= 0.0; 
 	//cout << channel << endl; 
@@ -497,7 +460,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
         //cout << "Event: " << jentry << " Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
       cout << "\n"; 
       
-      bool savesignal_1=false;
+      bool savesignal_1=true;
       bool uniqueCanvas=false;
       Waves.clear();
       if (savesignal_1 && !isTrg && channel <=nMaxCh) { 
@@ -516,7 +479,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 			  tmpsignal_1.back()->GetXaxis()->SetTitle("time [ns]");
 			  tmpsignal_1.back()->SetTitle(Form("tmpSignal_afterFlt_Ch%d_ev%d",channel,jentry));
 			  tmpsignal_1.back()->GetYaxis()->SetTitleOffset(1.4);
-			  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt");
+			  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt [V]");
 			  //tmpsignal_1.back()->GetXaxis()->SetRangeUser(0.,400.);
 			  tmpsignal_1.back()->GetYaxis()->SetRangeUser(-0.1,0.4);
 			  tmpsignal_1.back()->SetMarkerStyle(21);
@@ -531,17 +494,17 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 			  tmpsignal_1.back()->SetLineColor(kRed);
 			  tmpsignal_1.back()->Draw("Lsame");
 			  leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method)");
-			  TLine *line = new TLine(X[0], (Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 1],(Waves_signal_1[channel].rms)/(sqrt(2)));
+			  TLine *line = new TLine(X[0+30], (Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 350],(Waves_signal_1[channel].rms)/(sqrt(2)));
 			  line->SetLineColor(kOrange);
 			  line->SetLineWidth(2);
 			  line->Draw("same");
 			  leg->AddEntry(line,"Sigma of the First Derivative (Bin method)");
-			  TLine *line_1 = new TLine(X[0], (Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 1],(Waves_signal_1[channel].rms)/2);
+			  TLine *line_1 = new TLine(X[0+30], (Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 350],(Waves_signal_1[channel].rms)/2);
 			  line_1->SetLineColor(kPink);
 			  line_1->SetLineWidth(2);
 			  line_1->Draw("same");
 			  leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method)");
-			  TLine *line_2 = new TLine(X[0], (Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 1],Waves_signal_1[channel].rms);
+			  TLine *line_2 = new TLine(X[0+30], (Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 350],Waves_signal_1[channel].rms);
 			  line_2->SetLineColor(kViolet);
 			  line_2->SetLineWidth(2);
 			  line_2->Draw("same");
@@ -549,7 +512,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 			  leg->Draw("same");
 			  counting_filter++;
 	}
-	else if(!uniqueCanvas ){
+	else if(!uniqueCanvas && jentry<=200 && NPeak>20){
 
 		for(int i=0; i<Waves[channel].nPt();i++){
     Waves_signal_1[channel].deriv[i]=(Waves_signal_1[channel].deriv[i])*10.;
@@ -562,7 +525,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpsignal_1.back()->GetXaxis()->SetTitle("time [ns]");
 	  tmpsignal_1.back()->SetTitle(Form("tmpSignal_afterFlt_Ch%d_ev%d",channel,jentry));
 	  tmpsignal_1.back()->GetYaxis()->SetTitleOffset(1.4);
-	  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt");
+	  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt [V]");
 	  //tmpsignal_1.back()->GetXaxis()->SetRangeUser(0.,400);
 	  tmpsignal_1.back()->GetYaxis()->SetRangeUser(-0.1,0.4);
 	  tmpsignal_1.back()->SetMarkerSize(1);
@@ -578,17 +541,17 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpsignal_1.back()->SetLineColor(kRed);
 	  tmpsignal_1.back()->Draw("Lsame");
 	  leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method) x10");
-	  TLine *line = new TLine(X[0], 20*(Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 1],20*(Waves_signal_1[channel].rms)/(sqrt(2)));
+	  TLine *line = new TLine(X[0+30], 20*(Waves_signal_1[channel].rms)/(sqrt(2)), X[Waves_signal_1[channel].nPt() - 350],20*(Waves_signal_1[channel].rms)/(sqrt(2)));
 	  line->SetLineColor(kOrange);
 	  line->SetLineWidth(2);
 	  line->Draw("same");
 	  leg->AddEntry(line,"Sigma of the First Derivative (Bin method) x20");
-	  TLine *line_1 = new TLine(X[0], 20*(Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 1],20*(Waves_signal_1[channel].rms)/(2));
+	  TLine *line_1 = new TLine(X[0+30], 20*(Waves_signal_1[channel].rms)/(2), X[Waves_signal_1[channel].nPt() - 350],20*(Waves_signal_1[channel].rms)/(2));
 	  line_1->SetLineColor(kPink);
 	  line_1->SetLineWidth(2);
 	  line_1->Draw("same");
 	  leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method) x20");
-	  TLine *line_2 = new TLine(X[0], 20*(Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 1],20*Waves_signal_1[channel].rms);
+	  TLine *line_2 = new TLine(X[0+30], 20*(Waves_signal_1[channel].rms), X[Waves_signal_1[channel].nPt() - 350],20*Waves_signal_1[channel].rms);
 	  line_2->SetLineColor(kViolet);
 	  line_2->SetLineWidth(2);
 	  line_2->Draw("same");
@@ -606,7 +569,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	if(counting_filter==(nMaxCh-nTriggerChannels+1) && uniqueCanvas){					
 	  tmpCvsignal_1.back()->Write();
 	}
-        else if(!uniqueCanvas){
+        else if(!uniqueCanvas && jentry<=200 && NPeak>20){
 	  tmpCvsignal_1.back()->Write();          
         }
 	theFile->cd("/");

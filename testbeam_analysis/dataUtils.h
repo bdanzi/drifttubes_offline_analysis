@@ -321,7 +321,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
 	    
 
 
-			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),200,-0.5,0.2); 
+			hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.004,0.004); 
 			hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-0.5,0.5);//600,20.,80.
 			hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
 			hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-10.,10.);
