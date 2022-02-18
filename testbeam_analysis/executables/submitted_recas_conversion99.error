@@ -1,0 +1,5 @@
+Warning in <TInterpreter::ReadRootmapFile>: class  edm::ValueMap<float> found in libDataFormatsCommon.so  is already in libHiggsAnalysisHiggsToZZ4Leptons.so 
+Warning in <TInterpreter::ReadRootmapFile>: class  edm::Wrapper<edm::ValueMap<float> > found in libDataFormatsCommon.so  is already in libHiggsAnalysisHiggsToZZ4Leptons.so 
+Error in <TSystem::ExpandFileName>: input: $HOME/.root.mimes, output: $HOME/.root.mimes
+Warning in <TFile::Init>: no StreamerInfo found in /lustrehome/bdanzi/offline_analysis/dchdatareade_test_beam/WaveData/lib/WaveDataDict_rdict.pcm therefore preventing schema evolution when reading this file.
+Warning in <TClass::Init>: no dictionary for class __pair_base<unsigned short,vector<unsigned short> > is available
