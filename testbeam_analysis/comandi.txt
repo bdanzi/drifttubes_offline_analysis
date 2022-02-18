@@ -13,3 +13,7 @@ Here the line command for the analysis code:
 1 is a kind of option that actually I do not remember, I will check.
 
 
+BEFORE that you have to:
+
+source setDCDataReaderEnv.sh
+bash compile.sh
