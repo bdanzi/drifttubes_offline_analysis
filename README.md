@@ -1,7 +1,7 @@
 # Drift Tubes 2021 Test Beam offline analysis
 ## Setup
 
-On Bari ReCAS:
+On Bari ReCAS and `testbeam_analysis\`:
 
 ```bash
 $ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
@@ -9,7 +9,7 @@ $ source setDCDataReaderEnv.sh
 $ bash compile.sh
 $ ./read_data . 4 0 -10 1
 ```
-On lxplus:
+On lxplus and `testbeam_analysis\`:
 
 ```bash
 $ source setDCDataReaderEnv.sh
