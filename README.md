@@ -1,7 +1,7 @@
 # Drift Tubes 2021 Test Beam offline analysis
 
 The `data_testbeam.xlsx` file contains the details on the ROOT file used for this data analysis.
-The focus is on the 165 GeV momentum muon beam runs from 11st of November. 
+The focus is on the 165 GeV/c momentum muon beam runs from 11st of November. 
 
 ## Setup
 
