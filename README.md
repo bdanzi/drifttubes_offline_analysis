@@ -1,7 +1,11 @@
 # Drift Tubes 2021 Test Beam offline analysis
+
+The `data_testbeam.xlsx` file contains the details on the ROOT file used for this data analysis.
+The focus is on the 165 GeV momentum muon beam runs from 11st of November. 
+
 ## Setup
 
-On Bari ReCAS and `testbeam_analysis\`:
+On Bari ReCAS and in the `testbeam_analysis\` directory of this repository:
 
 ```bash
 $ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
@@ -9,7 +13,7 @@ $ source setDCDataReaderEnv.sh
 $ bash compile.sh
 $ ./read_data . 4 0 -10 1
 ```
-On lxplus and `testbeam_analysis\`:
+On lxplus and in the `testbeam_analysis\` directory of this repository:
 
 ```bash
 $ source setDCDataReaderEnv.sh
@@ -51,7 +55,7 @@ $ bash submit_executable.sh
 It will produce:
 - by using the plots.txt, per each .root file in the first column, per each channel in the second column,
 per each event in the third column some physical quantities which are related to 
-1) number of peaks distributions
+1) number of peaks, First Time Peak and Last Time Peak distributions
 2) maxima
 3) integral of the wavefunction 
 4) wave functions w & w/o peak arrows
