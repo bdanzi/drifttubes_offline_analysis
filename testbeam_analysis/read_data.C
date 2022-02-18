@@ -240,10 +240,10 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	filterWaveBsl(Wffts[channel],realFltFFT,imgFltFFT);//filtro sulla baseline.                                        ///
 	InverseFFT(realFltFFT,imgFltFFT,Waves[channel].nPt(),FltWaves[channel]);//trasformata inversa
 	for(int i=0; i<Waves[channel].nPt();i++){
-    Waves[channel].Y[i]=Waves[channel].Y[i]-Waves[channel].bsln;
+	  Waves[channel].Y[i]=Waves[channel].Y[i]-Waves[channel].bsln;
 	}
 	Waves_signal_1[channel].fillWave((Waves[channel].Y),Waves[channel].nPt());
-  //Waves_signal_1[channel].fillWave(FltWaves[channel].Y,FltWaves[channel].nPt());
+	//Waves_signal_1[channel].fillWave(FltWaves[channel].Y,FltWaves[channel].nPt());
 	
 	bool saveEvents=false;
 	if (saveEvents) {
@@ -260,13 +260,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpCvFlt.back()->Write();
 	  theFile->cd("/");
 	  
-	  //  for (int ipk=0; ipk<NPeak_1; ipk++){
-	  //TMarker *tm = new  TMarker(X[pkPos_1[ipk]+skipFstBin], pkHgt_1[ipk], 23);
-	  //tm->SetMarkerSize(1.5);
-	  //tm->SetMarkerColor(2);
-	  //tm->Draw();
-	  //}
-	  
 	} 
 	bool saveWave=false; //non salvo, quindi non vediamo l'out di questo pezzo di codice.
 	saveEvents=false;
@@ -280,7 +273,9 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpWaves.back()->SetTitle(Form("tmpWave-Ch%d_ev%d",channel,jentry));
 	  tmpWaves.back()->GetYaxis()->SetTitleOffset(1.4);
 	  tmpWaves.back()->GetYaxis()->SetTitle("Voltage [V]");
-	  tmpWaves.back()->Draw("AP");
+	  tmpWaves.back()->SetMarkerSize(1);
+	  tmpWaves.back()->SetMarkerStyle(2);
+	  tmpWaves.back()->Draw("APL");
 	  tmpCv.back()->Write();
 	  theFile->cd("/");
 	}
