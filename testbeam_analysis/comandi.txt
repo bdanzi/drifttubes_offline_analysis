@@ -15,5 +15,5 @@ Here the line command for the analysis code:
 
 BEFORE that you have to:
 
-source setDCDataReaderEnv.sh
+source setDCDataReaderEnv.sh (change the path to your WaveDir directory)
 bash compile.sh
