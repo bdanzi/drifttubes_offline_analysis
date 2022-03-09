@@ -22,7 +22,8 @@
 using namespace std;
 
 void ReadSglChannel_test(){
-  
+  gStyle->SetOptFit(1011);
+
   int channel=0;
   int ev=0;
   struct stat st = {0};
@@ -30,6 +31,21 @@ void ReadSglChannel_test(){
   TString fname("");
   bool isInteractive = false;
   bool isdoubleCanvas = false;
+  Float_t cos_alpha = TMath::Cos(60*TMath::DegToRad());
+	  Float_t expected_electrons =0.;
+	  Float_t expected_cluster =0.;
+	  Float_t cluster_per_cm_mip = 12.;
+	  Float_t drift_size =0.;
+	  Float_t relativistic_rise = 1.3;
+	  Float_t cluster_population = 1.6;
+	  
+
+		  
+	 
+		 
+	  
+		
+	 //δ cluster/cm (M.I.P.) *drift tube size [cm] *1.3 (relativisticrise)*1.6 electrons/cluster*1/cos(α)
   if(isInteractive){
     
     printf("Enter *.root name:");
@@ -77,6 +93,8 @@ void ReadSglChannel_test(){
       TCanvas *bsl_2cm=new TCanvas("bsl_2","bsl",3500,1500);
       TCanvas *npeaks_1cm= new TCanvas("npeaks_1","npeaks",3500,1500);
       TCanvas *npeaks_2cm= new TCanvas("npeaks_2","npeaks",3500,1500);
+	  TCanvas *npeaks_clustser_1cm= new TCanvas("npeaks_1_cluster","npeaks",3500,1500);
+      TCanvas *npeaks_clustser_2cm= new TCanvas("npeaks_2_cluster","npeaks",3500,1500);
       TCanvas *hpeaks_1cm= new TCanvas("hpeaks_1","hpeaks",3500,1500);
       TCanvas *hpeaks_2cm= new TCanvas("hpeaks_2","hpeaks",3500,1500);
       TCanvas *hnpeaks_1cm= new TCanvas("hnpeaks_1","hnpeaks",3500,1500);
@@ -92,7 +110,8 @@ void ReadSglChannel_test(){
       TCanvas *rms_1cm= new TCanvas("rms_1","rms",3500,1500);
       TCanvas *rms_2cm= new TCanvas("rms_2","rms",3500,1500);
       
-      
+      npeaks_clustser_1cm->Divide(2,3);
+	  npeaks_clustser_2cm->Divide(2,2);
       //integ->Divide(4,2);
       //max->Divide(4,2);
       min->Divide(4,1);
@@ -139,7 +158,9 @@ void ReadSglChannel_test(){
       
       for(int i = 4; i<=9 ;++i){ //looping over all channels
 	//for(int i =channel; i<=channel; ++i){ //looping over one channel
-	
+	drift_size = 0.8;
+	expected_electrons = cluster_per_cm_mip * drift_size*relativistic_rise * cluster_population * 1/cos_alpha;
+	expected_cluster = cluster_per_cm_mip * drift_size*relativistic_rise * 1/cos_alpha;
 	
 	
 	//TH1F *h2=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVN_ch%i",i,i));
@@ -200,6 +221,27 @@ void ReadSglChannel_test(){
 	npeaks_1cm->cd(i-3);
 	h4->GetXaxis()->SetRangeUser(0.,90.);
 	h4->Draw("same");
+	TPaveText *pt_1cm = new TPaveText(0.2,0.7,0.4,0.85,"NDC");
+	pt_1cm->SetTextSize(0.05);
+	pt_1cm->SetTextColor(kRed);
+	pt_1cm->SetFillColor(0);
+	pt_1cm->SetTextAlign(12);
+	pt_1cm->AddText(Form("Expected elecrons: %.1f",expected_electrons));
+	pt_1cm->Draw("same");
+
+	TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hNPeaks_clust_ch%i",i,i));
+	if (h20==0x0) { continue; }
+	npeaks_clustser_1cm->cd(i-3);
+	h20->GetXaxis()->SetRangeUser(0.,90.);
+	h20->Fit("gaus");
+	h20->Draw("same");
+	TPaveText *pt_1cm_cluster = new TPaveText(0.4,0.5,0.55,0.75,"NDC");
+	pt_1cm_cluster->SetTextSize(0.04);
+	pt_1cm_cluster->SetTextColor(kRed);
+	pt_1cm_cluster->SetTextAlign(12);
+	pt_1cm_cluster->SetFillColor(0);
+	pt_1cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
+	pt_1cm_cluster->Draw("same");
 	
 	TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
 	if (h5==0x0) { continue; }
@@ -332,7 +374,7 @@ void ReadSglChannel_test(){
 	  integ_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/integ_1cm.pdf",fname.Data()));
 	  rms_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/rms_1cm.pdf",fname.Data()));
 	  //min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.pdf",fname.Data(),i));
-	  
+	  npeaks_clustser_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_1cm.pdf",fname.Data()));
 	  
 	}
 	
@@ -340,6 +382,9 @@ void ReadSglChannel_test(){
       
       for(int i = 10; i<=channel; ++i){ //looping over all channels
 	//for(int i =channel; i<=channel; ++i){ //looping over one channel
+	drift_size = 1.8;
+	expected_electrons = cluster_per_cm_mip * drift_size*relativistic_rise * cluster_population * 1/cos_alpha;
+	expected_cluster = cluster_per_cm_mip * drift_size*relativistic_rise * 1/cos_alpha;
 	
 	
 	
@@ -402,6 +447,13 @@ void ReadSglChannel_test(){
 	npeaks_2cm->cd(i-9);
 	h4->GetXaxis()->SetRangeUser(0.,200.);
 	h4->Draw("same");
+	TPaveText *pt_2cm = new TPaveText(0.2,0.7,0.4,0.85,"NDC");
+	pt_2cm->SetTextSize(0.04);
+	pt_2cm->SetTextColor(kRed);
+	pt_2cm->SetFillColor(0);
+	pt_2cm->SetTextAlign(12);
+	pt_2cm->AddText(Form("Expected elecrons: %.1f",expected_electrons));
+	pt_2cm->Draw("same");
 	
 	TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
 	if (h5==0x0) { continue; }
@@ -516,7 +568,19 @@ void ReadSglChannel_test(){
 	  if (h29==0x0) { continue; }
 	  min->cd(7);
 	  h29->Draw( );*/
-	
+		TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hNPeaks_clust_ch%i",i,i));
+		if (h20==0x0) { continue; }
+		npeaks_clustser_2cm->cd(i-9);
+		h20->GetXaxis()->SetRangeUser(0.,90.);
+		h20->Fit("gaus");
+		h20->Draw("same");
+		TPaveText *pt_2cm_cluster = new TPaveText(0.6,0.2,0.7,0.35,"NDC");
+		pt_2cm_cluster->SetTextSize(0.04);
+		pt_2cm_cluster->SetTextColor(kRed);
+		pt_2cm_cluster->SetFillColor(0);
+		pt_2cm_cluster->SetTextAlign(12);
+		pt_2cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
+		pt_2cm_cluster->Draw("same");
 	
 	
 	bool savePlots = true;
@@ -528,6 +592,7 @@ void ReadSglChannel_test(){
 	  tfpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_2cm.pdf",fname.Data()));
 	  tlpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tlpeaks_2cm.pdf",fname.Data()));
 	  hnpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_2cm.pdf",fname.Data()));
+	  npeaks_clustser_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_2cm.pdf",fname.Data()));
 	  hpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hpeaks_2cm.pdf",fname.Data()));
 	  bsl_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/bsl_2cm.pdf",fname.Data()));
 	  max_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/max_2cm.pdf",fname.Data()));

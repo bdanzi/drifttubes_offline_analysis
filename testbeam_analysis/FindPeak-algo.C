@@ -20,6 +20,8 @@ Int_t FindPeaks(Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_
 	  ) {
 	pkHgt[nPks]= amplitude[ip];
 	pkPos[nPks]= ip;
+	cout << "i-th event: " << jentry << " Peak in time [ns]: " <<(ip+skipFstBin)*0.833 <<" Peak in Bin: " <<(ip+skipFstBin) <<" Peaks: "<< nPks << " Amplitude of the Electron Peak "<< pkHgt[nPks] <<"\n";
+	
 	nPks=nPks+1;
 	/*
 	  if(nPks==0){
@@ -47,7 +49,6 @@ Int_t FindPeaks(Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_
 	  
 	  }*/
 	
-	cout << "i-th event: " << jentry << " Peak in time [ns]: " <<(ip+skipFstBin)*0.833 <<" Peak in Bin: " <<(ip+skipFstBin) <<" Peaks: "<< nPks << " Ntot points "<< npt <<"\n";
 	
 	
       }
@@ -68,6 +69,8 @@ Int_t FindPeaks(Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_
 	  ) {
 	pkHgt[nPks]= amplitude[ip];
 	pkPos[nPks]= ip;
+	cout << "i-th event: " << jentry << " Peak in time [ns]: " <<(ip+skipFstBin)*0.833 <<" Peak in Bin: " <<(ip+skipFstBin) <<" Peaks: "<< nPks << " Amplitude of the Electron Peak "<< pkHgt[nPks] <<"\n";
+	
 	nPks=nPks+1;
 	/*
 	  if(nPks==0){
@@ -95,11 +98,11 @@ Int_t FindPeaks(Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_
 	  
 	  }*/
 	
-	cout << "i-th event: " << jentry << " Peak in time [ns]: " <<(ip+skipFstBin)*0.833 <<" Peak in Bin: " <<(ip+skipFstBin) <<" Peaks: "<< nPks << " Ntot points "<< npt <<"\n";
 	
 	
       }
-      if(nPks==maxNPks) {break;}
+
+      if(nPks==maxNPks) {cout <<"\n"; break;}
       
       
     }

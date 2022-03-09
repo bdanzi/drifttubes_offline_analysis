@@ -270,7 +270,8 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   TH1F *hIntegNInRC4;
   
   TH1F *hNeventSignals;
-  TH1F *hNPeaks;	
+  TH1F *hNPeaks;
+  TH1F *hNPeaks_clust;
   
   
   TH1F *hRms;
@@ -303,6 +304,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   //Derivative study
   TH1F *hFirstDeriv;	
   TH1F *hSecDeriv;
+  TH1F *hNElectrons_per_cluster;
   
   hstPerCh(int Ch=0, int SF=0) {
     //gRootDir->cd();
@@ -315,8 +317,9 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d",Ch),1000,-1e+7,1e+7);
       hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d",Ch),1000,-10,10);
       hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Peaks found - Ch %d",Ch),250,0.,250);
+      hNPeaks_clust = new TH1F (Form("hNPeaks_clust_ch%d",Ch),Form("N Cluster Peaks found - Ch %d",Ch),100,0.,100);
       hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d",Ch),2,-0.5,1.5); 
-      
+      hNElectrons_per_cluster = new TH1F (Form("hNElectrons_per_cluster_ch%d",Ch),Form("N Electrons per Each Cluster found - Ch %d",Ch),20,0.,20);
       hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),400,0,0.2);
       hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,250,0,0.5);
       hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),400,0,800);
@@ -368,11 +371,15 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hMaxVNInRoriginalW = new TH1F (Form("hMaxVNInRoriginalW_ch%d",Ch),Form("Max val over base line for Original Wave- Ch %d",Ch),300,-0.02,0.1);
       //////////////////////////////////////
       hNPeaks->GetYaxis()->SetTitle("Entries");
+      hNElectrons_per_cluster->GetYaxis()->SetTitle("Entries");
+      hNElectrons_per_cluster->GetXaxis()->SetTitle("Number of Electrons per Each Cluster found");
+      hNPeaks_clust->GetYaxis()->SetTitle("Entries");
       hNeventSignals->GetYaxis()->SetTitle("Entries");
+      hNPeaks_clust->GetXaxis()->SetTitle("Number of Clusters found");
       hHPeaks->GetYaxis()->SetTitle("Entries");
       hHPeaks->GetXaxis()->SetTitle("Height [V]");
-      hHNPeaks->GetYaxis()->SetTitle("Height of Peaks found");
-      hHNPeaks->GetXaxis()->SetTitle("Number of Peaks found");
+      hHNPeaks->GetYaxis()->SetTitle("Height of Electron Peaks found");
+      hHNPeaks->GetXaxis()->SetTitle("Number of Electron Peaks found");
       hTPeaks->GetYaxis()->SetTitle("Entries");
       hTFstPeaks->GetYaxis()->SetTitle("Entries");
       hTFstPeaks->GetXaxis()->SetTitle("Time [ns]");
