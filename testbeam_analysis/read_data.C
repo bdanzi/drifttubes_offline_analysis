@@ -26,6 +26,7 @@
 #include "TAxis.h"
 #include "TVirtualFitter.h"
 #include "TMarker.h"
+ 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////Define Data Containers//////////////
@@ -316,17 +317,17 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       Int_t NPeak;
       Int_t pkPos[250];
       Float_t pkHgt[250];
-	  Int_t nElectrons_per_cluster[250];
+      Int_t nElectrons_per_cluster[250];
       Int_t NPeak_1;
-	  Int_t cut_cluster = 2;
-	  
+      Int_t cut_cluster = 2;
+      
       Int_t pkPos_1[250];
       Float_t pkHgt_1[250];
-	  //Clusterization variables//
-	  Int_t NPeak_clust;
+      //Clusterization variables//
+      Int_t NPeak_clust;
       Int_t pkPos_clust[250];
-	  Int_t average_pkPos_clust[250];
-	  Float_t average_pkHgt_clust[250];
+      Int_t average_pkPos_clust[250];
+      Float_t average_pkHgt_clust[250];
       Float_t pkHgt_clust[250];
       
       //maps for full waves
@@ -336,7 +337,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       
       NPeak=0;								
       NPeak_1=0;
-
+      
       /* Adding SG filter smoothing
 	 int m,k;
 	 m=13; //number of bin interested by the SG smoothing 
@@ -365,22 +366,22 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
         //cout << channel << endl; 
         //cout <<"\n";   
         ((hstPerCh*)HstPerCh[channel])->hNeventSignals->Fill(1.0);
-		NPeak = FindPeaks(jentry,skipFstBin,channel,((wave)Waves_signal_1[channel]).nPtInR(),&((wave)Waves_signal_1[channel]).Y[skipFstBin],((wave)Waves_signal_1[channel]).rms,&((wave)Waves_signal_1[channel]).deriv[skipFstBin],&((wave)Waves_signal_1[channel]).sderiv[skipFstBin],pkPos,pkHgt);
-		//NPeak = FindPeaks(((wave)FltWaves[channel]).nPtInR(),&((wave)FltWaves[channel]).Y[skipFstBin],1.2e-3/*0.625*((wave)Waves[channel]).rms*/,6,3,pkPos,pkHgt);
-		//npt, Float_t *amplitude, Float_t sig, Int_t nrise,Int_t checkUpTo, Int_t *pkPos, Float_t *pkHgt) {
-		//cout<<"rms "<<((wave)Waves[channel]).rms<<endl;
-		//0.625*rms= 2 sigma
-		NPeak_clust = NPeak;
-		NPeak_clust = ClusterizationFindPeaks(cut_cluster,nElectrons_per_cluster,jentry,skipFstBin,channel,((wave)Waves_signal_1[channel]).nPtInR(),((wave)Waves_signal_1[channel]).rms,pkPos_clust,pkHgt_clust,pkPos,pkHgt,NPeak_clust);
-		
-
+	NPeak = FindPeaks(jentry,skipFstBin,channel,((wave)Waves_signal_1[channel]).nPtInR(),&((wave)Waves_signal_1[channel]).Y[skipFstBin],((wave)Waves_signal_1[channel]).rms,&((wave)Waves_signal_1[channel]).deriv[skipFstBin],&((wave)Waves_signal_1[channel]).sderiv[skipFstBin],pkPos,pkHgt);
+	//NPeak = FindPeaks(((wave)FltWaves[channel]).nPtInR(),&((wave)FltWaves[channel]).Y[skipFstBin],1.2e-3/*0.625*((wave)Waves[channel]).rms*/,6,3,pkPos,pkHgt);
+	//npt, Float_t *amplitude, Float_t sig, Int_t nrise,Int_t checkUpTo, Int_t *pkPos, Float_t *pkHgt) {
+	//cout<<"rms "<<((wave)Waves[channel]).rms<<endl;
+	//0.625*rms= 2 sigma
+	NPeak_clust = NPeak;
+	NPeak_clust = ClusterizationFindPeaks(cut_cluster,nElectrons_per_cluster,jentry,skipFstBin,channel,((wave)Waves_signal_1[channel]).nPtInR(),((wave)Waves_signal_1[channel]).rms,pkPos_clust,pkHgt_clust,pkPos,pkHgt,NPeak_clust);
+	
+	
 	
 	if ((NPeak>10 && channel<=9 && NPeak<100)|| (NPeak>20 && channel>=10 && channel<=12)) {
 	  
 	  if (((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
 	    for(int m=0;m < NPeak_clust;m++){
-		((hstPerCh*)HstPerCh[channel])->hNElectrons_per_cluster->Fill((float)nElectrons_per_cluster[m]);
-		}
+	      ((hstPerCh*)HstPerCh[channel])->hNElectrons_per_cluster->Fill((float)nElectrons_per_cluster[m]);
+	    }
 	    ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms*1000);	      
 	    ((hstPerCh*)HstPerCh[channel])->hMaxV->Fill(((wave)Waves_signal_1[channel]).max);
 	    ((hstPerCh*)HstPerCh[channel])->hMaxVN->Fill(((wave)Waves_signal_1[channel]).nMax());
@@ -421,9 +422,9 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	      ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
 	      ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
 	    }
-	
+	    
 	    ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
-		((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
+	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
 	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]); 
 	    ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]+skipFstBin]);
 	    
@@ -482,7 +483,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	//if (savesignal_1 && !isTrg && point.first == channel ) { //new graphs with arrows on the found peaks
 	Waves[channel].fillWave(point.second,dim);
 	signal->cd();
-
+	
 	if(uniqueCanvas){
 	  if (firstEntering_filter){
 	    tmpCvsignal_1.push_back( new TCanvas(Form("CvSignal_1_ev%d",jentry),Form("tmpSignal_1_ev%d",jentry)) );
@@ -582,26 +583,26 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tm->SetMarkerColor(2);
 	  tm->Draw("same");
 	}
-
+	
 	int electron_index = 0;
 	for (int ipk=0; ipk < NPeak_clust; ipk++){
-		average_pkPos_clust[ipk] = 0;
-		average_pkHgt_clust[ipk] = 0;
-		for(int l=0; l < nElectrons_per_cluster[ipk];l++){
-			
-			 average_pkPos_clust[ipk] = average_pkPos_clust[ipk] + pkPos[electron_index];
-			 electron_index = electron_index + 1 ;
-		}
-		average_pkPos_clust[ipk] = (int) (average_pkPos_clust[ipk]/nElectrons_per_cluster[ipk]);
-		average_pkHgt_clust[ipk] = (pkHgt_clust[ipk]/(float)nElectrons_per_cluster[ipk]);
-		cout << "Average Position cluster "<< average_pkPos_clust[ipk] << " Position cluster "<< pkPos_clust[ipk] <<"\n";
-	  	cout << "Average height cluster "<< average_pkHgt_clust[ipk] << " Height cluster "<< pkHgt_clust[ipk] <<"\n";
+	  average_pkPos_clust[ipk] = 0;
+	  average_pkHgt_clust[ipk] = 0;
+	  for(int l=0; l < nElectrons_per_cluster[ipk];l++){
+	    
+	    average_pkPos_clust[ipk] = average_pkPos_clust[ipk] + pkPos[electron_index];
+	    electron_index = electron_index + 1 ;
+	  }
+	  average_pkPos_clust[ipk] = (int) (average_pkPos_clust[ipk]/nElectrons_per_cluster[ipk]);
+	  average_pkHgt_clust[ipk] = (pkHgt_clust[ipk]/(float)nElectrons_per_cluster[ipk]);
+	  cout << "Average Position cluster "<< average_pkPos_clust[ipk] << " Position cluster "<< pkPos_clust[ipk] <<"\n";
+	  cout << "Average height cluster "<< average_pkHgt_clust[ipk] << " Height cluster "<< pkHgt_clust[ipk] <<"\n";
 	  
 	  TMarker *tm_clust = new  TMarker(X[average_pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, average_pkHgt_clust[ipk], 23);
 	  tm_clust->SetMarkerSize(1.5);
 	  tm_clust->SetMarkerColor(kBlue);
 	  tm_clust->Draw("same");
-		}
+	}
         
 	if(counting_filter==(nMaxCh-nTriggerChannels+1) && uniqueCanvas){					
 	  tmpCvsignal_1.back()->Write();
