@@ -56,9 +56,9 @@ Int_t ClusterizationFindPeaks(Int_t cut,Int_t *nElectrons_per_cluster,Int_t jent
       
     }
   
-  for(int m = 0; m < NPeak_clust; m++){
-	cout << "i-th event: " << jentry << " m Cluster index: "<< m << " Cluster Peak in time [ns]: "<<(pkPos_clust[m]+skipFstBin)*0.833 <<" channel: "<< channel <<" Cluster Peak in Bin: " <<(pkPos_clust[m]+skipFstBin) <<" Amplitude Cluster Peaks: "<< pkHgt_clust[m] <<" Peaks: "<< NPeak_clust << " Number of Electrons per Cluster "<< nElectrons_per_cluster[m] <<"\n";
-  }
+  //for(int m = 0; m < NPeak_clust; m++){
+//	cout << "i-th event: " << jentry << " m Cluster index: "<< m << " Cluster Peak in time [ns]: "<<(pkPos_clust[m]+skipFstBin)*0.833 <<" channel: "<< channel <<" Cluster Peak in Bin: " <<(pkPos_clust[m]+skipFstBin) <<" Amplitude Cluster Peaks: "<< pkHgt_clust[m] <<" Peaks: "<< NPeak_clust << " Number of Electrons per Cluster "<< nElectrons_per_cluster[m] <<"\n";
+  //}
   
   return NPeak_clust;
   

@@ -335,7 +335,12 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d",Ch),1000,-0.8,0.); 
       hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-0.5,0.5);//600,20.,80.
       hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
-      hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-10.,10.);
+      if(Ch<=9){
+      hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),400,0.,20.);
+      }
+      else {
+        hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),250,0.,25.);
+      }
       hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
       hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d",Ch),200,-10.,10.);
       hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d",Ch),200,-10.,10.);

@@ -326,6 +326,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  Int_t NPeak_clust;
       Int_t pkPos_clust[250];
 	  Int_t average_pkPos_clust[250];
+	  Float_t average_pkHgt_clust[250];
       Float_t pkHgt_clust[250];
       
       //maps for full waves
@@ -377,7 +378,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	if ((NPeak>10 && channel<=9 && NPeak<100)|| (NPeak>20 && channel>=10 && channel<=12)) {
 	  
 	  if (((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
-	    for(int m=0;m<NPeak_clust;m++){
+	    for(int m=0;m < NPeak_clust;m++){
 		((hstPerCh*)HstPerCh[channel])->hNElectrons_per_cluster->Fill((float)nElectrons_per_cluster[m]);
 		}
 	    ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms*1000);	      
@@ -474,13 +475,14 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       //cout << "Event: " << jentry << " Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
       cout << "\n"; 
       
-      bool savesignal_1=true;
-      bool uniqueCanvas=false;
+      bool savesignal_1 = true;
+      bool uniqueCanvas = false;
       Waves.clear();
       if (savesignal_1 && !isTrg && channel <=nMaxCh) { 
 	//if (savesignal_1 && !isTrg && point.first == channel ) { //new graphs with arrows on the found peaks
 	Waves[channel].fillWave(point.second,dim);
 	signal->cd();
+
 	if(uniqueCanvas){
 	  if (firstEntering_filter){
 	    tmpCvsignal_1.push_back( new TCanvas(Form("CvSignal_1_ev%d",jentry),Form("tmpSignal_1_ev%d",jentry)) );
@@ -527,7 +529,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  leg->Draw("same");
 	  counting_filter++;
 	}
-	else if(!uniqueCanvas && jentry<=200 && NPeak>20 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1){
+	else if(!uniqueCanvas && jentry<=100 && NPeak>20 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1){
 	  
 	  for(int i=0; i<Waves[channel].nPt();i++){
 	    Waves_signal_1[channel].deriv[i]=(Waves_signal_1[channel].deriv[i])*10.;
@@ -578,23 +580,27 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  TMarker *tm = new  TMarker(X[pkPos[ipk]+skipFstBin]+0.5*0.833333, pkHgt[ipk], 23);
 	  tm->SetMarkerSize(1.5);
 	  tm->SetMarkerColor(2);
-	  tm->Draw();
+	  tm->Draw("same");
 	}
 
 	int electron_index = 0;
 	for (int ipk=0; ipk < NPeak_clust; ipk++){
 		average_pkPos_clust[ipk] = 0;
+		average_pkHgt_clust[ipk] = 0;
 		for(int l=0; l < nElectrons_per_cluster[ipk];l++){
 			
 			 average_pkPos_clust[ipk] = average_pkPos_clust[ipk] + pkPos[electron_index];
 			 electron_index = electron_index + 1 ;
 		}
 		average_pkPos_clust[ipk] = (int) (average_pkPos_clust[ipk]/nElectrons_per_cluster[ipk]);
+		average_pkHgt_clust[ipk] = (pkHgt_clust[ipk]/(float)nElectrons_per_cluster[ipk]);
 		cout << "Average Position cluster "<< average_pkPos_clust[ipk] << " Position cluster "<< pkPos_clust[ipk] <<"\n";
-	  TMarker *tm_clust = new  TMarker(X[average_pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, pkHgt_clust[ipk], 23);
+	  	cout << "Average height cluster "<< average_pkHgt_clust[ipk] << " Height cluster "<< pkHgt_clust[ipk] <<"\n";
+	  
+	  TMarker *tm_clust = new  TMarker(X[average_pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, average_pkHgt_clust[ipk], 23);
 	  tm_clust->SetMarkerSize(1.5);
 	  tm_clust->SetMarkerColor(kBlue);
-	  tm_clust->Draw();
+	  tm_clust->Draw("same");
 		}
         
 	if(counting_filter==(nMaxCh-nTriggerChannels+1) && uniqueCanvas){					
@@ -690,6 +696,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
   theFile->cd();
   theFile->Write();
   theFile->Close();
-  
+  cout << "\n WELL DONE YOU HAVE FINISHED! \n"; 
 }
 
