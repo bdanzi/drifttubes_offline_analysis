@@ -208,6 +208,43 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     int counting_filter=0;
     int nTriggerChannels=0;
     int counter=0;
+    int counter_1cm=0;
+    int counter_2cm=0;
+    
+    for (auto point : wd->getX742Data()) {
+      
+      for (int channel=0; channel<=nMaxCh; channel++){
+	
+	for(auto trgCh : trigCh) { if (channel==trgCh && firstEntering) {nTriggerChannels++;}}
+	
+      } //get the number of TriggerChannels
+      
+      int channel = point.first;
+      //for (int channel=0; channel<=nMaxCh; channel++){
+      
+      bool isTrg=false;
+      for(auto trgCh : trigCh) { if (channel==trgCh) { isTrg=true;}}
+      //if (point.first == channel && !isTrg) {
+      if (!isTrg && channel<=nMaxCh) { 
+	
+	Waves[channel].fillWave(point.second,dim);
+	for(int i=0; i<Waves[channel].nPt();i++){
+	  Waves[channel].Y[i]=Waves[channel].Y[i]-Waves[channel].bsln;
+	}
+	Waves_signal_1[channel].fillWave((Waves[channel].Y),Waves[channel].nPt());
+	if (!isTrg && channel<=nMaxCh && Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms) && firstEntering && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
+	  if(channel<=9){
+	    counter_1cm=counter_1cm+1;
+	    
+	  }
+	  if(channel>=10){
+	    counter_2cm=counter_2cm+1;
+	  }
+	  
+	} //get the number of Signal 1cm and 2 cm channels
+	
+      }
+    }
     
     for (auto point : wd->getX742Data()) {
       counter=counter+1;
@@ -216,7 +253,9 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       
       for (int channel=0; channel<=nMaxCh; channel++){
 	
-	for(auto trgCh : trigCh) { if (channel==trgCh && firstEntering) {nTriggerChannels++;}}} //get the number of TriggerChannels
+	for(auto trgCh : trigCh) { if (channel==trgCh && firstEntering) {nTriggerChannels++;}}
+	
+      } //get the number of TriggerChannels
       
       int channel = point.first;
       //for (int channel=0; channel<=nMaxCh; channel++){
@@ -245,7 +284,11 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  Waves[channel].Y[i]=Waves[channel].Y[i]-Waves[channel].bsln;
 	}
 	Waves_signal_1[channel].fillWave((Waves[channel].Y),Waves[channel].nPt());
+	
 	//Waves_signal_1[channel].fillWave(FltWaves[channel].Y,FltWaves[channel].nPt());
+	cout << "Event: " << jentry << " Number of 1 cm channels hit: " << counter_1cm <<"\n";
+	cout << "Event: " << jentry << " Number of 2 cm channels hit: " << counter_2cm <<"\n";
+	
 	
 	bool saveEvents=false;
 	if (saveEvents) {
@@ -319,12 +362,12 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       Float_t pkHgt[250];
       Int_t nElectrons_per_cluster[250];
       Int_t NPeak_1;
-      Int_t cut_cluster = 2;
+      Int_t cut_cluster = 3;
       
       Int_t pkPos_1[250];
       Float_t pkHgt_1[250];
       //Clusterization variables//
-      Int_t NPeak_clust;
+      Int_t NPeak_clust=0;
       Int_t pkPos_clust[250];
       Int_t average_pkPos_clust[250];
       Float_t average_pkHgt_clust[250];
@@ -359,7 +402,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
   	
       }	
       
-      if(!isTrg && Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){ //nPtInR == Y.size - first,lastBin; search peak when max amplitude > 5 mV
+      if(!isTrg && Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms) && channel<=nMaxCh && ((channel<=9 && counter_1cm>=4) || (channel>=10 && counter_2cm>=3))&&((wave)Waves_signal_1[channel]).nnIntegInR()>0.1){ //nPtInR == Y.size - first,lastBin; search peak when max amplitude > 5 mV
 	
         cout <<"Is signal \n"<<endl;
         N_signalevents[channel]= 1.0;
@@ -376,74 +419,74 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	
 	
 	
-	if ((NPeak>10 && channel<=9 && NPeak<100)|| (NPeak>20 && channel>=10 && channel<=12)) {
+	if ((NPeak>1 && channel<=9 && NPeak<100)|| (NPeak>9 && NPeak<150 && channel>=10 && channel<=12)) {
 	  
-	  if (((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
-	    for(int m=0;m < NPeak_clust;m++){
-	      ((hstPerCh*)HstPerCh[channel])->hNElectrons_per_cluster->Fill((float)nElectrons_per_cluster[m]);
-	    }
-	    ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms*1000);	      
-	    ((hstPerCh*)HstPerCh[channel])->hMaxV->Fill(((wave)Waves_signal_1[channel]).max);
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVN->Fill(((wave)Waves_signal_1[channel]).nMax());
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVInR->Fill(((wave)Waves_signal_1[channel]).maxInR);
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVNInR->Fill(((wave)Waves_signal_1[channel]).nMaxInR());
-	    
-	    ((hstPerCh*)HstPerCh[channel])->hMinV->Fill(((wave)Waves_signal_1[channel]).min);
-	    ((hstPerCh*)HstPerCh[channel])->hMinVN->Fill(((wave)Waves_signal_1[channel]).nMin());
-	    ((hstPerCh*)HstPerCh[channel])->hMinVInR->Fill(((wave)Waves_signal_1[channel]).minInR);
-	    ((hstPerCh*)HstPerCh[channel])->hMinVNInR->Fill(((wave)Waves_signal_1[channel]).nMinInR());
-	    
-	    ((hstPerCh*)HstPerCh[channel])->hIntegNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nIntegInR());
-	    
-	    ((hstPerCh*)HstPerCh[channel])->hBsl->Fill(((wave)Waves[channel]).bsln);
-	    //((hstPerCh*)HstPerCh[channel])->hMaxVNSmooth->Fill(((wave)tmpWSG_signal[channel]).nMax());
-	    ((hstPerCh*)HstPerCh[channel])->hInteg->Fill(((wave)Waves_signal_1[channel]).integ);
-	    ((hstPerCh*)HstPerCh[channel])->hIntegN->Fill(((wave)Waves_signal_1[channel]).nnInteg());
-	    ((hstPerCh*)HstPerCh[channel])->hIntegNInR->Fill(((wave)Waves_signal_1[channel]).nnIntegInR());
-	    ((hstPerCh*)HstPerCh[channel])->hIntegInR->Fill(((wave)Waves_signal_1[channel]).integInR);
-	    ((hstPerCh*)HstPerCh[channel])->hIntegNInRC1->Fill(((wave)Waves_signal_1[channel]).nnIntegInR()/((float)NPeak));
-	    
-	    /*istogrammi sul minimo delle wave non filtrate*/
-	    ((hstPerCh*)HstPerCh[channel])->hMinVoriginalW->Fill(((wave)Waves_signal_1[channel]).min);
-	    ((hstPerCh*)HstPerCh[channel])->hMinVNoriginalW->Fill(((wave)Waves_signal_1[channel]).nMin());
-	    ((hstPerCh*)HstPerCh[channel])->hMinVInRoriginalW->Fill(((wave)Waves_signal_1[channel]).minInR);
-	    ((hstPerCh*)HstPerCh[channel])->hMinVNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nMinInR());
-	    
-	    /*istogrammi sul massimo delle wave non filtrate*/
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVoriginalW->Fill(((wave)Waves_signal_1[channel]).max);
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVNoriginalW->Fill(((wave)Waves_signal_1[channel]).nMax());
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVInRoriginalW->Fill(((wave)Waves_signal_1[channel]).maxInR);
-	    ((hstPerCh*)HstPerCh[channel])->hMaxVNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nMaxInR());
-	    
-	    //istogrammi rms wave non filtrate	      
-	    ((hstPerCh*)HstPerCh[channel])->hRmsOriginalW->Fill(((wave)Waves_signal_1[channel]).rms);
-	    
-	    for (int ipk=0; ipk <NPeak; ++ipk){
-	      ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
-	      ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
-	    }
-	    
-	    ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
-	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
-	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]); 
-	    ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]+skipFstBin]);
-	    
-	    for (int ipk=0; ipk < NPeak; ++ipk){
-	      ((hstPerCh*)HstPerCh[channel])->hTPeaks->Fill(X[pkPos[ipk]+skipFstBin]);
-	      if(ipk<(NPeak-1)){
-		((hstPerCh*)HstPerCh[channel])->hTimeDifference->Fill((float)X[pkPos[ipk+1]+skipFstBin] - (float)X[pkPos[ipk]+skipFstBin]);
-		//cout << (float)X[pkPos[ipk+1]+skipFstBin] - (float)X[pkPos[ipk]+skipFstBin] <<"\n"<<endl;
-	      }
-	      
-	    }
-	    
-	    float minDist=1e+20;
-	    float tmpDist;
-	    int clstFreq=0;
-	    int numOfPeaks=0;
-	    
-	    ((hstPerCh*)HstPerCh[channel])->hIntegNInRC2->Fill( ( ((wave)Waves_signal_1[channel]).nnIntegInR()/((float)NPeak) )/scaleInt );   
+	  for(int m=0;m < NPeak_clust;m++){
+	    ((hstPerCh*)HstPerCh[channel])->hNElectrons_per_cluster->Fill((float)nElectrons_per_cluster[m]);
 	  }
+	  for(int k=0;k<NPeak;k++){
+	    if(k<NPeak-1){
+	      ((hstPerCh*)HstPerCh[channel])->hTimeDifference->Fill((float)X[pkPos[k+1]+skipFstBin] - (float)X[pkPos[k]+skipFstBin]);
+	    }
+	  }
+	  ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves_signal_1[channel]).rms*1000);	      
+	  ((hstPerCh*)HstPerCh[channel])->hMaxV->Fill(((wave)Waves_signal_1[channel]).max);
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVN->Fill(((wave)Waves_signal_1[channel]).nMax());
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVInR->Fill(((wave)Waves_signal_1[channel]).maxInR);
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVNInR->Fill(((wave)Waves_signal_1[channel]).nMaxInR());
+	  
+	  ((hstPerCh*)HstPerCh[channel])->hMinV->Fill(((wave)Waves_signal_1[channel]).min);
+	  ((hstPerCh*)HstPerCh[channel])->hMinVN->Fill(((wave)Waves_signal_1[channel]).nMin());
+	  ((hstPerCh*)HstPerCh[channel])->hMinVInR->Fill(((wave)Waves_signal_1[channel]).minInR);
+	  ((hstPerCh*)HstPerCh[channel])->hMinVNInR->Fill(((wave)Waves_signal_1[channel]).nMinInR());
+	  
+	  ((hstPerCh*)HstPerCh[channel])->hIntegNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nIntegInR());
+	  
+	  ((hstPerCh*)HstPerCh[channel])->hBsl->Fill(((wave)Waves[channel]).bsln);
+	  //((hstPerCh*)HstPerCh[channel])->hMaxVNSmooth->Fill(((wave)tmpWSG_signal[channel]).nMax());
+	  ((hstPerCh*)HstPerCh[channel])->hInteg->Fill(((wave)Waves_signal_1[channel]).integ);
+	  ((hstPerCh*)HstPerCh[channel])->hIntegN->Fill(((wave)Waves_signal_1[channel]).nnInteg());
+	  ((hstPerCh*)HstPerCh[channel])->hIntegNInR->Fill(((wave)Waves_signal_1[channel]).nnIntegInR());
+	  ((hstPerCh*)HstPerCh[channel])->hIntegInR->Fill(((wave)Waves_signal_1[channel]).integInR);
+	  ((hstPerCh*)HstPerCh[channel])->hIntegNInRC1->Fill(((wave)Waves_signal_1[channel]).nnIntegInR()/((float)NPeak));
+	  
+	  /*istogrammi sul minimo delle wave non filtrate*/
+	  ((hstPerCh*)HstPerCh[channel])->hMinVoriginalW->Fill(((wave)Waves_signal_1[channel]).min);
+	  ((hstPerCh*)HstPerCh[channel])->hMinVNoriginalW->Fill(((wave)Waves_signal_1[channel]).nMin());
+	  ((hstPerCh*)HstPerCh[channel])->hMinVInRoriginalW->Fill(((wave)Waves_signal_1[channel]).minInR);
+	  ((hstPerCh*)HstPerCh[channel])->hMinVNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nMinInR());
+	  
+	  /*istogrammi sul massimo delle wave non filtrate*/
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVoriginalW->Fill(((wave)Waves_signal_1[channel]).max);
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVNoriginalW->Fill(((wave)Waves_signal_1[channel]).nMax());
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVInRoriginalW->Fill(((wave)Waves_signal_1[channel]).maxInR);
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVNInRoriginalW->Fill(((wave)Waves_signal_1[channel]).nMaxInR());
+	  
+	  //istogrammi rms wave non filtrate	      
+	  ((hstPerCh*)HstPerCh[channel])->hRmsOriginalW->Fill(((wave)Waves_signal_1[channel]).rms);
+	  
+	  for (int ipk=0; ipk <NPeak; ++ipk){
+	    ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
+	    ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
+	  }
+	  
+	  ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
+	  ((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
+	  ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]+skipFstBin]); 
+	  ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]+skipFstBin]);
+	  
+	  for (int ipk=0; ipk < NPeak; ++ipk){
+	    ((hstPerCh*)HstPerCh[channel])->hTPeaks->Fill(X[pkPos[ipk]+skipFstBin]);
+	    
+	  }
+	  
+	  float minDist=1e+20;
+	  float tmpDist;
+	  int clstFreq=0;
+	  int numOfPeaks=0;
+	  
+	  ((hstPerCh*)HstPerCh[channel])->hIntegNInRC2->Fill( ( ((wave)Waves_signal_1[channel]).nnIntegInR()/((float)NPeak) )/scaleInt );   
+	  
 	}
 	if ((NPeak<10 || ((X[pkPos[0]+skipFstBin])< 20. || (X[pkPos[NPeak-1]+skipFstBin])> 300. || (X[pkPos[0]+skipFstBin])>350.)) && channel<=9) {
 	  
@@ -463,7 +506,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       
       
       
-      else if(!isTrg && Waves_signal_1[channel].max<=10*(Waves_signal_1[channel].rms) && channel<=nMaxCh){
+      if(!isTrg && Waves_signal_1[channel].max<=10*(Waves_signal_1[channel].rms) && channel<=nMaxCh && ((channel<=9 && counter_1cm<4) || (channel>=10 && counter_2cm<2))){
 	cout <<"Is NOT signal \n"<<endl;
 	N_signalevents[channel]= 0.0; 
 	//cout << channel << endl; 
@@ -471,7 +514,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	((hstPerCh*)HstPerCh[channel])->hNeventSignals->Fill(0.0);//(Double_t) N_signalevents[channel]);;
       }
       
-      cout << "\nAfter the threshold voltage is set, the channel hits are: \n"; 
+      // cout << "\nAfter the threshold voltage is set, the channel hits are: \n"; 
       //for (int i = 0; i < N_signalevents.size(); i++) 
       //cout << "Event: " << jentry << " Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
       cout << "\n"; 
@@ -495,6 +538,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].Y[0]) );
 	  tmpsignal_1.back()->GetXaxis()->SetTitle("time [ns]");
 	  tmpsignal_1.back()->SetTitle(Form("tmpSignal_afterFlt_Ch%d_ev%d",channel,jentry));
+	  tmpsignal_1.back()->SetTitle("");
 	  tmpsignal_1.back()->GetYaxis()->SetTitleOffset(1.4);
 	  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt [V]");
 	  //tmpsignal_1.back()->GetXaxis()->SetRangeUser(0.,400.);
@@ -530,7 +574,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  leg->Draw("same");
 	  counting_filter++;
 	}
-	else if(!uniqueCanvas && jentry<=100 && NPeak>20 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1){
+	if(!uniqueCanvas && jentry<=200 && NPeak>0 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1 && ((channel<=9 && counter_1cm>=4) || (channel>=10 && counter_2cm>=3))){
 	  
 	  for(int i=0; i<Waves[channel].nPt();i++){
 	    Waves_signal_1[channel].deriv[i]=(Waves_signal_1[channel].deriv[i])*10.;
@@ -541,11 +585,11 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  tmpCvsignal_1.back()->cd();
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves_signal_1[channel].Y[0]) );
 	  tmpsignal_1.back()->GetXaxis()->SetTitle("time [ns]");
-	  tmpsignal_1.back()->SetTitle(Form("tmpSignal_afterFlt_Ch%d_ev%d",channel,jentry));
+	  tmpsignal_1.back()->SetTitle(Form("tmpSignal_afterFlt_Ch%d_ev%d_%s",channel,jentry,out.Data()));
 	  tmpsignal_1.back()->GetYaxis()->SetTitleOffset(1.4);
 	  tmpsignal_1.back()->GetYaxis()->SetTitle("Volt [V]");
 	  //tmpsignal_1.back()->GetXaxis()->SetRangeUser(0.,400);
-	  tmpsignal_1.back()->GetYaxis()->SetRangeUser(-0.1,1);
+	  tmpsignal_1.back()->GetYaxis()->SetRangeUser(-0.1,0.250);
 	  tmpsignal_1.back()->SetMarkerSize(1);
 	  tmpsignal_1.back()->SetMarkerStyle(2);
 	  tmpsignal_1.back()->Draw("APL");
@@ -575,8 +619,8 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  //line_2->Draw("same");
 	  leg->AddEntry(line_2,"Rms (Bin method) x20");
 	  //leg->Draw("same");
-        }
-	
+        
+	}
 	for (int ipk=0; ipk<NPeak; ipk++){
 	  TMarker *tm = new  TMarker(X[pkPos[ipk]+skipFstBin]+0.5*0.833333, pkHgt[ipk], 23);
 	  tm->SetMarkerSize(1.5);
@@ -591,23 +635,36 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  for(int l=0; l < nElectrons_per_cluster[ipk];l++){
 	    
 	    average_pkPos_clust[ipk] = average_pkPos_clust[ipk] + pkPos[electron_index];
+	    //Difference in time of consecutive electrons belonging to the same cluster
+	    //if(l<nElectrons_per_cluster[ipk]-1){
+	    //((hstPerCh*)HstPerCh[channel])->hTimeDifference->Fill((float)X[pkPos[electron_index+1]+skipFstBin] - (float)X[pkPos[electron_index]+skipFstBin]);
+	    //}
+	    
+	    //cout << (float)X[pkPos[ipk+1]+skipFstBin] - (float)X[pkPos[ipk]+skipFstBin] <<"\n"<<endl;
 	    electron_index = electron_index + 1 ;
 	  }
 	  average_pkPos_clust[ipk] = (int) (average_pkPos_clust[ipk]/nElectrons_per_cluster[ipk]);
-	  average_pkHgt_clust[ipk] = (pkHgt_clust[ipk]/(float)nElectrons_per_cluster[ipk]);
+	  average_pkHgt_clust[ipk] = (float) ((float) pkHgt_clust[ipk]/(float)nElectrons_per_cluster[ipk]);
+	  
+	  
 	  cout << "Average Position cluster "<< average_pkPos_clust[ipk] << " Position cluster "<< pkPos_clust[ipk] <<"\n";
 	  cout << "Average height cluster "<< average_pkHgt_clust[ipk] << " Height cluster "<< pkHgt_clust[ipk] <<"\n";
 	  
-	  TMarker *tm_clust = new  TMarker(X[average_pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, average_pkHgt_clust[ipk], 23);
+	  TMarker *tm_clust = new  TMarker(X[pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, 0., 23);
 	  tm_clust->SetMarkerSize(1.5);
 	  tm_clust->SetMarkerColor(kBlue);
 	  tm_clust->Draw("same");
 	}
-        
+	for(int ipk=0; ipk<NPeak_clust;ipk++){
+	  if(ipk<NPeak_clust-1){
+	    ((hstPerCh*)HstPerCh[channel])->hTimeDifference_clust->Fill((float)X[pkPos_clust[ipk+1]+skipFstBin] - (float)X[pkPos_clust[ipk]+skipFstBin]);
+	  }
+	}
+	
 	if(counting_filter==(nMaxCh-nTriggerChannels+1) && uniqueCanvas){					
 	  tmpCvsignal_1.back()->Write();
 	}
-        else if(!uniqueCanvas && jentry<=200 && NPeak>20 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1){
+        else if(!uniqueCanvas && jentry<=200 && NPeak>0 && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1 && ((channel<=9 && counter_1cm>=4) || (channel>=10 && counter_2cm>=3))){
 	  tmpCvsignal_1.back()->Write();          
         }
 	theFile->cd("/");

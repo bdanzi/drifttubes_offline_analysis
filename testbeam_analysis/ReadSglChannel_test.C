@@ -22,7 +22,8 @@
 using namespace std;
 
 void ReadSglChannel_test(){
-  gStyle->SetOptFit(1011);
+  
+  gStyle->SetOptFit(1111);
   
   int channel=0;
   int ev=0;
@@ -31,10 +32,11 @@ void ReadSglChannel_test(){
   TString fname("");
   bool isInteractive = false;
   bool isdoubleCanvas = false;
-  Float_t cos_alpha = TMath::Cos(60*TMath::DegToRad());
+  Float_t alpha= 0.;
+  Float_t cos_alpha = 0.;
   Float_t expected_electrons =0.;
   Float_t expected_cluster =0.;
-  Float_t cluster_per_cm_mip = 12.;
+  Float_t cluster_per_cm_mip = 18.;
   Float_t drift_size =0.;
   Float_t relativistic_rise = 1.3;
   Float_t cluster_population = 1.6;
@@ -66,10 +68,50 @@ void ReadSglChannel_test(){
     while ((fscanf(fp, "%s", fname.Data() ) ) != -1){
       
       printf("Opening the file %s\n",fname.Data());
+      string name_file = fname.Data();
       fscanf(fp,"%d",&channel); //number of channels for which I show plots (4-14)
       fscanf(fp,"%d",&ev); //number of events for which I show plots (0-...)
       
+      if((name_file =="histosTB_run_127.root") || (name_file == "histosTB_run_117.root")){
+	cluster_per_cm_mip = 18.;
+	printf("CHANGED CLUSTER PER CM PHYSICAL QUANTITY to %f!\n",cluster_per_cm_mip);
+	  }
+      else{
+	cluster_per_cm_mip = 12.;
+	printf("CHANGED CLUSTER PER CM PHYSICAL QUANTITY to %f!\n",cluster_per_cm_mip);
+      }
       
+      
+      if((name_file =="histosTB_run_99.root") || (name_file == "histosTB_run_117.root")){
+	alpha = 0;
+	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
+		
+      }
+      else if((name_file =="histosTB_run_98.root")){
+	alpha = 15;
+	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
+	
+	
+      }
+      else if((name_file =="histosTB_run_96.root")){
+	alpha = 30;
+	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
+	
+		
+      }
+      else if((name_file =="histosTB_run_94.root")){
+	alpha = 45;
+	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
+	
+	
+      }
+      else if((name_file =="histosTB_run_91.root") || (name_file =="histosTB_run_127.root")){
+	alpha = 60;
+	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
+	
+      }
+      
+      cos_alpha = TMath::Cos(alpha*TMath::DegToRad());
       
       if (stat(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/",fname.Data()), &st) == -1) {
 	mkdir(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/",fname.Data()), 0700);
@@ -80,6 +122,7 @@ void ReadSglChannel_test(){
       
       TFile *file = new TFile(fname.Data(),"read");
       TCanvas *max_1cm=new TCanvas("max_1","max",3500,1500);
+      TCanvas *waveform=new TCanvas("waveform","waveform",3500,1500);
       TCanvas *max_2cm=new TCanvas("max_2","max",3500,1500);
       TCanvas *min=new TCanvas("min","min",3500,1500);
       TCanvas *bsl_1cm=new TCanvas("bsl_1","bsl",3500,1500);
@@ -104,9 +147,17 @@ void ReadSglChannel_test(){
       TCanvas *rms_2cm= new TCanvas("rms_2","rms",3500,1500);
       TCanvas *cluster_population_canvas_1cm= new TCanvas("cluster_population_1cm","cluster",3500,1500);
       TCanvas *cluster_population_canvas_2cm= new TCanvas("cluster_population_2cm","cluster",3500,1500);
-      
+      TCanvas *timediff_1cm= new TCanvas("timediff_1","timediff",3500,1500);
+      TCanvas *timediff_2cm= new TCanvas("timediff_2","timediff",3500,1500);
+      TCanvas *timediff_clust_1cm= new TCanvas("timediff_clust_1","timediff_clust",3500,1500);
+      TCanvas *timediff_clust_2cm= new TCanvas("timediff_clust_2","timediff_clust",3500,1500);
+	
       cluster_population_canvas_1cm->Divide(2,3);
       cluster_population_canvas_2cm->Divide(2,2);
+      timediff_clust_1cm->Divide(2,3);
+      timediff_clust_2cm->Divide(2,2);
+      timediff_1cm->Divide(2,3);
+      timediff_2cm->Divide(2,2);
       npeaks_clustser_1cm->Divide(2,3);
       npeaks_clustser_2cm->Divide(2,2);
       //integ->Divide(4,2);
@@ -147,19 +198,23 @@ void ReadSglChannel_test(){
 	  for(int j = 4; j<=channel; ++j){
 	    TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_Ch%i_ev%i",j,i));
 	    if (h1==0x0) { continue; }
+	    h1->SetTitle(Form("Channel %d event %d Alpha %.1f Run %s",j,i,alpha, fname.Data()));
 	    //h1->GetYaxis()->SetRangeUser(-0.1,0.7);
 	    h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.pdf",fname.Data(),i,j));
+	    
 	  }
 	}
       }
       
-      for(int i = 4; i<=9 ;++i){ //looping over all channels
+      for(int i = 4; i<=9; ++i){ //looping over all channels
 	//for(int i =channel; i<=channel; ++i){ //looping over one channel
 	drift_size = 0.8;
-	//δ cluster/cm (M.I.P.) *drift tube size [cm] *1.3 (relativisticrise)*1.6 electrons/cluster*1/cos(α)
-	expected_electrons = cluster_per_cm_mip * drift_size*relativistic_rise * cluster_population * 1/cos_alpha;
-	expected_cluster = cluster_per_cm_mip * drift_size*relativistic_rise * 1/cos_alpha;
 	
+	//δ cluster/cm (M.I.P.) * drift tube size [cm] * 1.3 (relativisticrise) * 1.6 electrons/cluster * 1/cos(α)
+	expected_electrons = cluster_per_cm_mip * drift_size * relativistic_rise * cluster_population * 1/cos_alpha;
+	expected_cluster = cluster_per_cm_mip * drift_size * relativistic_rise * 1/cos_alpha;
+	
+	//2cm/1cm 1,8/0,8 = 2,25
 	
 	//TH1F *h2=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVN_ch%i",i,i));
 	//if (h2==0x0) { continue; }
@@ -218,7 +273,7 @@ void ReadSglChannel_test(){
 	if (h4==0x0) { continue; }
 	npeaks_1cm->cd(i-3);
 	h4->GetXaxis()->SetRangeUser(0.,90.);
-	h4->Fit("gaus");
+	h4->Fit("landau");
 	gPad->SetLogy(1);
 	h4->Draw("same");
 	TPaveText *pt_1cm = new TPaveText(0.72,0.2,0.8,0.35,"NDC");
@@ -229,16 +284,31 @@ void ReadSglChannel_test(){
 	pt_1cm->SetTextAlign(12);
 	pt_1cm->AddText(Form("Expected elecrons: %.1f",expected_electrons));
 	pt_1cm->Draw("same");
+	TPaveText *pt_1cm_alpha = new TPaveText(0.72,0.13,0.8,0.17,"NDC");
+	pt_1cm_alpha->SetTextSize(0.04);
+	pt_1cm_alpha->SetTextColor(kRed);
+	pt_1cm_alpha->SetFillColor(0);
+	pt_1cm_alpha->SetTextAlign(12);
+	pt_1cm_alpha->AddText(Form("Alpha angle (deg): %.1f",alpha));
+	pt_1cm_alpha->Draw("same");
 
 	TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hNPeaks_clust_ch%i",i,i));
 	if (h20==0x0) { continue; }
 	npeaks_clustser_1cm->cd(i-3);
 	h20->GetXaxis()->SetRangeUser(0.,90.);
-	h20->Fit("gaus");
-	gPad->SetLogy(1);
+	if(expected_cluster>20){
+	  h20->Fit("gaus");
+	}
+	else{
+	  TF1 *f11=new TF1("f11","[0]*TMath::Poisson(x,[1])",0,60.);                                                          
+	  f11->SetParName(0,"Normalisation");
+	  f11->SetParName(1,"#mu");
+	  f11->SetParameters(0,3);
+	  f11->SetParameters(0,h20->GetMean());
+	  h20->Fit("f11","R");
+	}
 	h20->Draw("same");
 	TPaveText *pt_1cm_cluster = new TPaveText(0.72,0.2,0.8,0.35,"NDC");
-	gPad->SetLogy(1);
 	pt_1cm_cluster->SetTextSize(0.04);
 	pt_1cm_cluster->SetTextColor(kRed);
 	pt_1cm_cluster->SetTextAlign(12);
@@ -246,6 +316,7 @@ void ReadSglChannel_test(){
 	pt_1cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
 	gPad->SetLogy(1);
 	pt_1cm_cluster->Draw("same");
+	pt_1cm_alpha->Draw("same");
 	
 	TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hNElectrons_per_cluster_ch%i",i,i));
 	if (h31==0x0) { continue; }
@@ -254,14 +325,43 @@ void ReadSglChannel_test(){
 	//h31->Fit("expo");
 	h31->Draw("same");
 	TPaveText *cluster_population_1cm = new TPaveText(0.72,0.2,0.8,0.35,"NDC");
-	gPad->SetLogy(1);
 	cluster_population_1cm->SetTextSize(0.04);
 	cluster_population_1cm->SetTextColor(kRed);
 	cluster_population_1cm->SetTextAlign(12);
 	cluster_population_1cm->SetFillColor(0);
 	cluster_population_1cm->AddText(Form("Expected Electrons per Cluster: %.1f",cluster_population));
 	gPad->SetLogy(1);
+	pt_1cm_alpha->Draw("same");
 	cluster_population_1cm->Draw("same");
+
+	TH1F *h32=(TH1F*)file->Get(Form("H-Ch%i_signal/hTimeDifference_ch%i",i,i));
+	if (h32==0x0) { continue; }
+	timediff_1cm->cd(i-3);
+	TF1  *f4 = new TF1("f4","[0]*exp(-x/[1])",0,10);
+	//TF1  *f4 = new TF1("f4","[0]*exp(-x/[1])",0,12);
+	f4->SetParameters(0,4000.);
+	f4->SetParameters(1,3);
+	
+	h32->Fit("f4","R");
+	gPad->SetLogy(1);
+	h32->Draw("same");
+	//pt_1cm_alpha->Draw("same");
+	//h31->GetXaxis()->SetRangeUser(0.,5.);
+	//h31->Fit("expo");
+	pt_1cm_alpha->Draw("same");
+	
+	
+	TH1F *h33=(TH1F*)file->Get(Form("H-Ch%i_signal/hTimeDifference_clust_ch%i",i,i));
+	if (h33==0x0) { continue; }
+	timediff_clust_1cm->cd(i-3);
+	//pt_1cm_alpha->Draw("same");
+	TF1  *f1 = new TF1("f1","[0]*exp(-x/[1])",10,40);
+	f1->SetParameters(0,1000);
+	f1->SetParameters(1,10);
+	h33->Fit("f1","R");
+	gPad->SetLogy(1);
+	h33->Draw("same");
+	pt_1cm_alpha->Draw("same");
 	
 	TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
 	if (h5==0x0) { continue; }
@@ -385,7 +485,8 @@ void ReadSglChannel_test(){
       bool savePlots = true;
       
       if(savePlots){
-	
+	timediff_clust_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/clust_difference_1cm.pdf",fname.Data()));
+	timediff_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/electrons_difference_1cm.pdf",fname.Data()));
 	npeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/npeaks_1cm.pdf",fname.Data()));
 	tpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tpeaks_1cm.pdf",fname.Data()));
 	tfpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_1cm.pdf",fname.Data()));
@@ -399,7 +500,7 @@ void ReadSglChannel_test(){
 	//min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.pdf",fname.Data(),i));
 	npeaks_clustser_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_1cm.pdf",fname.Data()));
 	cluster_population_canvas_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/cluster_population_1cm.pdf",fname.Data()));
-	}
+      }
       
       for(int i = 10; i<=channel; ++i){ //looping over all channels
 	//for(int i =channel; i<=channel; ++i){ //looping over one channel
@@ -408,11 +509,11 @@ void ReadSglChannel_test(){
 	expected_cluster = cluster_per_cm_mip * drift_size*relativistic_rise * 1/cos_alpha;
 	
 	
-	
 	//TH1F *h2=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVN_ch%i",i,i));
 	//if (h2==0x0) { continue; }
 	//max->cd(1);
 	//h2->Draw();
+
 	
 	TH1F *h17=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInR_ch%i",i,i));
 	if (h17==0x0) { continue; }
@@ -467,7 +568,7 @@ void ReadSglChannel_test(){
 	if (h4==0x0) { continue; }
 	npeaks_2cm->cd(i-9);
 	h4->GetXaxis()->SetRangeUser(0.,200.);
-	h4->Fit("gaus");
+	h4->Fit("landau");
 	gPad->SetLogy(1);
 	h4->Draw("same");
 	TPaveText *pt_2cm = new TPaveText(0.72,0.2,0.8,0.35,"NDC");
@@ -477,6 +578,13 @@ void ReadSglChannel_test(){
 	pt_2cm->SetTextAlign(12);
 	pt_2cm->AddText(Form("Expected elecrons: %.1f",expected_electrons));
 	pt_2cm->Draw("same");
+	TPaveText *pt_2cm_alpha = new TPaveText(0.72,0.13,0.8,0.17,"NDC");
+	pt_2cm_alpha->SetTextSize(0.04);
+	pt_2cm_alpha->SetTextColor(kRed);
+	pt_2cm_alpha->SetFillColor(0);
+	pt_2cm_alpha->SetTextAlign(12);
+	pt_2cm_alpha->AddText(Form("Alpha angle (deg): %.1f",alpha));
+	pt_2cm_alpha->Draw("same");
 	
 	TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
 	if (h5==0x0) { continue; }
@@ -511,6 +619,19 @@ void ReadSglChannel_test(){
 	if (h9==0x0) { continue; }
 	tlpeaks_2cm->cd(i-9);
 	h9->Draw( "same");
+	
+	TH1F *h33=(TH1F*)file->Get(Form("H-Ch%i_signal/hTimeDifference_clust_ch%i",i,i));
+	if (h33==0x0) { continue; }
+	timediff_clust_2cm->cd(i-9);
+	TF1  *f2 = new TF1("f2","[0]*exp(-x/[1])",10,40);
+	f2->SetParameters(0,4000);
+	f2->SetParameters(1,10);
+	h33->Fit("f2","R");
+	gPad->SetLogy(1);
+	//pt_2cm_alpha->Draw("same");
+	//h33->Fit("expo");
+	h33->Draw("same");
+	pt_2cm_alpha->Draw("same");
 	//TH1F *h10=(TH1F*)file->Get(Form("H-Ch%i_signal/hInteg_ch%i",i,i));
 	//if (h10==0x0) { continue; }
 	//integ->cd(1);
@@ -525,7 +646,7 @@ void ReadSglChannel_test(){
 	if (h12==0x0) { continue; }
 	integ_2cm->cd(i-9);
 	//integ->cd(3);
-	h12->Draw("same" );
+	h12->Draw("same");
 	
 	//TH1F *h13=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInR_ch%i",i,i));
 	//if (h13==0x0) { continue; }
@@ -556,7 +677,7 @@ void ReadSglChannel_test(){
 	if (h16==0x0) { continue; }
 	rms_2cm->cd(i-9);
 	h16->Draw("same");
-			
+	
 	/*
 	  TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hMinV_ch%i",i,i));
 	  if (h20==0x0) { continue; }
@@ -595,7 +716,17 @@ void ReadSglChannel_test(){
 	if (h20==0x0) { continue; }
 	npeaks_clustser_2cm->cd(i-9);
 	h20->GetXaxis()->SetRangeUser(0.,90.);
-	h20->Fit("gaus");
+	if(expected_cluster>20){
+	  h20->Fit("gaus");
+	}
+	else{
+	  TF1 *f10=new TF1("f10","[0]*TMath::Poisson(x,[1])",0,90.);                                                          
+	  f10->SetParName(0,"Normalisation");
+	  f10->SetParName(1,"#mu");
+	  f10->SetParameters(0,1000);
+	  f10->SetParameters(1,h20->GetMean());
+	  h20->Fit("f10","R");
+	}
 	gPad->SetLogy(1);
 	h20->Draw("same");
 	TPaveText *pt_2cm_cluster = new TPaveText(0.72,0.2,0.8,0.35,"NDC");
@@ -605,7 +736,8 @@ void ReadSglChannel_test(){
 	pt_2cm_cluster->SetTextAlign(12);
 	pt_2cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
 	pt_2cm_cluster->Draw("same");
-
+	pt_2cm_alpha->Draw("same");
+	
 	TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hNElectrons_per_cluster_ch%i",i,i));
 	if (h31==0x0) { continue; }
 	cluster_population_canvas_2cm->cd(i-9);
@@ -620,8 +752,23 @@ void ReadSglChannel_test(){
 	cluster_population_2cm->SetFillColor(0);
 	cluster_population_2cm->AddText(Form("Expected Electrons per Cluster: %.1f",cluster_population));
 	gPad->SetLogy(1);
+	pt_2cm_alpha->Draw("same");
 	cluster_population_2cm->Draw("same");
 	
+	
+	TH1F *h32=(TH1F*)file->Get(Form("H-Ch%i_signal/hTimeDifference_ch%i",i,i));
+	if (h32==0x0) { continue; }
+	timediff_2cm->cd(i-9);
+	TF1  *f3 = new TF1("f3","[p0]*exp(-x/[p1])",0,10);
+	//TF1  *f3 = new TF1("f3","[0]*exp(-x/[1])",0,12);
+	f3->SetParameters(0,4000.);
+	f3->SetParameters(1,3);
+	h32->Fit("f3","R");
+	h32->Draw("same");
+	gPad->SetLogy(1);
+	pt_2cm_alpha->Draw("same");
+	//h31->GetXaxis()->SetRangeUser(0.,5.);
+	//h31->Fit("expo");
 	
 	
 	
@@ -629,7 +776,8 @@ void ReadSglChannel_test(){
       
       
       if(savePlots){
-	
+	timediff_clust_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/clust_difference_2cm.pdf",fname.Data()));
+	timediff_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/electrons_difference_2cm.pdf",fname.Data()));
 	npeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/npeaks_2cm.pdf",fname.Data()));
 	tpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tpeaks_2cm.pdf",fname.Data()));
 	tfpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_2cm.pdf",fname.Data()));

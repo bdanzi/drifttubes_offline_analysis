@@ -204,7 +204,7 @@ wave() : bsln(0.0), rms(0.0), integ(0.0), max(-9999), integInR(0.0), maxInR(-999
 	sumXY+=((float)ipt)*Y.back();
 	++nPtReg;
       }
-//			if (print) std::cout<<"ipt "<<ipt<<" pnt "<<Y.back()<<" integ "<<integ<<std::endl;
+      //			if (print) std::cout<<"ipt "<<ipt<<" pnt "<<Y.back()<<" integ "<<integ<<std::endl;
     }
     for(int i=0;i<nPt;++i){
       deriv.push_back((Y[(i+1)>(nPt-1)?(nPt-1):(i+1)]-Y[(i-1)<0?0:(i-1)])/2);
@@ -216,30 +216,30 @@ wave() : bsln(0.0), rms(0.0), integ(0.0), max(-9999), integInR(0.0), maxInR(-999
   }
   
   void addPnt(float &val, bool InRng=true) {
-		Y.push_back(val);
-		int ipt=nPt()-1;
-		integ+=val;
-		
-		if (ipt<fbin_rms) {
-		  rms+=val*val;
-		}
-		if (ipt==fbin_rms-1) {
-		  bsln=integ*invfbin;
-		  rms=sqrt(rms*invfbin-bsln*bsln);
-		}
-		if (val>max) { max=val; maxPos=ipt; }
-		if (val<min) { min=val; minPos=ipt; }
-		if (ipt>=skipFstBin && InRng) {
-		  integInR+=Y.back();
-		  if (Y.back()>maxInR) { maxInR=Y.back(); maxInRPos=ipt; }
-		  if (Y.back()<minInR) { minInR=Y.back(); minInRPos=ipt; }
-		} else {
-		  sumX+=ipt;
-		  sumX2+=ipt*ipt;
-		  sumY+=Y.back();
-		  sumXY+=((float)ipt)*Y.back();
-		  ++nPtReg;
-		}
+    Y.push_back(val);
+    int ipt=nPt()-1;
+    integ+=val;
+    
+    if (ipt<fbin_rms) {
+      rms+=val*val;
+    }
+    if (ipt==fbin_rms-1) {
+      bsln=integ*invfbin;
+      rms=sqrt(rms*invfbin-bsln*bsln);
+    }
+    if (val>max) { max=val; maxPos=ipt; }
+    if (val<min) { min=val; minPos=ipt; }
+    if (ipt>=skipFstBin && InRng) {
+      integInR+=Y.back();
+      if (Y.back()>maxInR) { maxInR=Y.back(); maxInRPos=ipt; }
+      if (Y.back()<minInR) { minInR=Y.back(); minInRPos=ipt; }
+    } else {
+      sumX+=ipt;
+      sumX2+=ipt*ipt;
+      sumY+=Y.back();
+      sumXY+=((float)ipt)*Y.back();
+      ++nPtReg;
+    }
   }
 }; //fine della struct wave
 
@@ -253,6 +253,7 @@ typedef std::map<std::pair<int,int>,wave> diffWvCont; //serve per fare la differ
 struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   //isto che verranno riempiti con wave filtrate
   TH1F *hTimeDifference;
+  TH1F *hTimeDifference_clust;
   TH1F *hSum;
   TH1F *hHPeaks;
   TH2F *hHNPeaks;
@@ -305,13 +306,15 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   TH1F *hFirstDeriv;	
   TH1F *hSecDeriv;
   TH1F *hNElectrons_per_cluster;
+
   
   hstPerCh(int Ch=0, int SF=0) {
     //gRootDir->cd();
     //TDirectory fldch(Form("H-Ch%d",Ch),Form("folder for ch%d",Ch));
     //fldch.cd();
     if (SF==0) {//senza smooth
-      hTimeDifference = new TH1F (Form("hTimeDifference_ch%d",Ch),Form("Time Difference between Two Consecutive Peaks - Ch %d",Ch),500,0.,50.); 
+      hTimeDifference = new TH1F (Form("hTimeDifference_ch%d",Ch),Form("Time Difference between Two Consecutive Electrons - Ch %d",Ch),100,0.,100.); 
+      hTimeDifference_clust = new TH1F (Form("hTimeDifference_clust_ch%d",Ch),Form("Time Difference between Two Consecutive Clusters - Ch %d",Ch),100,0.,100.); 
       hSum = new TH1F (Form("hSum_ch%d",Ch),Form("Sum amplitudes - Ch %d",Ch),1000,-1000,1000.); 
       hP0=new TH1F (Form("hP0_ch%d",Ch),Form("HP0 - Ch %d",Ch),1000,-1,1);
       hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d",Ch),1000,-1e+7,1e+7);
@@ -336,7 +339,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hInteg = new TH1F (Form("hInteg_ch%d",Ch),Form("Integral - Ch %d",Ch),200,-0.5,0.5);//600,20.,80.
       hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("Integral minius PDS - Ch %d",Ch),200,-10.,10.);
       if(Ch<=9){
-      hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),400,0.,20.);
+	hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),400,0.,20.);
       }
       else {
         hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d",Ch),250,0.,25.);
@@ -422,9 +425,12 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hP0->GetYaxis()->SetTitle("Entries");
       hRmsOriginalW->GetYaxis()->SetTitle("Entries");
       hMaxVNSmooth->GetYaxis()->SetTitle("Entries");
-      
+      hTimeDifference->GetYaxis()->SetTitle("Entries");
+      hTimeDifference_clust->GetYaxis()->SetTitle("Entries");
       
       /////////////////////////////////////////////////////////
+      hTimeDifference->GetXaxis()->SetTitle("Difference in time [ns]");
+      hTimeDifference_clust->GetXaxis()->SetTitle("Difference in time [ns]");
       hMaxV->GetXaxis()->SetTitle("Volt [V]");
       hNPeaks->GetXaxis()->SetTitle("N Peaks");
       hNPeaks->GetYaxis()->SetTitle("Entries");
