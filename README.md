@@ -6,14 +6,10 @@
       <a href="#about-the-project">Drift Tubes 2021 Test Beam offline analysis</a>
       <ul>
         <li><a href="#built-with">Setup</a></li>
-      </ul>
-    </li>
-    <li>
-     <li> <a href="#getting-started">Instructions</a></li>
-
+         <li> <a href="#getting-started">Instructions</a></li>
         <li><a href="#prerequisites">Channels correspondance</a></li>
         <li><a href="#installation">Installation</a></li>
-     
+      </ul>
     </li>
   </ol>
 </details>
