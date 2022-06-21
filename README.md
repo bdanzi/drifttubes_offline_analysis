@@ -3,12 +3,12 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">Drift Tubes 2021 Test Beam offline analysis</a>
+      <a href="#Drift-Tubes-2021-Test-Beam-offline-analysis">Drift Tubes 2021 Test Beam offline analysis</a>
       <ul>
-        <li><a href="#built-with">Setup</a></li>
-         <li> <a href="#getting-started">Instructions</a></li>
-        <li><a href="#prerequisites">Channels correspondance</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#setup">Setup</a></li>
+         <li> <a href="#instructions">Instructions</a></li>
+        <li><a href="#channels-correspondance">Channels correspondance</a></li>
+       
       </ul>
     </li>
   </ol>
