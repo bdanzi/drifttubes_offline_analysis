@@ -8,7 +8,6 @@
         <li><a href="#setup">Setup</a></li>
          <li> <a href="#instructions">Instructions</a></li>
         <li><a href="#channels-correspondance">Channels correspondance</a></li>
-       
       </ul>
     </li>
   </ol>
