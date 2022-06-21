@@ -9,11 +9,11 @@
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Instructions</a>
-      <ul>
+     <li> <a href="#getting-started">Instructions</a></li>
+
         <li><a href="#prerequisites">Channels correspondance</a></li>
         <li><a href="#installation">Installation</a></li>
-      </ul>
+     
     </li>
   </ol>
 </details>
