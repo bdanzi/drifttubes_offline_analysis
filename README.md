@@ -1,3 +1,23 @@
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">Drift Tubes 2021 Test Beam offline analysis</a>
+      <ul>
+        <li><a href="#built-with">Setup</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Instructions</a>
+      <ul>
+        <li><a href="#prerequisites">Channels correspondance</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+  </ol>
+</details>
+
 # Drift Tubes 2021 Test Beam offline analysis
 
 The `data_testbeam.xlsx` file contains the details of the different configurations associated to the ROOT files used for this data analysis.
