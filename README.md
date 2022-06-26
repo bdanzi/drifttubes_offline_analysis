@@ -1,3 +1,10 @@
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![MIT][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
@@ -106,6 +113,26 @@ per each event in the third column some physical quantities which are related to
 
 <img width="964" alt="Channel Schematics" src="https://github.com/bdanzi/drifttubes_offline_analysis/blob/master/Schermata%202022-01-30%20alle%2015.42.17.png">
 Credits for the Channel Schematics: Franco Grancagnolo (https://agenda.infn.it/event/28676/)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[contributors-url]: https://github.com/bdanzi/drifttubes_offline_analysis/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/bdanzi/ML_COURSEBARI.svg?style=for-the-badge
+[forks-url]: https://github.com/bdanzi/drifttubes_offline_analysis/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/bdanzi/ML_COURSEBARI.svg?style=for-the-badge
+[stars-url]: https://github.com/bdanzi/drifttubes_offline_analysis/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[issues-url]: https://github.com/bdanzi/drifttubes_offline_analysis/issues
+
+[license-shield]: https://img.shields.io/github/license/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[license-url]: https://github.com/bdanzi/drifttubes_offline_analysis/blob/main/LICENSE.txt
+
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/brunella-d-anzi
 
 
  
