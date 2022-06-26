@@ -21,11 +21,11 @@ The focus is on the 165 GeV/c momentum muon beam runs from 11st of November.
 
 ## Authors
 
-- [Federica Cuna](https://github.com/federica.cuna) (University and INFN Lecce)
+- [Federica Cuna](https://github.com/federicacuna) (University and INFN Lecce)
 - [Brunella D'Anzi](https://github.com/bdanzi) (University and INFN Bari)
 - [Nicola De Filippis](https://github.com/ndefilip) (Politecnico and INFN Bari)
 - [Walaa Elmentenawee](https://github.com/elmetenawee) (University and INFN Bari)
-- 
+- [Matteo Greco](https://github.com/matteogreco2) (University and INFN Lecce)
 
 
 ## Setup
