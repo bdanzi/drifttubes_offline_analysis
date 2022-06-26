@@ -5,6 +5,7 @@
     <li>
       <a href="#Drift-Tubes-2021-Test-Beam-offline-analysis">Drift Tubes 2021 Test Beam offline analysis</a>
       <ul>
+        <li><a href="#authors">Authors</a></li>
         <li><a href="#setup">Setup</a></li>
          <li> <a href="#instructions">Instructions</a></li>
         <li><a href="#channels-correspondance">Channels correspondance</a></li>
@@ -17,6 +18,15 @@
 
 The `data_testbeam.xlsx` file contains the details of the different configurations associated to the ROOT files used for this data analysis.
 The focus is on the 165 GeV/c momentum muon beam runs from 11st of November. 
+
+## Authors
+
+- [Federica Cuna](https://github.com/federica.cuna) (University and INFN Lecce)
+- [Brunella D'Anzi](https://github.com/bdanzi) (University and INFN Bari)
+- [Nicola De Filippis](https://github.com/ndefilip) (Politecnico and INFN Bari)
+- [Walaa Elmentenawee](https://github.com/elmetenawee) (University and INFN Bari)
+- 
+
 
 ## Setup
 
