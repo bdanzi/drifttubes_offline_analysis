@@ -257,6 +257,8 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   TH1F *hSum;
   TH1F *hHPeaks;
   TH2F *hHNPeaks;
+  TH2F *hNPeakFPeak;
+  TH2F *hNClusterFCluster;
   TH1F *hTPeaks;
   TH1F *hTFstPeaks;
 	TH1F *hNPeaks_1;
@@ -325,6 +327,8 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hNElectrons_per_cluster = new TH1F (Form("hNElectrons_per_cluster_ch%d",Ch),Form("N Electrons per Each Cluster found - Ch %d",Ch),20,0.,20);
       hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Peaks found - Ch %d",Ch),400,0,0.2);
       hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Peaks found - Ch %d",Ch),100,0,100,250,0,0.5);
+      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d",Ch),200,0,800,250,0,250);
+      hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d",Ch),200,0,800,100,0,100);
       hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Peaks found - Ch %d",Ch),400,0,800);
       hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Peak found - Ch %d",Ch),200,0,800);
       hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Peak found - Ch %d",Ch),200,0,1000);
@@ -386,6 +390,10 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
       hNPeaks_clust->GetXaxis()->SetTitle("Number of Clusters found");
       hHPeaks->GetYaxis()->SetTitle("Entries");
       hHPeaks->GetXaxis()->SetTitle("Height [V]");
+      hNPeakFPeak->GetYaxis()->SetTitle("Number of Electrons found");
+      hNPeakFPeak->GetXaxis()->SetTitle("Time of First Electron found [ns]");
+      hNClusterFCluster->GetYaxis()->SetTitle("Number of Clusters found");
+      hNClusterFCluster->GetXaxis()->SetTitle("Time of First Cluster found [ns]");
       hHNPeaks->GetYaxis()->SetTitle("Height of Electron Peaks found");
       hHNPeaks->GetXaxis()->SetTitle("Number of Electron Peaks found");
       hTPeaks->GetYaxis()->SetTitle("Entries");

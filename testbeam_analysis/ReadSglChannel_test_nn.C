@@ -76,6 +76,7 @@ void ReadSglChannel_test(){
   Int_t counter_filling_clusters_1cm = 0;
   Int_t counter_filling_electrons_2cm = 0;
   Int_t counter_filling_clusters_2cm = 0;
+
   
   TCanvas *aveph_summary_1cm = new TCanvas("aveph_summary_1cm","Aveph 1 cm cell size Drift Tubes",200,10,500,300);
   TCanvas *aveph_summary_2cm = new TCanvas("aveph_summary_2cm","Aveph 2 cm cell size Drift Tubes",200,10,500,300);
@@ -318,10 +319,6 @@ void ReadSglChannel_test(){
       TCanvas *hpeaks_2cm= new TCanvas("hpeaks_2","hpeaks",3500,1500);
       TCanvas *hnpeaks_1cm= new TCanvas("hnpeaks_1","hnpeaks",3500,1500);
       TCanvas *hnpeaks_2cm= new TCanvas("hnpeaks_2","hnpeaks",3500,1500);
-	  TCanvas *hncluster_1cm= new TCanvas("hncluster_1","hncluster",3500,1500);
-      TCanvas *hncluster_2cm= new TCanvas("hncluster_2","hncluster",3500,1500);
-	  TCanvas *hnelectron_1cm= new TCanvas("hnelectron_1","hnelectron",3500,1500);
-      TCanvas *hnelectron_2cm= new TCanvas("hnelectron_2","hnelectron",3500,1500);
       TCanvas *tpeaks_1cm= new TCanvas("tpeaks_1","tpeaks",3500,1500);
       TCanvas *tpeaks_2cm= new TCanvas("tpeaks_2","tpeaks",3500,1500);
       TCanvas *tfpeaks_1cm= new TCanvas("tfpeaks_1","tfpeaks",3500,1500);
@@ -365,10 +362,6 @@ void ReadSglChannel_test(){
       hpeaks_2cm->Divide(2,2);
       hnpeaks_1cm->Divide(2,3);
       hnpeaks_2cm->Divide(2,2);
-	  hncluster_1cm->Divide(2,3);
-      hncluster_2cm->Divide(2,2);
-	  hnelectron_1cm->Divide(2,3);
-	  hnelectron_2cm->Divide(2,2);
       tpeaks_1cm->Divide(2,3);
       tpeaks_2cm->Divide(2,2);
       tfpeaks_1cm->Divide(2,3);
@@ -389,12 +382,30 @@ void ReadSglChannel_test(){
 	
 	for(int i = 0; i<ev; ++i){
 	  for(int j = 4; j<=channel; ++j){
-	    TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_Ch%i_ev%i",j,i));
-	    if (h1==0x0) { continue; }
-	    h1->SetTitle(Form("Channel %d event %d Alpha %.1f Run %s",j,i,alpha, fname.Data()));
-	    //h1->GetYaxis()->SetRangeUser(-0.1,0.7);
-	    h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.pdf",fname.Data(),i,j));
-	   // h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.png",fname.Data(),i,j));
+
+		string nn_file = "";
+		nn_file = Form("nn_ch%d_alpha%f",j,alpha) + fname.Data() + ".txt";
+		ofstream myfile_nn (nn_file);
+ 		if (myfile_nn.is_open())
+  		{
+  		  
+		  drift_size = 0.8;
+      	  //δ cluster/cm (M.I.P.) * drift tube size [cm] * 1.3 (relativisticrise) * 1.6 electrons/cluster * 1/cos(α)
+      	  expected_electrons = cluster_per_cm_mip * drift_size * relativistic_rise * cluster_population * 1/cos_alpha;
+      	  myfile_nn << expected_electrons;
+		  
+    	  myfile_nn << "This is another line.\n";
+		  TGraph *h1=(TGraph*)file->Get(Form("signal_Afterflt/CvSignal_1_Ch%i_ev%i",j,i));
+	      if (h1==0x0) { continue; }
+		  
+	      h1->SetTitle(Form("Channel %d event %d Alpha %.1f Run %s",j,i,alpha, fname.Data()));
+	      //h1->GetYaxis()->SetRangeUser(-0.1,0.7);
+	      h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.pdf",fname.Data(),i,j));
+	      // h1->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/Waves/waves_ev%i_Ch%i.png",fname.Data(),i,j));
+		  myfile_nn.close();
+  		}
+
+  		else cout << "Unable to open file"; 
 	    
 	  }
 	}
@@ -587,7 +598,7 @@ void ReadSglChannel_test(){
 	}
 	h5->Draw("same");
 	
-	TH2F *h6=(TH2F*)file->Get(Form("H-Ch%i_signal/hHNPeaks_ch%i",i,i));
+	TH1F *h6=(TH1F*)file->Get(Form("H-Ch%i_signal/hHNPeaks_ch%i",i,i));
 	if (h6==0x0) { continue; }
 	hnpeaks_1cm->cd(i-3);
 	h6->GetYaxis()->SetTitle("Height of Peaks found [V]");
@@ -599,39 +610,7 @@ void ReadSglChannel_test(){
 	st_1cm->SetX2NDC(0.85); //new x end position
 	st_1cm->SetY1NDC(0.65); //new x start position
 	st_1cm->SetY2NDC(0.85); //new x end position
-
-	TH2F *h40=(TH2F*)file->Get(Form("H-Ch%i_signal/hNClusterFCluster_ch%i",i,i));
-	if (h40==0x0) { continue; }
-	hncluster_1cm->cd(i-3);
-	auto prof_px1_1 = h40->ProfileX();
-	prof_px1_1->GetYaxis()->SetTitle("Number of Clusters found");
-   	prof_px1_1->Draw("same");
-	TF1 *fit_1cm=new TF1("fit_1cm","pol1",20,200.);     
-	prof_px1_1->Fit("fit_1cm","R");
-	//h40->Draw("colz");
-	gPad->Update();
-	//TPaveStats *st_cluster_1cm = (TPaveStats*)h40->FindObject("stats");
-	//st_cluster_1cm->SetX1NDC(0.75); //new x start position
-	//st_cluster_1cm->SetX2NDC(0.85); //new x end position
-	//st_cluster_1cm->SetY1NDC(0.65); //new x start position
-	//st_cluster_1cm->SetY2NDC(0.85); //new x end position
-
-	TH2F *h41=(TH2F*)file->Get(Form("H-Ch%i_signal/hNPeakFPeak_ch%i",i,i));
-	if (h41==0x0) { continue; }
-	hnelectron_1cm->cd(i-3);
-	auto prof_px = h41->ProfileX();
-	prof_px->GetYaxis()->SetTitle("Number of Electron Peaks found");
-   	prof_px->Draw("same");
-	//h41->Draw("colz");
-	TF1 *fit1_1cm=new TF1("fit1_1cm","pol1",20,200.);     
-	prof_px->Fit("fit1_1cm","R");
-	gPad->Update();
-	//TPaveStats *st_electron_1cm = (TPaveStats*)h41->FindObject("stats");
-	//st_electron_1cm->SetX1NDC(0.75); //new x start position
-	//st_electron_1cm->SetX2NDC(0.85); //new x end position
-	//st_electron_1cm->SetY1NDC(0.65); //new x start position
-	//st_electron_1cm->SetY2NDC(0.85); //new x end position
-
+	
 	TH1F *h7=(TH1F*)file->Get(Form("H-Ch%i_signal/hTPeaks_ch%i",i,i));
 	if (h7==0x0) { continue; }
 	tpeaks_1cm->cd(i-3);
@@ -850,7 +829,6 @@ void ReadSglChannel_test(){
 	tfpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_1cm.pdf",fname.Data()));
 	tlpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tlpeaks_1cm.pdf",fname.Data()));
 	hnpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_1cm.pdf",fname.Data()));
-	hncluster_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hncluster_1cm.pdf",fname.Data()));
 	hpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hpeaks_1cm.pdf",fname.Data()));
 	bsl_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/bsl_1cm.pdf",fname.Data()));
 	max_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/max_1cm.pdf",fname.Data()));
@@ -859,16 +837,13 @@ void ReadSglChannel_test(){
 	//min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.pdf",fname.Data(),i));
 	npeaks_clustser_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_1cm.pdf",fname.Data()));
 	cluster_population_canvas_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/cluster_population_1cm.pdf",fname.Data()));
-	hnelectron_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnelectron_1cm.pdf",fname.Data()));
-
-
+	
 	timediff_clust_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/clust_difference_1cm.png",fname.Data()));
     timediff_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/electrons_difference_1cm.png",fname.Data()));
     npeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/npeaks_1cm.png",fname.Data()));
     tpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tpeaks_1cm.png",fname.Data()));
     tfpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_1cm.png",fname.Data()));
     tlpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tlpeaks_1cm.png",fname.Data()));
-	hncluster_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hncluster_1cm.png",fname.Data()));
     hnpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_1cm.png",fname.Data()));
     hpeaks_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hpeaks_1cm.png",fname.Data()));
     bsl_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/bsl_1cm.png",fname.Data()));
@@ -878,9 +853,8 @@ void ReadSglChannel_test(){
     //min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.png",fname.Data(),i));
     npeaks_clustser_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_1cm.png",fname.Data()));
     cluster_population_canvas_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/cluster_population_1cm.png",fname.Data()));
-    hnelectron_1cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnelectron_1cm.png",fname.Data()));
-
-    	}
+    
+      }
       
       
       drift_size = 1.8;
@@ -989,7 +963,7 @@ void ReadSglChannel_test(){
 	}
 	h5->Draw("same");
 	
-	TH2F *h6=(TH2F*)file->Get(Form("H-Ch%i_signal/hHNPeaks_ch%i",i,i));
+	TH1F *h6=(TH1F*)file->Get(Form("H-Ch%i_signal/hHNPeaks_ch%i",i,i));
 	if (h6==0x0) { continue; }
 	hnpeaks_2cm->cd(i-9);
 	h6->GetYaxis()->SetTitle("Height of Peaks found [V]");
@@ -1002,38 +976,7 @@ void ReadSglChannel_test(){
 	st_2cm->SetY1NDC(0.65); //new x start position
 	st_2cm->SetY2NDC(0.85); //new x end position
 	
-	TH2F *h40=(TH2F*)file->Get(Form("H-Ch%i_signal/hNClusterFCluster_ch%i",i,i));
-	if (h40==0x0) { continue; }
-	hncluster_2cm->cd(i-9);
-	auto prof_px2_2 = h40->ProfileX();
-	prof_px2_2->GetYaxis()->SetTitle("Number of Clusters found");
-   	prof_px2_2->Draw("same");
-	TF1 *fit_2cm=new TF1("fit_2cm","pol1",20,450.);       
-	prof_px2_2->Fit("fit_2cm","R");
-	//h40->Draw("colz");
-	gPad->Update();
-	//TPaveStats *st_cluster_2cm = (TPaveStats*)h40->FindObject("stats");
-	//st_cluster_2cm->SetX1NDC(0.75); //new x start position
-	//st_cluster_2cm->SetX2NDC(0.85); //new x end position
-	//st_cluster_2cm->SetY1NDC(0.65); //new x start position
-	//st_cluster_2cm->SetY2NDC(0.85); //new x end position
-
-	TH2F *h41=(TH2F*)file->Get(Form("H-Ch%i_signal/hNPeakFPeak_ch%i",i,i));
-	if (h41==0x0) { continue; }
-	hnelectron_2cm->cd(i-9);
-	auto prof_px_2 = h41->ProfileX();
-	prof_px_2->GetYaxis()->SetTitle("Number of Electron Peaks found");
-   	prof_px_2->Draw("same");
-	TF1 *fit2_2cm=new TF1("fit2_2cm","pol1",20,450.);       
-	prof_px_2->Fit("fit2_2cm","R");
-	//h41->Draw("colz");
-	gPad->Update();
-	//TPaveStats *st_electron_2cm = (TPaveStats*)h41->FindObject("stats");
-	//st_electron_2cm->SetX1NDC(0.75); //new x start position
-	//st_electron_2cm->SetX2NDC(0.85); //new x end position
-	//st_electron_2cm->SetY1NDC(0.65); //new x start position
-	//st_electron_2cm->SetY2NDC(0.85); //new x end position
-
+	
 	TH1F *h7=(TH1F*)file->Get(Form("H-Ch%i_signal/hTPeaks_ch%i",i,i));
 	if (h7==0x0) { continue; }
 	tpeaks_2cm->cd(i-9);
@@ -1330,7 +1273,6 @@ void ReadSglChannel_test(){
 	tfpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_2cm.pdf",fname.Data()));
 	tlpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tlpeaks_2cm.pdf",fname.Data()));
 	hnpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_2cm.pdf",fname.Data()));
-	hncluster_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hncluster_2cm.pdf",fname.Data()));
 	npeaks_clustser_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_2cm.pdf",fname.Data()));
 	hpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hpeaks_2cm.pdf",fname.Data()));
 	bsl_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/bsl_2cm.pdf",fname.Data()));
@@ -1339,17 +1281,14 @@ void ReadSglChannel_test(){
 	rms_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/rms_2cm.pdf",fname.Data()));
 	cluster_population_canvas_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/cluster_population_2cm.pdf",fname.Data()));
 	//min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.pdf",fname.Data(),i));
-	hnelectron_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnelectron_2cm.pdf",fname.Data()));
-
-
+	
 	timediff_clust_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/clust_difference_2cm.png",fname.Data()));
     timediff_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/electrons_difference_2cm.png",fname.Data()));
     npeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/npeaks_2cm.png",fname.Data()));
     tpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tpeaks_2cm.png",fname.Data()));
     tfpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tfpeaks_2cm.png",fname.Data()));
     tlpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/tlpeaks_2cm.png",fname.Data()));
-    hncluster_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hncluster_2cm.png",fname.Data()));
-	hnpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_2cm.png",fname.Data()));
+    hnpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_2cm.png",fname.Data()));
     npeaks_clustser_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnpeaks_cluster_2cm.png",fname.Data()));
     hpeaks_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hpeaks_2cm.png",fname.Data()));
     bsl_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/bsl_2cm.png",fname.Data()));
@@ -1358,8 +1297,7 @@ void ReadSglChannel_test(){
     rms_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/rms_2cm.png",fname.Data()));
     cluster_population_canvas_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/cluster_population_2cm.png",fname.Data()));
     //min->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/min_ch%i.png",fname.Data(),i));
-    hnelectron_2cm->SaveAs(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/%s/hnelectron_2cm.png",fname.Data()));
-
+    
 
 
       }

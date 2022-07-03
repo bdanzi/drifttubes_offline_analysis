@@ -160,57 +160,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     lastEv=-eventn;}
   //cout<< " MidEv "<< MidEv<< "lastEv "<<lastEv<<endl;
   
-  Float_t alpha= 0.;
-  Float_t cos_alpha = 0.;
-  Float_t expected_electrons =0.;
-  Float_t expected_cluster =0.;
-  Float_t cluster_per_cm_mip = 18.;
-  Float_t drift_size =0.;
-  Float_t relativistic_rise = 1.3;
-  Float_t cluster_population = 1.6;
-  Int_t NPeak;
-  string name_file = outChar;
-      if((name_file =="histosTB_run_127.root") || (name_file == "histosTB_run_117.root")){
-	cluster_per_cm_mip = 18.;
-	printf("CHANGED CLUSTER PER CM PHYSICAL QUANTITY to %f!\n",cluster_per_cm_mip);
-      }
-      else{
-	cluster_per_cm_mip = 12.;
-	printf("CHANGED CLUSTER PER CM PHYSICAL QUANTITY to %f!\n",cluster_per_cm_mip);
-      }
-      
-      
-      if((name_file =="histosTB_run_99.root") || (name_file == "histosTB_run_117.root") || (name_file == "histosTB_run_86.root")|| (name_file == "histosTB_run_100.root")|| (name_file == "histosTB_run_101.root")|| (name_file == "histosTB_run_72.root")|| (name_file == "histosTB_run_73.root")|| (name_file == "histosTB_run_74.root")){
-	alpha = 0;
-	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
-	
-      }
-      else if((name_file =="histosTB_run_98.root")|| (name_file == "histosTB_run_87.root")|| (name_file == "histosTB_run_97.root")){
-	alpha = 15;
-	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
-	
-	
-      }
-      else if((name_file =="histosTB_run_96.root")|| (name_file == "histosTB_run_88.root")|| (name_file == "histosTB_run_95.root")|| (name_file == "histosTB_run_96.root")){
-	alpha = 30;
-	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
-	
-	
-      }
-      else if((name_file =="histosTB_run_94.root") || (name_file == "histosTB_run_89.root")|| (name_file == "histosTB_run_93.root")|| (name_file == "histosTB_run_94.root")){
-	alpha = 45;
-	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
-	
-	
-      }
-      else if((name_file =="histosTB_run_91.root") || (name_file =="histosTB_run_127.root")|| (name_file == "histosTB_run_90.root")|| (name_file == "histosTB_run_92.root")){
-	alpha = 60;
-	printf("CHANGED angle Alpha PHYSICAL QUANTITY to %f!\n",alpha);
-	
-      }
-      
-      cos_alpha = TMath::Cos(alpha*TMath::DegToRad());
-
   
   for (Long64_t jentry=firstEv; jentry<lastEv;jentry++) {
     
@@ -261,7 +210,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
     int counter=0;
     int counter_1cm=0;
     int counter_2cm=0;
-
     
     for (auto point : wd->getX742Data()) {
       
@@ -283,8 +231,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	for(int i=0; i<Waves[channel].nPt();i++){
 	  Waves[channel].Y[i]=Waves[channel].Y[i]-Waves[channel].bsln;
 	}
-
-	
 	Waves_signal_1[channel].fillWave((Waves[channel].Y),Waves[channel].nPt());
 	if (!isTrg && channel<=nMaxCh && Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms) && firstEntering && ((wave)Waves_signal_1[channel]).nnIntegInR()>0.1) {
 	  if(channel<=9){
@@ -411,7 +357,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       chToDiff.push_back( make_pair(1,2) );
       
       /////New /////
-      
+      Int_t NPeak;
       Int_t pkPos[250];
       Float_t pkHgt[250];
       Int_t nElectrons_per_cluster[250];
@@ -523,9 +469,6 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	    ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
 	    ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
 	  }
-	  
-		((hstPerCh*)HstPerCh[channel])->hNClusterFCluster->Fill((float)X[pkPos_clust[0]+skipFstBin]+0.5*0.833333,NPeak_clust);
-		((hstPerCh*)HstPerCh[channel])->hNPeakFPeak->Fill((float)X[pkPos[0]+skipFstBin]+0.5*0.833333,NPeak);
 	  
 	  ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
 	  ((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
@@ -710,7 +653,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
 	  TMarker *tm_clust = new  TMarker(X[pkPos_clust[ipk]+skipFstBin]+0.5*0.833333, 0., 23);
 	  tm_clust->SetMarkerSize(1.5);
 	  tm_clust->SetMarkerColor(kBlue);
-	  //tm_clust->Draw("same");
+	  tm_clust->Draw("same");
 	}
 	for(int ipk=0; ipk<NPeak_clust;ipk++){
 	  if(ipk<NPeak_clust-1){
@@ -729,73 +672,7 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
       
       
       //} //channel loop
-      //for (int channel=0; channel<=nMaxCh; channel++){
-      //if (point.first == channel && !isTrg) {
-      if (!isTrg && channel<=nMaxCh) { 
-	
-	  if(channel == 6 || channel == 7){
-	string nn_file = "";
-	nn_file = Form("nn_ch%d_alpha%.1f",channel,alpha);
-	nn_file = nn_file + out.Data() + ".txt";
-	ofstream myfile_nn (nn_file,ios::app);
- 		if (myfile_nn.is_open())
-  		{
-  		  if(channel <=9){drift_size = 0.8;}
-			if(channel >=10){drift_size = 1.8;}
-		  
-      	  //δ cluster/cm (M.I.P.) * drift tube size [cm] * 1.3 (relativisticrise) * 1.6 electrons/cluster * 1/cos(α)
-      	  expected_electrons = cluster_per_cm_mip * drift_size * relativistic_rise * cluster_population * 1/cos_alpha;
-      	  if(Waves_signal_1[channel].max<=10*(Waves_signal_1[channel].rms)&& channel<=nMaxCh ){
-			expected_electrons = 0;
-			myfile_nn << expected_electrons;
-		  	myfile_nn << " ";
-			//myfile_nn << NPeak;
-		  	//myfile_nn << " ";
-			}
-		if(Waves_signal_1[channel].max>10*(Waves_signal_1[channel].rms)&& channel<=nMaxCh){
-			myfile_nn << expected_electrons;
-		  	myfile_nn << " ";
-			//myfile_nn << NPeak;
-		  	//myfile_nn << " ";
-			}
-		  
-		if(channel <=9){
-		  //for(int i=0; i<(Waves[channel].nPt()-424);i++){
-			for(int i=29; i<(Waves_signal_1[channel].nPt()-64);i++){
-				if(i==29 || (i==Waves_signal_1[channel].nPt()-65)){
-					myfile_nn<<(Waves_signal_1[channel].Y[i]);
-					myfile_nn << " ";
-				}
-				if(i<Waves_signal_1[channel].nPt()-65){
-					myfile_nn<<(Waves_signal_1[channel].Y[i+1]-Waves_signal_1[channel].Y[i]);
-					myfile_nn << " ";
-				}
-			}
-		}
-		if(channel >=10){
-			for(int i=29; i<(Waves_signal_1[channel].nPt()-64);i++){
-		  //for(int i=0; i<(Waves[channel].nPt()-64);i++){
-	  		if(i==29 || (i==Waves_signal_1[channel].nPt()-65)){
-					myfile_nn<<(Waves_signal_1[channel].Y[i]);
-					myfile_nn << " ";
-				}
-				if(i<Waves_signal_1[channel].nPt()-65){
-					myfile_nn<<(Waves_signal_1[channel].Y[i+1]-Waves_signal_1[channel].Y[i]);
-					myfile_nn << " ";
-				}
-			}
-		}
-
-		 myfile_nn << "\n";
-		 myfile_nn.close();
-  		}
-
-  		else cout << "Unable to open file"; 
-	}
-	
-	
-      }
-
+      
     } //getX742Data() loop
     
   }	 //entries loop
@@ -878,8 +755,5 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Bool_t evalWaveC
   theFile->Write();
   theFile->Close();
   cout << "\n WELL DONE YOU HAVE FINISHED! \n"; 
-
-
-  
 }
 
