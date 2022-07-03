@@ -1,7 +1,39 @@
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![MIT][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#Drift-Tubes-2021-Test-Beam-offline-analysis">Drift Tubes 2021 Test Beam offline analysis</a>
+      <ul>
+        <li><a href="#authors">Authors</a></li>
+        <li><a href="#setup">Setup</a></li>
+         <li> <a href="#instructions">Instructions</a></li>
+        <li><a href="#channels-correspondance">Channels correspondance</a></li>
+      </ul>
+    </li>
+  </ol>
+</details>
+
 # Drift Tubes 2021 Test Beam offline analysis
 
 The `data_testbeam.xlsx` file contains the details of the different configurations associated to the ROOT files used for this data analysis.
 The focus is on the 165 GeV/c momentum muon beam runs from 11st of November. 
+
+## Authors
+
+- [Federica Cuna](https://github.com/federicacuna) (University and INFN Lecce)
+- [Brunella D'Anzi](https://github.com/bdanzi) (University and INFN Bari)
+- [Nicola De Filippis](https://github.com/ndefilip) (Politecnico and INFN Bari)
+- [Walaa Elmentenawee](https://github.com/elmetenawee) (University and INFN Bari)
+- [Matteo Greco](https://github.com/matteogreco2) (University and INFN Lecce)
+
 
 ## Setup
 
@@ -81,6 +113,26 @@ per each event in the third column some physical quantities which are related to
 
 <img width="964" alt="Channel Schematics" src="https://github.com/bdanzi/drifttubes_offline_analysis/blob/master/Schermata%202022-01-30%20alle%2015.42.17.png">
 Credits for the Channel Schematics: Franco Grancagnolo (https://agenda.infn.it/event/28676/)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[contributors-url]: https://github.com/bdanzi/drifttubes_offline_analysis/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/bdanzi/ML_COURSEBARI.svg?style=for-the-badge
+[forks-url]: https://github.com/bdanzi/drifttubes_offline_analysis/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/bdanzi/ML_COURSEBARI.svg?style=for-the-badge
+[stars-url]: https://github.com/bdanzi/drifttubes_offline_analysis/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[issues-url]: https://github.com/bdanzi/drifttubes_offline_analysis/issues
+
+[license-shield]: https://img.shields.io/github/license/bdanzi/drifttubes_offline_analysis.svg?style=for-the-badge
+[license-url]: https://github.com/bdanzi/drifttubes_offline_analysis/blob/main/LICENSE.txt
+
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/brunella-d-anzi
 
 
  
