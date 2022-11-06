@@ -1,0 +1,863 @@
+#define read_data_cxx
+#include "read_data.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TGraph.h>
+#include<TVector.h>
+#include "TF1.h"
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            
+                    //////////////Define Functions//////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::vector<float> smooth(std::vector<float> &arr, int sf=1) {
+  int vsz=arr.size();
+  float ssz=2*sf+1;
+  std::vector<float> out;
+  for (int i=sf; i<vsz-sf; ++i) {
+    float tmpv=0;
+    for (int j=-sf; j<=sf; ++j) {
+      tmpv+=arr[i+j];
+    }
+    tmpv/=ssz;
+    out.push_back(tmpv);
+  }
+  return out;
+}
+
+void read_data::Loop(Char_t *output, Int_t eventn)
+{
+
+ 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+//                                                              // Define Histograms //                                       //
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  char *basename(char *path);
+   cout << "Basename " << basename(output) << endl;
+
+   Char_t outChar[500];
+   TString out = basename(output);
+   out.ReplaceAll(".root","");
+   sprintf(outChar,"histosTB_%s.root",out.Data());
+   cout << "The output file is " << outChar << endl;
+   
+   
+   TFile * theFile = new TFile(outChar,"RECREATE");
+ 
+ 
+   ///////////////////////////// 
+   // NEWWW
+
+   TCanvas *Ch1 = new TCanvas("Ch1","Channel1",600,600); 
+   TCanvas *Ch2 = new TCanvas("Ch2","channel2",600,600);
+   // TCanvas *C1_2 = new TCanvas("C1_2","",1000,700);
+   TCanvas *C_WF = new TCanvas("C_WF","new WF",600,600);
+   TCanvas *Ch1_SF10 = new TCanvas("Ch1_SF10","ch1_smooth SF10",600,600);
+   TCanvas *Ch2_SF10 = new TCanvas("Ch2_SF10","ch2_smooth SF10",600,600);
+   TCanvas *ch1_ch2_SF10 = new TCanvas("ch1_ch2_SF10","",1000,700);
+   TCanvas *Ch1_Ch2smoth = new TCanvas("Ch1_Ch2smoth","diff_ch1_ch2smooth",600,600); 
+   TCanvas *Ch1smoth_Ch2smoth = new TCanvas("Ch1smoth_Ch2smoth","diff_2ch_smooth",600,600);
+   TCanvas *C_WF_cut= new TCanvas("C_WF_cut","",600,600); 
+   TCanvas *C_newWF_RMS = new TCanvas("C_newWF_RMS","Diff_RMS",600,600);
+
+   //TH1F *Sum_v_100bins_new_ch1;
+   //TH1F *Sum_v_new_ch1;
+
+  //channel 1
+
+  TH1F* h_v_100bins_ch1 =  new TH1F("h_v_100bins_ch1","",1000,-0.5,0.5);
+  TH1F* h_sum_v_100bins_ch1 =  new TH1F("h_sum_v_100bins_ch1","",4000,2.,6.);
+  TH1F* h_Sum_v_ch1 =  new TH1F("h_Sum_v_ch1","",4000,20.,60.);
+  TH1F* h_PDS_ch1 =  new TH1F("h_PDS_ch1","",1000,0.,100.);
+  TH1F* h_final_v_ch1 =  new TH1F("h_final_v_ch1","",1000,-10.,10.);
+  TH1F* h_v_100bins_minus_mean_ch1  =  new TH1F("h_v_100bins_minus_mean_ch1","",1000,-0.1,0.1);
+  TH1F* h_max_volt_ch1 =  new TH1F("h_max_volt_ch1","",1000,0.02,0.22);
+
+  //channel 2
+
+  TH1F* h_v_100bins_ch2 =  new TH1F("h_v_100bins_ch2","",1000,-0.5,0.5);
+  TH1F* h_sum_v_100bins_ch2 =  new TH1F("h_sum_v_100bins_ch2","",4000,4.,8.);
+  TH1F* h_Sum_v_ch2 =  new TH1F("h_Sum_v_ch2","",4000,40.,80.);
+  TH1F* h_PDS_ch2 =  new TH1F("h_PDS_ch2","",1000,0.,100.);
+  TH1F* h_final_v_ch2 =  new TH1F("h_final_v_ch2","",1000,-10.,10.);
+  TH1F* h_v_100bins_minus_mean_ch2  =  new TH1F("h_v_100bins_minus_mean_ch2","",1000,-0.1,0.1);
+  TH1F* h_max_volt_ch2 =  new TH1F("h_max_volt_ch2","",1000,0.02,0.22);
+
+   //new wave form from difference ch1 & ch2
+
+   TH1F *h_Sum_v_100bins_WF = new TH1F("h_Sum_v_100bins_WF","",1000,-0.1,0.1);
+   TH1F *h_Sum_v_WF = new TH1F("h_Sum_v_WF","",400,-4.,4.);
+   TH1F* h_PDS_WF =  new TH1F("h_PDS_WF","",1000,-0.1,0.1);
+   TH1F *h_final_v_WF =  new TH1F("h_final_v_WF","",400,-4.,4.);  
+   TH1F *h_v_100bins_minus_mean_WF =  new TH1F("h_v_100bins_minus_mean_WF","",1000,-0.1,0.1); 
+   TH1F* h_max_volt_WF =  new TH1F("h_max_volt_WF","",1000,0,0.2); 
+   
+   //cut 
+   
+   TH1F* ch1_Diff_Max_avg =  new TH1F("ch1_Diff_Max_avg","",1000,-0.02,0.02); 
+   TH1F* ch2_Diff_Max_avg =  new TH1F("ch2_Diff_Max_avg","",1000,-0.02,0.02);
+
+   //after cut
+   
+   TH1F *h_Sum_v_100bins_WF_smooth_cut = new TH1F("h_Sum_v_100bins_WF_smooth_cut","",1000,-0.1,0.1);
+   TH1F* h_PDS_WF_smooth_cut =  new TH1F("h_PDS_WF_smooth_cut","",1000,-0.4,0.4); 
+   TH1F *h_final_v_WF_smooth_cut =  new TH1F("h_final_v_WF_smooth_cut","",500,-5,5); 
+  
+
+   //new WF using RMS 
+
+   TH1F *h_Sum_v_100bins_WF_RMS = new TH1F("h_Sum_v_100bins_WF_RMS","",1000,-0.1,0.1);
+   TH1F *h_Sum_v_WF_RMS = new TH1F("h_Sum_v_WF_RMS","",400,-4.,4.);
+   TH1F *h_final_v_WF_RMS =  new TH1F("h_final_v_WF_RMS","",400,-4.,4.);
+   TH1F *h_PDS_WF_RMS =  new TH1F("h_PDS_WF_RMS","",1000,-0.1,0.1);
+	 
+   
+   //Fitting functions
+   TF1* f1 = new TF1("f1", "gaus",  0.0004, 0.004);
+   TF1* f2 = new TF1("f1", "gaus",  0.0004, 0.004);
+
+   TF1* f3 = new TF1("f3", "landau", 0.2,5.);
+   TF1* f4 = new TF1("f4", "gaus", -5.0,0.2);
+   TF1* total = new TF1("total", "f4 + f3", -5.0, 5.0);
+
+ 
+   //Define counter
+
+   int count =0;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+//                                               //  Loop on entries //                                                  //
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+   
+   if (fChain == 0) return;
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   cout << "Number of entries in the tree for real data is= " << nentries << endl;
+   Long64_t nbytes = 0, nb = 0;
+
+   Int_t frstEv=0;
+   Int_t lastEv=nentries;
+   if (eventn>=0&&eventn<lastEv) {
+     frstEv=eventn;
+     lastEv=eventn+1;
+   } else if (eventn<-1 && eventn>-nentries){
+     lastEv=-eventn;
+   }
+
+   for (Long64_t jentry=frstEv; jentry<lastEv;jentry++) {
+
+     Long64_t ientry = LoadTree(jentry);
+     if (ientry < 0) break;
+ 
+     nb = fChain->GetEntry(jentry);   nbytes += nb;
+
+
+     // 1024 channel of ADC = 1 micro sec => every channel is 0.9766 nano sec
+   
+     double time = 1000./1024.;//in nano sec
+     int dim = 1024;
+     double sum_v_100bins_ch1 =0 ;
+     double sum_v_100bins_ch2 =0 ;    
+     
+     vector<float>X_ch1; 
+     vector<float>Y_ch1;
+     vector<float>X_ch2; 
+     vector<float>Y_ch2;  
+     vector<float>Y_diff;
+     vector<float>final_volt_new_WF;
+     //smooth   
+     vector<float>Y_diff_ch1_ch2_smooth;
+     vector<float>Y_diff_2chs_smooth;
+     vector<float>Y_diff_2ch_smooth_cut;     
+     vector<float>Y_ch1_smoth2;
+     vector<float>Y_ch2_smoth2;
+     
+     X_ch1.clear();
+     Y_ch1.clear();
+     X_ch2.clear();
+     Y_ch2.clear();
+     Y_diff.clear();
+     final_volt_new_WF.clear();
+     Y_diff_ch1_ch2_smooth.clear();
+     Y_diff_2chs_smooth.clear();
+     Y_diff_2ch_smooth_cut.clear();
+     Y_ch1_smoth2.clear();
+     Y_ch2_smoth2.clear();
+     
+     for (auto point : wd->getX742Data()) {
+       
+       //cout<<"Discrimentor "<<endl;
+       //cout<<"**********************"<<endl;
+       
+       for (int channel=0; channel<=33; channel++){
+	 
+	 if (point.first == channel) {
+	   
+	   double volt =0;
+	   
+	   for (int i = 0; i < 1024; ++i) {
+	     
+	     double volt = (1./4096.*point.second[i]-0.5);
+	     
+	     if (channel ==1 ){ X_ch1.push_back(time *(i+1));
+	       Y_ch1.push_back(1./4096.*point.second[i]-0.5);
+	       if (i<100) {
+			   h_v_100bins_ch1->Fill(volt);
+			   sum_v_100bins_ch1 = sum_v_100bins_ch1 +  volt;
+		   }
+	     };// ch1 
+	     
+	     if (channel ==2 ){ X_ch2.push_back(time *(i+1));
+	       Y_ch2.push_back(1./4096.*point.second[i]-0.5);
+	       if (i<100) {
+			   h_v_100bins_ch2->Fill(volt);
+			   sum_v_100bins_ch2 = sum_v_100bins_ch2 +  volt;
+		   }
+	     };// ch2
+	     
+	   }//end of ADC
+	   
+	 }// if point
+	 
+       } // end of channel loop
+       
+     }// auto point
+     
+ 
+     // Channel 1
+     	
+     double sum_v_ch1=0.;
+     
+     h_sum_v_100bins_ch1->Fill(sum_v_100bins_ch1);
+     
+     for (int j=0; j<1024; j++) {sum_v_ch1 = sum_v_ch1 + Y_ch1.at(j);};
+     h_Sum_v_ch1->Fill(sum_v_ch1);
+     
+     double final_v_ch1 = 0.;
+//     final_v_ch1 = sum_v_ch1 -( sum_v_100bins_ch1 *(1023/100)) ;
+
+//     h_PDS_ch1->Fill(sum_v_100bins_ch1 *(1023/100));
+     final_v_ch1 = h_v_100bins_ch1->GetMean()*1024.0;
+	 h_PDS_ch1->Fill(final_v_ch1);
+	 final_v_ch1 = sum_v_ch1 - final_v_ch1;
+     h_final_v_ch1->Fill(final_v_ch1);
+     
+     //  deviation from the mean for the  first 100 bins
+     
+     double avg_100bins_ch1 = 0;
+     avg_100bins_ch1 = h_v_100bins_ch1->GetMean();//sum_v_100bins_ch1 /100;
+     
+     for (int k=0; k<100; k++){
+       h_v_100bins_minus_mean_ch1->Fill(Y_ch1.at(k)-avg_100bins_ch1);
+     };
+     
+     //Maximum value 
+     
+     double max_volt_ch1=0;
+    
+     for (int k=0; k<1024; k++){
+       if (Y_ch1.at(k)> max_volt_ch1) max_volt_ch1 = Y_ch1.at(k);
+     };   
+   
+     h_max_volt_ch1->Fill(max_volt_ch1);
+
+     
+    // Channel 2//////
+     
+     double sum_v_ch2=0.;	
+
+     h_sum_v_100bins_ch2->Fill(sum_v_100bins_ch2);  
+
+     for (int k=0; k<1024; k++) {sum_v_ch2 = sum_v_ch2 + Y_ch2.at(k);
+       //cout<<" Y_ch2.at(k) = "<< Y_ch2.at(k)<<"sum_v_ch2 = "<<sum_v_ch2<<endl;
+     };
+     // cout<<"sum_v_ch2 = "<<sum_v_ch2<<endl;
+     h_Sum_v_ch2->Fill(sum_v_ch2);
+     
+     double final_v_ch2 = 0.;
+     final_v_ch2 = sum_v_ch2 -( sum_v_100bins_ch2 *(1023/100)) ;
+
+     h_PDS_ch2->Fill(sum_v_100bins_ch2 *(1023/100));
+     h_final_v_ch2->Fill(final_v_ch2);
+
+     //  deviation from the mean for the  first 100 bins
+     
+     double avg_100bins_ch2 = 0;
+     avg_100bins_ch2 = sum_v_100bins_ch2 /100;
+     
+     for (int k=0; k<100; k++){
+       h_v_100bins_minus_mean_ch2->Fill(Y_ch2.at(k)-avg_100bins_ch2);
+     };
+     
+     //Maximum value 
+     
+     double max_volt_ch2=0;
+     
+     for (int k=0; k<1024; k++){
+       if (Y_ch2.at(k)> max_volt_ch2) max_volt_ch2 = Y_ch2.at(k);
+     };   
+     
+     h_max_volt_ch2->Fill(max_volt_ch2);
+   
+     //new WF
+ 
+     double divide = sum_v_100bins_ch1/sum_v_100bins_ch2;
+     
+     //diff     
+     for(int i =0; i<1023 ;i++){      
+       double diff = Y_ch1.at(i) - divide *(Y_ch2.at(i+1)) ;
+       Y_diff.push_back(diff);      
+     };  
+     
+     
+     double sum_v_100bins_WF = 0.;
+     double sum_v_WF =0.;
+     
+     for (int j=0; j<100; j++){sum_v_100bins_WF = sum_v_100bins_WF + Y_diff.at(j);};
+     for (int j=0; j<1023; j++) {sum_v_WF = sum_v_WF + Y_diff.at(j);};
+     
+     h_Sum_v_100bins_WF->Fill(sum_v_100bins_WF);
+     h_Sum_v_WF->Fill(sum_v_WF);
+     
+     double final_v_WF = 0.;
+     
+     final_v_WF = sum_v_WF -( sum_v_100bins_WF *(1023/100)) ;
+     final_volt_new_WF.push_back(final_v_WF);
+     
+     h_PDS_WF->Fill(sum_v_100bins_WF *(1023/100));
+     h_final_v_WF->Fill(final_v_WF);
+     
+     //  deviation from the mean for the first 100 bins
+     
+     double avg_100bins_WF = 0;
+     avg_100bins_WF = sum_v_100bins_WF /100;
+     
+     for (int k=0; k<100; k++){
+       h_v_100bins_minus_mean_WF->Fill(Y_diff.at(k)-avg_100bins_WF);
+	 };
+     
+     //Maximum value 
+     
+     double max_volt_WF=0;
+     
+     for (int k=0; k<1023; k++){
+       if (Y_diff.at(k)> max_volt_WF) max_volt_WF = Y_diff.at(k);
+       // cout<<"Y_diff.at(k) = "<<Y_diff.at(k)<<"max_volt ="<<max_volt<<endl;
+     };   
+     
+     h_max_volt_WF->Fill(max_volt_WF);
+
+     //Graphs     
+     
+     TGraph* time_vs_volt_ch1 = new TGraph ( dim, &X_ch1[0], &Y_ch1[0]); //ch1
+     Ch1->cd();
+     time_vs_volt_ch1->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_ch1->SetTitle("WF 1");
+     time_vs_volt_ch1->GetYaxis()->SetTitleOffset(1.4);
+     time_vs_volt_ch1->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_ch1->Draw("AL");
+     
+     TGraph* time_vs_volt_ch2 = new TGraph ( dim, &X_ch2[0], &Y_ch2[0]); //ch2
+     Ch2->cd();
+     time_vs_volt_ch2->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_ch2->SetTitle("WF 2");
+     time_vs_volt_ch2->GetYaxis()->SetTitleOffset(1.5);
+     time_vs_volt_ch2->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_ch2->Draw("AL");
+
+     TGraph* time_vs_volt_WF = new TGraph ( dim-1, &X_ch2[0], &Y_diff[0]);//New WF (diff)
+     C_WF->cd();
+     time_vs_volt_WF->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_WF->SetTitle("New WF");
+     time_vs_volt_WF->GetYaxis()->SetTitleOffset(1.45);
+     time_vs_volt_WF->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_WF->Draw("AL");
+ 
+    
+     //apply smothing function
+     
+     vector<float>Y_ch1_smoth;
+     vector<float>Y_ch2_smoth;
+	 
+     int SF = 10;
+     
+     Y_ch1_smoth =  smooth(Y_ch1, SF);
+     Y_ch2_smoth =  smooth(Y_ch2, SF);
+     
+     TGraph* Ch1_smooth = new TGraph ( dim-2*SF, &X_ch1[SF],&Y_ch1_smoth[0]); //change time range to SF
+     Ch1_SF10->cd();
+     Ch1_smooth->SetTitle("Smooth WF1");
+     Ch1_smooth->GetXaxis()->SetTitle("time [ns]");
+     Ch1_smooth->GetYaxis()->SetTitleOffset(1.45);
+     Ch1_smooth->GetYaxis()->SetTitle("Volt");
+     Ch1_smooth->Draw("AL");
+     
+     TGraph* Ch2_smooth = new TGraph ( dim-2*SF, &X_ch2[SF],&Y_ch2_smoth[0]);
+     Ch2_SF10->cd();
+     Ch2_smooth->SetTitle("Smooth WF2");
+     Ch2_smooth->GetXaxis()->SetTitle("time [ns]");
+     Ch2_smooth->GetYaxis()->SetTitleOffset(1.45);
+     Ch2_smooth->GetYaxis()->SetTitle("Volt");
+     Ch2_smooth->Draw("AL");
+     
+
+     //Draw Ch1 Ch2 SF10  together
+     
+     ch1_ch2_SF10->cd();
+     ch1_ch2_SF10->Divide(2,1);
+     ch1_ch2_SF10->cd(1);
+     Ch1_smooth->SetTitle("Smooth WF1");
+     Ch1_smooth->GetXaxis()->SetTitle("time [ns]");
+     Ch1_smooth->GetYaxis()->SetTitleOffset(1.45);
+     Ch1_smooth->GetYaxis()->SetTitle("Volt");
+     Ch1_smooth->Draw("AL");
+     ch1_ch2_SF10->cd(2);
+     Ch2_smooth->SetTitle("Smooth WF2");
+     Ch2_smooth->GetXaxis()->SetTitle("time [ns]");
+     Ch2_smooth->GetYaxis()->SetTitleOffset(1.45);
+     Ch2_smooth->GetYaxis()->SetTitle("Volt");
+     Ch2_smooth->Draw("AL");
+
+     //subtraction using Ch1 & smooth Ch2
+
+     double sum_v_100bins_ch1_smooth =0;
+     double sum_v_100bins_ch2_smooth =0;
+     
+     for (int k=0; k<100 ; k++){ sum_v_100bins_ch1_smooth =  sum_v_100bins_ch1_smooth +Y_ch1_smoth.at(k);};
+     for (int k=0; k<100 ; k++){ sum_v_100bins_ch2_smooth =  sum_v_100bins_ch2_smooth +Y_ch2_smoth.at(k);};
+     
+     double divide_ch1_ch2smooth =  sum_v_100bins_ch1/sum_v_100bins_ch2_smooth;
+     double divide_2chs_smooth =  sum_v_100bins_ch1_smooth/sum_v_100bins_ch2_smooth;
+     //// cout<<"divide_ch2_smooth = "<<divide_ch2_smooth<<endl;
+	  
+     for(int i =0; i<Y_ch2_smoth.size()-1 ;i++){
+	    
+       double diff_ch1_ch2smooth = Y_ch1.at(i+SF) - divide_ch1_ch2smooth *(Y_ch2_smoth.at(i)) ; // 
+       Y_diff_ch1_ch2_smooth.push_back(diff_ch1_ch2smooth);
+       
+     };
+     
+     TGraph* time_vs_volt_WF_ch1_ch2smooth = new TGraph ( Y_diff_ch1_ch2_smooth.size(), &X_ch2[SF], &Y_diff_ch1_ch2_smooth[0]); //
+     Ch1_Ch2smoth->cd();
+     time_vs_volt_WF_ch1_ch2smooth->SetTitle(" New WF smooth");
+     time_vs_volt_WF_ch1_ch2smooth->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_WF_ch1_ch2smooth->GetYaxis()->SetTitleOffset(1.45);
+     time_vs_volt_WF_ch1_ch2smooth->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_WF_ch1_ch2smooth->Draw("AL");
+     
+     
+     //2 channels smooth
+     for(int i =0; i<Y_ch2_smoth.size() ;i++){
+       double diff_2chs_smooth = Y_ch1_smoth.at(i) - divide_2chs_smooth *(Y_ch2_smoth.at(i)) ; 
+       Y_diff_2chs_smooth.push_back(diff_2chs_smooth);
+     }
+	  
+     TGraph* time_vs_volt_WF_2chs_smooth = new TGraph ( Y_diff_2chs_smooth.size(), &X_ch2[SF], &Y_diff_2chs_smooth[0]); //
+     Ch1smoth_Ch2smoth->cd();
+     time_vs_volt_WF_2chs_smooth->SetTitle(" New WF smooth");
+     time_vs_volt_WF_2chs_smooth->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_WF_2chs_smooth->GetYaxis()->SetTitleOffset(1.45);
+     time_vs_volt_WF_2chs_smooth->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_WF_2chs_smooth->Draw("AL");
+     
+	  
+     //Find the event where the differece between the Min & Mav volt > 0.005 for ch1 & ch2 both smoothed
+     
+     double max_volt_ch1_smoth=0;
+     double min_volt_ch1_smoth=10000;
+     double ch1_max_min_diff =-999;
+     double ch1_max_avg_diff =-999;
+     
+     double max_volt_ch2_smoth=0;
+     double min_volt_ch2_smoth=10000;
+     double ch2_max_min_diff =-999;
+     double ch2_max_avg_diff =-999;
+     
+     for (int k=0; k < Y_ch1_smoth.size(); k++){
+       if (Y_ch1_smoth.at(k) > max_volt_ch1_smoth) max_volt_ch1_smoth = Y_ch1_smoth.at(k);
+       if (Y_ch1_smoth.at(k) < min_volt_ch1_smoth) min_volt_ch1_smoth = Y_ch1_smoth.at(k);
+       if (Y_ch2_smoth.at(k) > max_volt_ch2_smoth) max_volt_ch2_smoth = Y_ch2_smoth.at(k);
+       if (Y_ch2_smoth.at(k) < min_volt_ch2_smoth) min_volt_ch2_smoth = Y_ch2_smoth.at(k);
+     };
+     ch1_max_min_diff =  max_volt_ch1_smoth -  min_volt_ch1_smoth;
+     //ch1_max_avg_diff =  max_volt_ch1_smoth - avg_100bins_ch1;
+     ch1_max_avg_diff =  max_volt_ch1_smoth - (sum_v_100bins_ch1_smooth/100);
+     ch2_max_min_diff =  max_volt_ch2_smoth -  min_volt_ch2_smoth;
+     //ch2_max_avg_diff =  max_volt_ch2_smoth - avg_100bins_ch2;
+     ch2_max_avg_diff =  max_volt_ch2_smoth - (sum_v_100bins_ch2_smooth/100);
+
+     ch1_Diff_Max_avg->Fill(ch1_max_avg_diff);
+     ch2_Diff_Max_avg->Fill(ch2_max_avg_diff);
+	  
+	  
+   } // end of loop on entry (first loop)
+   
+   cout<<"count = "<<count<<endl;
+   
+   
+   double Mean1 = ch1_Diff_Max_avg->GetMean();
+   double Sigma1 = ch1_Diff_Max_avg->GetRMS();
+   
+   double Mean2 = ch2_Diff_Max_avg->GetMean();
+   double Sigma2 = ch2_Diff_Max_avg->GetRMS();
+   
+   f1->SetParameter(1,Mean1);
+   f1->SetParameter(2,Sigma1);
+   f2->SetParameter(1,Mean2);
+   f2->SetParameter(2,Sigma2);
+   
+   ch1_Diff_Max_avg->Fit(f1);
+   ch2_Diff_Max_avg->Fit(f2);
+   
+   
+   cout<<"Fit parameters of ch1 "<<f1->GetParameter(0)<<", "<< f1->GetParameter(1) <<", "<< f1->GetParameter(2) <<endl;
+   cout<<"Fit parameters of ch2 "<<f2->GetParameter(0)<<", "<< f2->GetParameter(1) <<", "<< f2->GetParameter(2) <<endl;
+   
+   double ch1_Mean = f1->GetParameter(1);
+   double ch1_Sigma = f1->GetParameter(2);
+   
+   double ch2_Mean = f2->GetParameter(1);
+   double ch2_Sigma = f2->GetParameter(2);
+   
+   cout<<"ch1_Mean = "<<ch1_Mean <<" , Sigma = "<<ch1_Sigma <<"ch1 Mean+ 3sigma = "<<(ch1_Mean+3*ch1_Sigma)<<endl;
+   cout<<"ch2_Mean = "<<ch2_Mean <<" , Sigma = "<<ch2_Sigma <<"ch2 Mean+ 3sigma = "<<(ch2_Mean+3*ch2_Sigma)<<endl;
+   
+//   double factor =  (h_sum_v_100bins_ch1->GetRMS())/(h_sum_v_100bins_ch2->GetRMS());
+//   cout<<"ch1 RMS = "<< h_v_100bins_ch1->GetRMS()<<" ,ch2 RMS =  "<<h_v_100bins_ch2->GetRMS()<<" ,factor = "<<factor<<endl;
+   
+   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                                                             //Try second loop
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   for (Long64_t jentry=frstEv; jentry<lastEv;jentry++) {
+     
+     Long64_t ientry = LoadTree(jentry);
+     if (ientry < 0) break;
+     
+     nb = fChain->GetEntry(jentry);   nbytes += nb;
+     // if (Cut(ientry) < 0) continue;
+     
+     double time = 1000./1024.;//in nano sec
+     int dim = 1024;
+     double sum_v_100bins_ch1 =0 ;
+     double sum_v_100bins_ch2 =0 ;
+     
+     vector<float>X_ch1; 
+     vector<float>Y_ch1;
+     vector<float>X_ch2; 
+     vector<float>Y_ch2;     
+     vector<float>Y_diff;
+     vector<float>final_volt_new_WF;
+     
+     vector<float>Y_diff_RMS;  //new trail
+     vector<float>final_volt_new_WF_RMS; //new trail
+     
+     vector<float>Y_diff_ch2_smooth;
+     vector<float>Y_diff_2ch_smooth;
+     vector<float>Y_diff_ch1_ch2smooth_cut;    
+     vector<float>Y_ch1_smoth2;
+     vector<float>Y_ch2_smoth2;
+     
+     X_ch1.clear();
+     Y_ch1.clear();
+     X_ch2.clear();
+     Y_ch2.clear();
+     Y_diff.clear();
+     final_volt_new_WF.clear();
+     Y_diff_ch2_smooth.clear();
+     Y_diff_2ch_smooth.clear();
+     Y_diff_ch1_ch2smooth_cut.clear();
+     Y_ch1_smoth2.clear();
+     Y_ch2_smoth2.clear();
+     Y_diff_RMS.clear();  //new trail
+     final_volt_new_WF_RMS.clear(); //new trail
+     
+     for (auto point : wd->getX742Data()) {
+       
+       //cout<<"Discrimentor "<<endl;
+       //cout<<"**********************"<<endl;
+       
+       for (int channel=0; channel<=33; channel++){
+	 
+	 if (point.first == channel) {
+	   // cout << "Channel is= " << channel << endl;
+	   
+	   if (channel ==1 )h_v_100bins_ch1->Reset();
+	   if (channel ==2 )h_v_100bins_ch2->Reset();
+	   
+	   double volt =0;
+	   
+	   for (int i = 0; i < 1024; ++i) {
+	     
+	     double volt = (1./4096.*point.second[i]-0.5);
+	     
+	     if (channel ==1 ){ X_ch1.push_back(time *(i+1));
+	       Y_ch1.push_back(1./4096.*point.second[i]-0.5);
+	       if (i<100) {
+			   h_v_100bins_ch1->Fill(volt);
+			   sum_v_100bins_ch1 = sum_v_100bins_ch1 +  volt;
+		   }
+	     };// ch1 
+	     
+	     if (channel ==2 ){ X_ch2.push_back(time *(i+1));
+	       Y_ch2.push_back(1./4096.*point.second[i]-0.5);
+	       if (i<100) {
+			   h_v_100bins_ch2->Fill(volt);
+			   sum_v_100bins_ch2 = sum_v_100bins_ch2 +  volt;
+		   }
+	     };// ch2
+	     
+	   }//end of ADC
+	   
+	 }// if point 	 
+	 
+       } // end of channel loop
+       
+     }// auto point
+     
+
+         
+     // Channel 1
+
+     double sum_v_ch1=0.;
+     double avg_100bins_ch1 = 0;
+
+     for (int j=0; j<1024; j++) {sum_v_ch1 = sum_v_ch1 + Y_ch1.at(j);};
+     avg_100bins_ch1 = sum_v_100bins_ch1 /100; 
+     
+     // Channel 2
+
+      double sum_v_ch2=0.;
+     double avg_100bins_ch2 = 0;
+
+     for (int j=0; j<1024; j++) {sum_v_ch2 = sum_v_ch2 + Y_ch2.at(j);};
+     avg_100bins_ch2 = sum_v_100bins_ch2 /100;
+     
+     
+     //apply smothing function
+     
+     vector<float>Y_ch1_smoth;
+     vector<float>Y_ch2_smoth;
+	 
+     int SF = 10;
+     
+     Y_ch1_smoth =  smooth(Y_ch1, SF);
+     Y_ch2_smoth =  smooth(Y_ch2, SF);
+	 
+     double sum_v_100bins_ch1_smooth =0;
+     double sum_v_100bins_ch2_smooth =0;
+     
+     for (int k=0; k<100 ; k++){ sum_v_100bins_ch1_smooth =  sum_v_100bins_ch1_smooth +Y_ch1_smoth.at(k);};
+     for (int k=0; k<100 ; k++){ sum_v_100bins_ch2_smooth =  sum_v_100bins_ch2_smooth +Y_ch2_smoth.at(k);};
+
+     
+     //Find the event where the differece between the Min & Mav volt > 0.005 for ch1 & ch2 both smoothed
+     
+     double max_volt_ch1_smoth=0;
+     double min_volt_ch1_smoth=10000;
+     double ch1_max_min_diff =-999;
+     double ch1_max_avg_diff =-999;
+     
+     double max_volt_ch2_smoth=0;
+     double min_volt_ch2_smoth=10000;
+     double ch2_max_min_diff =-999;
+     double ch2_max_avg_diff =-999;
+     
+     for (int k=0; k < Y_ch1_smoth.size(); k++){
+       if (Y_ch1_smoth.at(k) > max_volt_ch1_smoth) max_volt_ch1_smoth = Y_ch1_smoth.at(k);
+       if (Y_ch1_smoth.at(k) < min_volt_ch1_smoth) min_volt_ch1_smoth = Y_ch1_smoth.at(k);
+       if (Y_ch2_smoth.at(k) > max_volt_ch2_smoth) max_volt_ch2_smoth = Y_ch2_smoth.at(k);
+       if (Y_ch2_smoth.at(k) < min_volt_ch2_smoth) min_volt_ch2_smoth = Y_ch2_smoth.at(k);
+     };
+ 
+     ch1_max_min_diff =  max_volt_ch1_smoth -  min_volt_ch1_smoth;
+     //ch1_max_avg_diff =  max_volt_ch1_smoth - avg_100bins_ch1;
+     ch1_max_avg_diff =  max_volt_ch1_smoth - (sum_v_100bins_ch1_smooth/100);
+     ch2_max_min_diff =  max_volt_ch2_smoth -  min_volt_ch2_smoth;
+     //ch2_max_avg_diff =  max_volt_ch2_smoth - avg_100bins_ch2;
+     ch2_max_avg_diff =  max_volt_ch2_smoth - (sum_v_100bins_ch2_smooth/100);
+     
+     cout<<"Event = "<<jentry<<" Channel 1 has Max Volt "<<max_volt_ch1_smoth<<" , min volt = "<<min_volt_ch1_smoth<<" average_100 = "<<avg_100bins_ch1<<"Diff Max_Min  = "<<ch1_max_min_diff<<" Diff Max_avg = "<<ch1_max_avg_diff<<endl;	  
+     cout<<"Event = "<<jentry<<" Channel 2 has Max Volt "<<max_volt_ch2_smoth<<" , min volt = "<<min_volt_ch2_smoth<<" average_100 = "<<avg_100bins_ch2<<"Diff Max_Min= "<<ch2_max_min_diff<<" Diff Max_avg "<<ch2_max_avg_diff<<endl;	 
+     
+     
+     /////selecting the events where diff btw max volt & avg volt > 0.005
+     
+     int SF2 = 4;
+     bool goodEv=false;	  
+     double a =0;
+     double b =0;
+     double Ratio =0;
+     
+     if(ch1_max_avg_diff >( ch1_Mean +3*ch1_Sigma )  && ch2_max_avg_diff < (ch2_Mean + 3*ch2_Sigma ) ){
+       
+       cout<<"subtract ch1 -ch2_smooth"<<endl;
+       
+       //Apply SF = 2
+
+       Y_ch1_smoth2 =  smooth(Y_ch1, SF2);
+       Y_ch2_smoth2 =  smooth(Y_ch2, SF2);
+       
+       for (int k=0; k<100 ; k++){ a = a + Y_ch1.at(k);};
+       for (int k=0; k<100 ; k++){ b = b + Y_ch2_smoth2.at(k);};
+       Ratio = a/b;
+           
+       //New WF
+ 
+       for(int i =0; i<Y_ch2_smoth2.size() ;i++){
+	 double diff_ch1_ch2smooth_cut = Y_ch1.at(i+SF2) - Ratio *(Y_ch2_smoth2.at(i)) ; 
+	 Y_diff_ch1_ch2smooth_cut.push_back(diff_ch1_ch2smooth_cut);
+	 goodEv=true;
+       }
+     }
+
+     else if(ch1_max_avg_diff < ( ch1_Mean +3*ch1_Sigma ) && ch2_max_avg_diff > (ch2_Mean + 3*ch2_Sigma ) ){
+       
+       cout<<"subtract ch2 -ch1_smooth"<<endl;
+       
+       //Apply SF = 2
+
+       Y_ch1_smoth2 =  smooth(Y_ch1, SF2);
+       Y_ch2_smoth2 =  smooth(Y_ch2, SF2);	
+       
+       for (int k=0; k<100 ; k++){ a = a + Y_ch2.at(k);};
+       for (int k=0; k<100 ; k++){ b = b + Y_ch1_smoth2.at(k);};
+       Ratio = a/b;    
+       
+       //New WF
+ 
+       for(int i =0; i<Y_ch1_smoth2.size() ;i++){
+	 double diff_ch1_ch2smooth_cut = Y_ch2.at(i+SF2) - Ratio *(Y_ch1_smoth2.at(i)) ; 
+	 Y_diff_ch1_ch2smooth_cut.push_back(diff_ch1_ch2smooth_cut);
+	 goodEv=true;
+       }
+     }
+     if (goodEv){
+       
+       TGraph* time_vs_volt_diff_cut = new TGraph ( dim-2*SF2, &X_ch1[SF2],& Y_diff_ch1_ch2smooth_cut[0]); //change time range to SF
+       C_WF_cut->cd();
+       C_WF_cut->SetTitle("");
+       time_vs_volt_diff_cut->GetXaxis()->SetTitle("time [ns]");
+       time_vs_volt_diff_cut->GetYaxis()->SetTitleOffset(1.45);
+       time_vs_volt_diff_cut->GetYaxis()->SetTitle("Volt");
+       time_vs_volt_diff_cut->Draw("AL");
+       
+       double Sum_v_100bins_WF_smooth_cut =0.;
+       double sum_v_WF_smooth_cut=0.;
+       double final_v_WF_smooth_cut=0.;
+       double pds_smooth_cut=0.;
+       
+       for (int i=0; i<100; i++){ Sum_v_100bins_WF_smooth_cut = Sum_v_100bins_WF_smooth_cut + Y_diff_ch1_ch2smooth_cut.at(i);}
+       //cout<<" Sum_v_100bins_WF_smooth_cut = "<<Sum_v_100bins_WF_smooth_cut<<endl;
+       h_Sum_v_100bins_WF_smooth_cut->Fill(Sum_v_100bins_WF_smooth_cut);
+       
+       pds_smooth_cut = Sum_v_100bins_WF_smooth_cut * (Y_diff_ch1_ch2smooth_cut.size()/100.0);
+       //cout<<"pds_smooth_cut = "<<pds_smooth_cut<<endl;
+
+       for (int i=0; i<Y_diff_ch1_ch2smooth_cut.size(); i++){sum_v_WF_smooth_cut = sum_v_WF_smooth_cut + Y_diff_ch1_ch2smooth_cut.at(i);}
+       final_v_WF_smooth_cut = sum_v_WF_smooth_cut - pds_smooth_cut;
+       
+       h_PDS_WF_smooth_cut->Fill(pds_smooth_cut); 
+       h_final_v_WF_smooth_cut->Fill(final_v_WF_smooth_cut);
+       
+       if(final_v_WF_smooth_cut < 0){
+	 cout<<"Event = "<<jentry<<" has Final_v_WF_smooth_cut ="<<final_v_WF_smooth_cut<<endl; 
+       }
+       
+       count++;
+       
+     }//end of cut
+     
+  
+     //new trial of WF with RMS
+
+	 double factor =  (h_v_100bins_ch1->GetRMS())/(h_v_100bins_ch2->GetRMS());
+     factor*=factor;
+     cout<<"ch1 RMS = "<< h_v_100bins_ch1->GetRMS()<<" ,ch2 RMS =  "<<h_v_100bins_ch2->GetRMS()<<" ,factor = "<<factor<<endl;
+
+     for(int i =0; i<1024 ;i++){
+       double diff_RMS = (Y_ch1.at(i) - (sum_v_100bins_ch1/100)) - (factor * (Y_ch2.at(i) - (sum_v_100bins_ch2/100)));
+       Y_diff_RMS.push_back(diff_RMS);
+       // cout<<"Y_diff_RMS= "<<Y_diff_RMS.at(i)<<endl;
+     };  
+     
+     
+     TGraph* time_vs_volt_diff_RMS = new TGraph ( dim, &X_ch2[0], &Y_diff_RMS[0]);
+     C_newWF_RMS->cd();
+     time_vs_volt_diff_RMS->GetXaxis()->SetTitle("time [ns]");
+     time_vs_volt_diff_RMS->SetTitle("New WF RMS");
+     time_vs_volt_diff_RMS->GetYaxis()->SetTitleOffset(1.45);
+     time_vs_volt_diff_RMS->GetYaxis()->SetTitle("Volt");
+     time_vs_volt_diff_RMS->Draw("AL");
+     
+     
+     double sum_v_100bins_WF_RMS = 0.;
+     double sum_v_WF_RMS =0.;
+     
+     for (int j=0; j<100; j++){
+       sum_v_100bins_WF_RMS = sum_v_100bins_WF_RMS + Y_diff_RMS.at(j);
+       cout<<"Y_diff_RMS.at(j)"<<Y_diff_RMS.at(j)<<" sum 100 bins = "<<sum_v_100bins_WF_RMS<<endl;
+     };
+     h_Sum_v_100bins_WF_RMS->Fill(sum_v_100bins_WF_RMS);
+     
+     for (int j=0; j<1024; j++) {  
+       sum_v_WF_RMS = sum_v_WF_RMS + Y_diff_RMS.at(j);
+     };
+     
+     h_Sum_v_WF_RMS->Fill(sum_v_WF_RMS);
+
+     
+     double final_v_WF_RMS = 0.;
+     
+     final_v_WF_RMS = sum_v_WF_RMS -(sum_v_100bins_WF_RMS *(1023/100)) ;
+     h_final_v_WF_RMS->Fill(final_v_WF_RMS);
+     h_PDS_WF_RMS->Fill(sum_v_100bins_WF_RMS *(1023/100));
+     final_volt_new_WF_RMS.push_back(final_v_WF_RMS);
+     
+
+
+     cout<<"////////////////////////////////////////"<<endl;
+     
+   } // end of loop on entry (second loop)
+
+   double mean = h_final_v_WF_smooth_cut->GetMean();
+   h_final_v_WF_smooth_cut->Fit(f3, "R", "", mean, 5.0);
+   h_final_v_WF_smooth_cut->Fit(f4, "R+", "", -5.0 , mean);
+   h_final_v_WF_smooth_cut->Fit(total,"R+");
+   
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+//                                               //  Write Histograms //                                                    //
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   theFile->cd();
+   theFile->Write();
+   Ch1->Write();
+   Ch2->Write();
+   C_WF->Write();
+   Ch1_SF10->Write();
+   Ch2_SF10->Write();
+   C_newWF_RMS->Write();
+   ch1_ch2_SF10->Write();
+   Ch1_Ch2smoth->Write();
+   Ch1smoth_Ch2smoth->Write();
+   C_WF_cut->Write();
+   theFile->Close();
+
+}
+
+
