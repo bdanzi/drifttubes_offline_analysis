@@ -139,7 +139,7 @@ static double tmax=0.0;
 
 void FFT(wave &tmpW, wavefft &tmpWfft) {
 //double tmax = 1.0e-6;
-   Int_t N = tmpW.nPt();
+   Int_t N = tmpW.nPt(); //Y.size
 
    TVirtualFFT *fft = TVirtualFFT::FFT(1,&N,"R2C");
    for (int ipt=0; ipt<N; ++ipt) { fft->SetPoint(ipt,tmpW.Y[ipt]); }
@@ -179,7 +179,7 @@ void InverseFFT(Double_t *ReFFT, Double_t *ImFFT, Int_t N, wave &outW) {
 
    for (Int_t i=0; i<N; i++) {
 	   float tmpVal = ifft->GetPointReal(i)/((Double_t)N);
-	   outW.addPnt(tmpVal);
+	   //outW.addPnt(tmpVal);
    }
 
 }
@@ -282,20 +282,20 @@ void filterWaveSM(wavefft &inWfft, Double_t *ReFFT, Double_t *ImFFT, int smtM=5,
 ////////////////// trasformata di fourier semplice, dove togliamo i primi bin. Serve a ripristinare la baseline.
 void filterWaveBsl(wavefft &inWfft, Double_t *ReFFT, Double_t *ImFFT){
 	for (int ip=0; ip<inWfft.nPt/2; ++ip) {
-      if(ip>0){
+		if(ip>0){
 			ReFFT[ip]=inWfft.ampl[ip]*TMath::Cos(inWfft.phi[ip]);
 			ImFFT[ip]=inWfft.ampl[ip]*TMath::Sin(inWfft.phi[ip]);
-      }
-      else{
-      ReFFT[ip]=0;
+		}
+		else{
+			ReFFT[ip]=0;
 			ImFFT[ip]=0;     
-      }
+		}
 	}
 	for (int ip=inWfft.nPt-1; ip>=inWfft.nPt/2; --ip) {
-			ReFFT[ip]=0.0;//inWfft.real[ip];
-			ImFFT[ip]=0.0;//inWfft.img[ip];
-//			ReFFT[ip]=inWfft.ampl[ip]*TMath::Cos(inWfft.phi[ip]);
-//			ImFFT[ip]=inWfft.ampl[ip]*TMath::Sin(inWfft.phi[ip]);
+		ReFFT[ip]=0.0;//inWfft.real[ip];
+		ImFFT[ip]=0.0;//inWfft.img[ip];
+		//			ReFFT[ip]=inWfft.ampl[ip]*TMath::Cos(inWfft.phi[ip]);
+		//			ImFFT[ip]=inWfft.ampl[ip]*TMath::Sin(inWfft.phi[ip]);
 	}
 
 }
