@@ -348,128 +348,128 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
     if(isChannel_1cm){
       hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,300,250,0,250);
     }
-      if(isChannel_2cm){
-        hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,250,0,250);
-      }
-      if(isChannel_1cm){
-	hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,300,100,0,100);
-      }
-      if(isChannel_2cm){
-	hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,100,0,100);
-      }
-      hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0,800);
-      if(isChannel_1cm){
-	hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,400);
-      }
-      if(isChannel_2cm){
-        hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
-      }
-      if(isChannel_1cm){
-	hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0,500);
-      }
-      if(isChannel_2cm){
-        hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
-      }
+    if(isChannel_2cm){
+      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,250,0,250);
+    }
+    if(isChannel_1cm){
+	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,300,100,0,100);
+    }
+    if(isChannel_2cm){
+	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,100,0,100);
+    }
+    hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0,800);
+    if(isChannel_1cm){
+	    hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,400);
+    }
+    if(isChannel_2cm){
+      hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
+    }
+    if(isChannel_1cm){
+	    hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0,500);
+    }
+    if(isChannel_2cm){
+      hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
+    }
       
       //hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),10000,-0.01,0.01);
       //hSecDeriv= new TH1F (Form("hSecDeriv_ch%d",Ch),Form("Second derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),10000,-0.01,0.01);
       
       
       
-      hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-0.8,0.); 
-      if(isChannel_1cm){
-	hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("1 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,250.);
-      }
-      if(isChannel_2cm){
-        hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("2 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),120,0.,600.);
-      }
-      //if(Ch<=9){
-      //hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0.,20.);
-      //}
-      //else {
-      //  hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),250,0.,25.);
-      //}
-      //hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-      //hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-      //hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-      //hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
-      //hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
-      hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),125,0.,5.);
-      //distribution of derivative for meg FE
-      //hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-      //hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-      //hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-      hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,0.5);
-      //hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-0.8,0.); 
+    if(isChannel_1cm){
+	    hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("1 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,250.);
+    }
+    if(isChannel_2cm){
+      hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("2 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),120,0.,600.);
+    }
+    //if(Ch<=9){
+    //hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0.,20.);
+    //}
+    //else {
+    //  hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),250,0.,25.);
+    //}
+    //hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
+    //hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
+    //hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
+    //hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
+    //hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
+    hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),125,0.,5.);
+    //distribution of derivative for meg FE
+    //hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    //hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    //hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,0.5);
+    //hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    
+    //////////////////////////////////////
+    hNPeaks->GetYaxis()->SetTitle("Entries");
+    hNElectrons_per_cluster->GetYaxis()->SetTitle("Entries");
+    hNElectrons_per_cluster->GetXaxis()->SetTitle("Number of Electrons per Each Cluster found");
+    hNPeaks_clust->GetYaxis()->SetTitle("Entries");
+    hNeventSignals->GetYaxis()->SetTitle("Entries");
+    hNPeaks_clust->GetXaxis()->SetTitle("Number of Clusters found");
+    hHPeaks->GetYaxis()->SetTitle("Entries");
+    hHPeaks->GetXaxis()->SetTitle("Height [V]");
+    hNPeakFPeak->GetYaxis()->SetTitle("Number of Electrons found");
+    hNPeakFPeak->GetXaxis()->SetTitle("Time of First Electron found [ns]");
+    hNClusterFCluster->GetYaxis()->SetTitle("Number of Clusters found");
+    hNClusterFCluster->GetXaxis()->SetTitle("Time of First Cluster found [ns]");
+    hHNPeaks->GetYaxis()->SetTitle("Height of Electron Peaks found");
+    hHNPeaks->GetXaxis()->SetTitle("Number of Electron Peaks found");
+    hTPeaks->GetYaxis()->SetTitle("Entries");
+    hTFstPeaks->GetYaxis()->SetTitle("Entries");
+    hTFstPeaks->GetXaxis()->SetTitle("Time [ns]");
+    hNPeaks_1->GetYaxis()->SetTitle("Entries");
+    hBsl->GetYaxis()->SetTitle("Entries");
+    hBsl->GetXaxis()->SetTitle("Voltage [V]");
+    //hInteg->GetYaxis()->SetTitle("Entries");
+    hIntegN->GetYaxis()->SetTitle("Entries");
+    hIntegN->GetXaxis()->SetTitle("Charge [pC]");
+    //hIntegInR->GetYaxis()->SetTitle("Entries");
+    //hIntegNInR->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC1->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC2->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC3->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC4->GetYaxis()->SetTitle("Entries");
+    //hMaxV->GetYaxis()->SetTitle("Entries");
+    //hMaxVN->GetYaxis()->SetTitle("Entries");
+    hMaxVInR->GetYaxis()->SetTitle("Entries");
+    hMaxVInR->GetXaxis()->SetTitle("Voltage [V]");
+    //hMaxVNInR->GetYaxis()->SetTitle("Entries");
+    //hIntegInRoriginalW->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRoriginalW->GetYaxis()->SetTitle("Entries");
+    
+    //hder->GetYaxis()->SetTitle("Entries");
+    //hchiFT->GetYaxis()->SetTitle("Entries");
+    //hP0->GetYaxis()->SetTitle("Entries");
+    //hRmsOriginalW->GetYaxis()->SetTitle("Entries");
+    //hMaxVNSmooth->GetYaxis()->SetTitle("Entries");
+    hTimeDifference->GetYaxis()->SetTitle("Entries");
+    hTimeDifference_clust->GetYaxis()->SetTitle("Entries");
       
-      //////////////////////////////////////
-      hNPeaks->GetYaxis()->SetTitle("Entries");
-      hNElectrons_per_cluster->GetYaxis()->SetTitle("Entries");
-      hNElectrons_per_cluster->GetXaxis()->SetTitle("Number of Electrons per Each Cluster found");
-      hNPeaks_clust->GetYaxis()->SetTitle("Entries");
-      hNeventSignals->GetYaxis()->SetTitle("Entries");
-      hNPeaks_clust->GetXaxis()->SetTitle("Number of Clusters found");
-      hHPeaks->GetYaxis()->SetTitle("Entries");
-      hHPeaks->GetXaxis()->SetTitle("Height [V]");
-      hNPeakFPeak->GetYaxis()->SetTitle("Number of Electrons found");
-      hNPeakFPeak->GetXaxis()->SetTitle("Time of First Electron found [ns]");
-      hNClusterFCluster->GetYaxis()->SetTitle("Number of Clusters found");
-      hNClusterFCluster->GetXaxis()->SetTitle("Time of First Cluster found [ns]");
-      hHNPeaks->GetYaxis()->SetTitle("Height of Electron Peaks found");
-      hHNPeaks->GetXaxis()->SetTitle("Number of Electron Peaks found");
-      hTPeaks->GetYaxis()->SetTitle("Entries");
-      hTFstPeaks->GetYaxis()->SetTitle("Entries");
-      hTFstPeaks->GetXaxis()->SetTitle("Time [ns]");
-      hNPeaks_1->GetYaxis()->SetTitle("Entries");
-      hBsl->GetYaxis()->SetTitle("Entries");
-      hBsl->GetXaxis()->SetTitle("Voltage [V]");
-      //hInteg->GetYaxis()->SetTitle("Entries");
-      hIntegN->GetYaxis()->SetTitle("Entries");
-      hIntegN->GetXaxis()->SetTitle("Charge [pC]");
-      //hIntegInR->GetYaxis()->SetTitle("Entries");
-      //hIntegNInR->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC1->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC2->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC3->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC4->GetYaxis()->SetTitle("Entries");
-      //hMaxV->GetYaxis()->SetTitle("Entries");
-      //hMaxVN->GetYaxis()->SetTitle("Entries");
-      hMaxVInR->GetYaxis()->SetTitle("Entries");
-      hMaxVInR->GetXaxis()->SetTitle("Voltage [V]");
-      //hMaxVNInR->GetYaxis()->SetTitle("Entries");
-      //hIntegInRoriginalW->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRoriginalW->GetYaxis()->SetTitle("Entries");
-      
-      //hder->GetYaxis()->SetTitle("Entries");
-      //hchiFT->GetYaxis()->SetTitle("Entries");
-      //hP0->GetYaxis()->SetTitle("Entries");
-      //hRmsOriginalW->GetYaxis()->SetTitle("Entries");
-      //hMaxVNSmooth->GetYaxis()->SetTitle("Entries");
-      hTimeDifference->GetYaxis()->SetTitle("Entries");
-      hTimeDifference_clust->GetYaxis()->SetTitle("Entries");
-      
-      /////////////////////////////////////////////////////////
-      hTimeDifference->GetXaxis()->SetTitle("Difference in time [ns]");
-      hTimeDifference_clust->GetXaxis()->SetTitle("Difference in time [ns]");
-      //hMaxV->GetXaxis()->SetTitle("Volt [V]");
-      hNPeaks->GetXaxis()->SetTitle("N Peaks");
-      hNPeaks->GetYaxis()->SetTitle("Entries");
-      hBsl->GetXaxis()->SetTitle("Baseline [V]");
-      hBsl->GetYaxis()->SetTitle("Entries");
-      //hIntegNInR-> GetXaxis()->SetTitle("Integral [V]");
-      //hIntegNInR-> GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC1-> GetXaxis()->SetTitle("Integral [V]");
-      //hIntegNInRC1-> GetYaxis()->SetTitle("Entries");
-      //hIntegNInRC2-> GetXaxis()->SetTitle("Integral [V]");
-      //hIntegNInRC2-> GetYaxis()->SetTitle("Entries");
-      hRms->GetXaxis()->SetTitle("Rms [mV]");
-      hRms->GetYaxis()->SetTitle("Entries");
-      //hMaxVNInR->GetXaxis()->SetTitle("Max_value [V]");
-      //hMaxVNInR->GetYaxis()->SetTitle("Entries");
-      //hIntegNInRoriginalW-> GetXaxis()->SetTitle("Integral [mA]");
-      //hIntegNInRoriginalW-> GetYaxis()->SetTitle("Entries");
-      hNPeaks_1->GetXaxis()->SetTitle("Time [ns]");
-      
+    /////////////////////////////////////////////////////////
+    hTimeDifference->GetXaxis()->SetTitle("Difference in time [ns]");
+    hTimeDifference_clust->GetXaxis()->SetTitle("Difference in time [ns]");
+    //hMaxV->GetXaxis()->SetTitle("Volt [V]");
+    hNPeaks->GetXaxis()->SetTitle("N Peaks");
+    hNPeaks->GetYaxis()->SetTitle("Entries");
+    hBsl->GetXaxis()->SetTitle("Baseline [V]");
+    hBsl->GetYaxis()->SetTitle("Entries");
+    //hIntegNInR-> GetXaxis()->SetTitle("Integral [V]");
+    //hIntegNInR-> GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC1-> GetXaxis()->SetTitle("Integral [V]");
+    //hIntegNInRC1-> GetYaxis()->SetTitle("Entries");
+    //hIntegNInRC2-> GetXaxis()->SetTitle("Integral [V]");
+    //hIntegNInRC2-> GetYaxis()->SetTitle("Entries");
+    hRms->GetXaxis()->SetTitle("Rms [mV]");
+    hRms->GetYaxis()->SetTitle("Entries");
+    //hMaxVNInR->GetXaxis()->SetTitle("Max_value [V]");
+    //hMaxVNInR->GetYaxis()->SetTitle("Entries");
+    //hIntegNInRoriginalW-> GetXaxis()->SetTitle("Integral [mA]");
+    //hIntegNInRoriginalW-> GetYaxis()->SetTitle("Entries");
+    hNPeaks_1->GetXaxis()->SetTitle("Time [ns]");
+    
       
       
     
