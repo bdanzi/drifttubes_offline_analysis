@@ -43,22 +43,28 @@ On Bari ReCAS and in the `testbeam_analysis\` directory of this repository:
 $ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
 $ source setDCDataReaderEnv.sh
 $ bash compile.sh
-$ ./read_data . 4 0 -10 1
+$ ./read_data . 91 0 -1 1.2 4 0 1.0 0.5 25.0 1024
 ```
 On lxplus and in the `testbeam_analysis\` directory of this repository:
 
 ```bash
 $ source setDCDataReaderEnv.sh
 $ bash compile.sh
-$ ./read_data . 4 0 -10 1
+$ ./read_data . 91 0 -1 1.2 4 0 1.0 0.5 25.0 1024
 ```
 where in the last code line:
 
-- 4 is the run number
+- 91 is the run number
 
-- 0 -10 is the number of events to be processed
+- 0 -10 is the number of events to be processed (-1 to process the whole data set)
 
-- 1 is a kind of option that can be fixed.
+- 1.2 is the sampling rate
+
+- 4, 0, 1.0, 0.5 are the cuts on the signal amplitude, first and second derivatives before starting the search for electron peaks (see FindPeak-algo.C for further details)
+
+- 25.0 is the time interval (ns) starting from the beginning of the waveform in which the baseline and the rms is computed
+
+- 1024 are the waveform bins available
 
 ## Instructions
 
@@ -67,7 +73,7 @@ For each sample and each channel it is able to count how many events with an act
 Config files and executables are created to run on more than one ROOT file (not available here, too much large in size).
 
 ```bash
-$ bash submit_root_to_histos_root.sh
+$ submit_root_to_histos_root_22test_variableCuts.sh
 ```
 
 It will produce in `executables\`:
@@ -81,19 +87,21 @@ It will produce in `executables\`::
 - executable file `submit_executable.sh`
 - config file that can be run as job in Recas
 ```bash
-$ bash submit_executable.sh
+$ submit_executable_oldTestBeam.sh
 ```
 
 It will produce:
-- by using the plots.txt, per each .root file in the first column, per each channel in the second column,
+- by using the plots_oldTestBeam.txt, per each .root file in the first column, per each channel in the second column,
 per each event in the third column some physical quantities which are related to 
-1) number of peaks, First Time Peak and Last Time Peak distributions
-2) maxima
-3) integral of the wavefunction 
-4) wave functions w & w/o peak arrows
-5) minima
-6) number of events per each channel which passes a voltage amplitude requirement for the waveform maximum of 5 mV
-
+1) Number of Electron peaks, First Peak Time of Arrival and Last Peak Time of arrival distributions
+2) Maxima
+3) Charge Integral of the wavefunction (in pC)
+4) Wave functions w & w/o peak arrows
+5) Number of events per each channel which passes a voltage amplitude requirement for the waveform maximum of 5 mV
+6) Number of Cluster distributions
+7) Time Difference between two consecutive clusters
+8) Time Difference between two consecutive Electrons
+9) Cluster population (Number of Electron Peaks per Primary Ionization Cluster)
 
 ## Channels correspondance
 
