@@ -12,8 +12,14 @@
 #include <fstream>
 static int skipFstBin[5] = {5,5,5,5,5}; //525 for El Cal   //100 dati proto
 static int skipLstBin[5] = {10,10,10,10,10};  //475 for El Cal   //50	dati proto
-static int ChannelDiameter[13] = {-1,-1,-1,-1,10,15,20,20,25,25,20,25,40}; // Old test beam correspondance
-static int ChannelCellSize[13] = {-1,-1,-1,-1,1,1,1,1,1,1,2,2,2};
+// if (isNov2021TestBeam){
+// static int ChannelDiameter[13] = {-1,-1,-1,-1,10,15,20,20,25,25,20,25,40}; // Old test beam Nov 2022
+// static float ChannelCellSize[13] = {-1.0,-1.0,-1.0,-1.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0}; // Old test beam Nov 2022
+// }
+// else if(!isNov2021TestBeam){
+static int ChannelDiameter[16] = {20,20,15,15,25,20,20,15,20,25,25,15,-1,-1,-1,-1}; // Old test beam Nov 2022
+static float ChannelCellSize[16] = {1.5,1.0,1.0,1.0,1.5,1.0,1.0,1.5,1.0,1.0,1.0,1.5,-1.0,-1.0,-1.0,-1.0}; // Old test beam Nov 2022
+// }
 //static int fbin_rms[5]={30,30,30,30,30};
 //static int fbin_bsl[5]={30,30,30,30,30};
 static float binsize = 0.0;
@@ -324,83 +330,83 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
   TH1F *hNElectrons_per_cluster;
 
   
-  hstPerCh(int Ch=0, int isChannel_1cm=0, int isChannel_2cm=0, int isChannel_1p5cm = 0, float alpha = 0.) {
+  hstPerCh(int Ch=0, int isChannel_1cm=0, int isChannel_2cm=0, int isChannel_1p5cm = 0, float alpha = 0., float _gsample= 0., int isRuns_80_20 = 0, int isRuns_90_10 = 0, int isRuns_85_15= 0) {
     //gRootDir->cd();
     //TDirectory fldch(Form("H-Ch%d",Ch),Form("folder for ch%d",Ch));
     //fldch.cd();
     //senza smooth
-    hTimeDifference = new TH1F (Form("hTimeDifference_ch%d",Ch),Form("Time Difference between Two Consecutive Electrons - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),40,0.,40.); 
-    hTimeDifference_clust = new TH1F (Form("hTimeDifference_clust_ch%d",Ch),Form("Time Difference between Two Consecutive Clusters - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,100.); 
-    //hP0=new TH1F (Form("hP0_ch%d",Ch),Form("HP0 - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-1,1);
-    //hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-1e+7,1e+7);
-    //hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-10,10);
+    hTimeDifference = new TH1F (Form("hTimeDifference_ch%d",Ch),Form("Time Difference between Two Consecutive Electrons - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),40,0.,40.); 
+    hTimeDifference_clust = new TH1F (Form("hTimeDifference_clust_ch%d",Ch),Form("Time Difference between Two Consecutive Clusters - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0.,100.); 
+    //hP0=new TH1F (Form("hP0_ch%d",Ch),Form("HP0 - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),1000,-1,1);
+    //hder = new TH1F (Form("hder_ch%d",Ch),Form("Hder - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),1000,-1e+7,1e+7);
+    //hchiFT = new TH1F (Form("hchiFT_ch%d",Ch),Form("HchiFT - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),1000,-10,10);
     if(isChannel_1cm){
-      hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,100);
+      hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0.,100);
     }
-    if(isChannel_2cm){
-      hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0.,200);
+    if(isChannel_2cm || isChannel_1p5cm){
+      hNPeaks = new TH1F (Form("hNPeaks_ch%d",Ch),Form("N Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,0.,200);
     }
-    hNPeaks_clust = new TH1F (Form("hNPeaks_clust_ch%d",Ch),Form("N Cluster Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,100);
-    hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),2,-0.5,1.5); 
-    hNElectrons_per_cluster = new TH1F (Form("hNElectrons_per_cluster_ch%d",Ch),Form("N Electrons per Each Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),10,0.,10);
-    hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),250,0,0.250);
-    hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0,100,250,0,0.5);
+    hNPeaks_clust = new TH1F (Form("hNPeaks_clust_ch%d",Ch),Form("N Cluster Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0.,100);
+    hNeventSignals = new TH1F (Form("hNeventSignals_ch%d",Ch),Form("N event Signals - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),2,-0.5,1.5); 
+    hNElectrons_per_cluster = new TH1F (Form("hNElectrons_per_cluster_ch%d",Ch),Form("N Electrons per Each Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),10,0.,10);
+    hHPeaks = new TH1F (Form("hHPeaks_ch%d",Ch),Form("Height of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),250,0,0.250);
+    hHNPeaks = new TH2F (Form("hHNPeaks_ch%d",Ch),Form("Height vs N of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0,100,250,0,0.5);
     if(isChannel_1cm){
-      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,300,250,0,250);
+      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,0,300,250,0,250);
     }
-    if(isChannel_2cm){
-      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,250,0,250);
-    }
-    if(isChannel_1cm){
-	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,300,100,0,100);
-    }
-    if(isChannel_2cm){
-	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,0,600,100,0,100);
-    }
-    hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0,800);
-    if(isChannel_1cm){
-	    hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,400);
-    }
-    if(isChannel_2cm){
-      hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
+    if(isChannel_2cm || isChannel_1p5cm){
+      hNPeakFPeak = new TH2F (Form("hNPeakFPeak_ch%d",Ch),Form("N of Electrons found vs T of First Electron found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,0,600,250,0,250);
     }
     if(isChannel_1cm){
-	    hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0,500);
+	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,0,300,100,0,100);
     }
-    if(isChannel_2cm){
-      hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,0,800);
+    if(isChannel_2cm || isChannel_1p5cm){
+	    hNClusterFCluster = new TH2F (Form("hNClusterFCluster_ch%d",Ch),Form("N of Clusters found vs T of First Cluster found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,0,600,100,0,100);
+    }
+    hTPeaks = new TH1F (Form("hTPeaks_ch%d",Ch),Form("Time of Electron Peaks found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),400,0,800);
+    if(isChannel_1cm){
+	    hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,0,400);
+    }
+    if(isChannel_2cm || isChannel_1p5cm){
+      hTFstPeaks = new TH1F (Form("hTFstPeaks_ch%d",Ch),Form("Time of First Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,0,800);
+    }
+    if(isChannel_1cm){
+	    hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0,500);
+    }
+    if(isChannel_2cm || isChannel_1p5cm){
+      hNPeaks_1 = new TH1F (Form("hNPeaks_1_ch%d",Ch),Form("Time of Last Electron Peak found - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,0,800);
     }
       
-      //hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),10000,-0.01,0.01);
-      //hSecDeriv= new TH1F (Form("hSecDeriv_ch%d",Ch),Form("Second derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),10000,-0.01,0.01);
+      //hFirstDeriv= new TH1F (Form("hFirstDeriv_ch%d",Ch),Form("First derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),10000,-0.01,0.01);
+      //hSecDeriv= new TH1F (Form("hSecDeriv_ch%d",Ch),Form("Second derivative- Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),10000,-0.01,0.01);
       
       
       
-    hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),1000,-0.8,0.); 
+    hBsl = new TH1F (Form("hBsl_ch%d",Ch),Form("Base line - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),1000,-0.8,0.); 
     if(isChannel_1cm){
-	    hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("1 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,250.);
+	    hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("1 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0.,250.);
     }
-    if(isChannel_2cm){
-      hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("2 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),120,0.,600.);
+    if(isChannel_2cm || isChannel_1p5cm){
+      hIntegN = new TH1F (Form("hIntegN_ch%d",Ch),Form("2 cm Integral Charge in mV * ns /Ohm (pC) - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),120,0.,600.);
     }
     //if(Ch<=9){
-    //hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),400,0.,20.);
+    //hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),400,0.,20.);
     //}
     //else {
-    //  hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),250,0.,25.);
+    //  hIntegInR = new TH1F (Form("hIntegInR_ch%d",Ch),Form("Integral - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),250,0.,25.);
     //}
-    //hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-    //hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-    //hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,10.);
-    //hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
-    //hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),200,-10.,20.);
-    hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),125,0.,5.);
+    //hIntegNInR = new TH1F (Form("hIntegNInR_ch%d",Ch),Form("Integral minius PDS - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,-10.,10.);
+    //hIntegNInRC1 = new TH1F (Form("hIntegNInRC1_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,-10.,10.);
+    //hIntegNInRC2 = new TH1F (Form("hIntegNInRC2_ch%d",Ch),Form("Integral minius PDS Norm. on NPeak and loss - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,-10.,10.);
+    //hIntegNInRC3 = new TH1F (Form("hIntegNInRC3_ch%d",Ch),Form("Integral minius PDS whitout norm - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,-10.,20.);
+    //hIntegNInRC4 = new TH1F (Form("hIntegNInRC4_ch%d",Ch),Form("Integral minius PDS Norm. on loss - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),200,-10.,20.);
+    hRms = new TH1F (Form("hRms_ch%d",Ch),Form("noise RMS - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),125,0.,5.);
     //distribution of derivative for meg FE
-    //hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-    //hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-    //hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
-    hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),100,0.,0.5);
-    //hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %d cm - Track Angle %0.1f",Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha),150,-0.02,0.3);
+    //hMaxV = new TH1F (Form("hMaxV_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,-0.02,0.3);
+    //hMaxVN = new TH1F (Form("hMaxVN_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,-0.02,0.3);
+    //hMaxVNSmooth= new TH1F (Form("hMaxVNSmooth_ch%d",Ch),Form("Max val Smooth over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,-0.02,0.3);
+    hMaxVInR = new TH1F (Form("hMaxVInR_ch%d",Ch),Form("Max val - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),100,0.,0.5);
+    //hMaxVNInR = new TH1F (Form("hMaxVNInR_ch%d",Ch),Form("Max val over base line - Ch %d - Sense Wire Diameter %d um - Cell Size %0.1f cm - Track Angle %0.1f - %0.1f GSa/s - Gas Mixture 80/20 %d - 90/10 %d - 85/15 %d" ,Ch, ChannelDiameter[Ch],ChannelCellSize[Ch], alpha, _gsample, isRuns_80_20, isRuns_90_10, isRuns_85_15),150,-0.02,0.3);
     
     //////////////////////////////////////
     hNPeaks->GetYaxis()->SetTitle("Entries");
