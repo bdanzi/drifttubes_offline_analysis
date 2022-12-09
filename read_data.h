@@ -46,12 +46,12 @@ class read_data {
   virtual Int_t    GetEntry(int entry);
   virtual Long64_t LoadTree(Long64_t entry);
   virtual void     Init(TTree *tree);
-  virtual void     Loop(Char_t *name, Int_t MidEv=0,Int_t eventn=-1, float _gsample = 1.2, float N_1 = 3.0,float N_2= 1.0, float N_3 = 0.5, float N_4=0.5, float bslnTimeInterval = 25, int _dim = 1024);
+  virtual void     Loop(Char_t *name, Int_t MidEv=0,Int_t eventn=-1, float _gsample = 1.2, float N_1 = 3.0,float N_2= 1.0, float N_3 = 0.5, float N_4=0.5, float bslnTimeInterval = 25, int _dim = 1024, float _scale_cut = 0.20);
   virtual Bool_t   Notify();
   virtual void     Show(Long64_t entry = -1);
   
   double _tmax;
-  
+  bool isNov2021TestBeam;
   int dim;
   int nMaxCh;
   

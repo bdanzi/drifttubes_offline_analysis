@@ -88,6 +88,11 @@ int main (int argc, char ** argv){
   if (argc>=12) {
     _dim=atoi(argv[11]);
   }
+
+  float _scale_cut=-1;
+  if (argc>=13) {
+    _scale_cut=atof(argv[12]);
+  }
   // bool evalCut=false;
   // if (argc>=6) {
   //   evalCut=atoi(argv[5]);
@@ -117,8 +122,9 @@ int main (int argc, char ** argv){
   cout << "Read file with N4 (cut on Second Derivative): " << N_4 << endl;
   cout << "Bsln Time Interval (in ns): " << bslnTimeInterval << endl;
   cout << "Number of bins: " << _dim << endl;
+  cout << "Read file with Scale cut (in ns): " << _scale_cut << endl;
   tree = (TTree*)file->Get("data");
   read_data test(tree);
-  test.Loop(name,MidEv,nEv,_gsample, N_1, N_2, N_3, N_4, bslnTimeInterval, _dim);
+  test.Loop(name,MidEv,nEv,_gsample, N_1, N_2, N_3, N_4, bslnTimeInterval, _dim, _scale_cut);
   
 }
