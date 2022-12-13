@@ -10,7 +10,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#Drift-Tubes-2021-Test-Beam-offline-analysis">Drift Tubes 2021 Test Beam offline analysis</a>
+      <a href="#Drift-Tubes-2021-and-2022-Beam-Test-offline-analysis">Drift Tubes 2021 and 2022 Beam Test offline analysis</a>
       <ul>
         <li><a href="#authors">Authors</a></li>
         <li><a href="#setup">Setup</a></li>
@@ -21,7 +21,7 @@
   </ol>
 </details>
 
-# Drift Tubes 2021 Test Beam offline analysis
+# Drift Tubes 2021 and 2022 Beam Test offline analysis
 
 The `data_testbeam.xlsx` file contains the details of the different configurations associated to the ROOT files used for this data analysis.
 The focus is on the 165 GeV/c momentum muon beam runs from 11st of November. A flag isNov2021TestBeam is used to set the condition of this beam test. IsJuly2022TestBeam is used to analyze data of July 2022 test beam summarized in `run_table.xlsx`.
@@ -114,6 +114,18 @@ per each event in the third column some physical quantities which are related to
 
 <img width="964" alt="Channel Schematics of November 2021 Beam Test" src="https://github.com/bdanzi/drifttubes_offline_analysis/blob/master/Schermata%202022-01-30%20alle%2015.42.17.png">
 Credits for the Channel Schematics: Franco Grancagnolo (https://agenda.infn.it/event/28676/)
+
+## Channels correspondance July 2022 Beam Test
+
+- 1,2,3,5,6,8,9,10 : 8 Drift Tubes of 1 cm cell size respectively:
+  - Channel 2,3 Wire diameter of 15 micrometer 
+  - Channel 1,5,6,8 Wire diameter of 20 micrometer 
+  - Channel 9 and 10 Wire diameter of 25 micrometer 
+- 0,4,7,11 : 4 Drift Tubes of 1.5 cm cell size respectively:
+  - Channel 7,11 Wire diameter of 15 micrometer 
+  - Channel 0 Wire diameter of 20 micrometer 
+  - Channel 4 Wire diameter of 25 micrometer 
+- 12,13,14,15 : Trigger Counters
 
 <img width="964" alt="Channel Schematics of July 2022 Beam Test" src="https://github.com/bdanzi/TestBeam2022/blob/main/Schermata%202022-09-10%20alle%2020.18.11.png">
 Credits for the Channel Schematics: Federica Cuna (https://indico.ihep.ac.cn/event/16837/)
