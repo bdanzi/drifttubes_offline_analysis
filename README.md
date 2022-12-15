@@ -52,7 +52,7 @@ $ source setDCDataReaderEnv.sh
 $ bash compile.sh
 $ bash submit_first.sh
 ```
-where the last line of code runs in parallel the `./read_data $path_to_your_run_files $i 0 -1 $sampling $N_1 $N_2 $N_3 $N_4 $binTimeInterval $dim $cut_scale` command:
+where the last line of code runs in parallel the `./read_data $path_to_your_run_files $i 0 -1 $sampling $N_1 $N_2 $N_3 $N_4 $binTimeInterval $dim $cut_scale` command in interactive mode or on HTcondor:
 
 - i is the run number
 
