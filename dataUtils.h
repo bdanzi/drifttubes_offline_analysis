@@ -16,7 +16,7 @@ static int skipLstBin[5] = {10,10,10,10,10};  //475 for El Cal   //50	dati proto
 // static int ChannelDiameter[13] = {-1,-1,-1,-1,10,15,20,20,25,25,20,25,40}; // Old test beam Nov 2022
 // static float ChannelCellSize[13] = {-1.0,-1.0,-1.0,-1.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0}; // Old test beam Nov 2022
 // }
-// else if(!isNov2021TestBeam){
+// else if(isJuly2022TestBeam){
 static int ChannelDiameter[16] = {20,20,15,15,25,20,20,15,20,25,25,15,-1,-1,-1,-1}; // Old test beam Nov 2022
 static float ChannelCellSize[16] = {1.5,1.0,1.0,1.0,1.5,1.0,1.0,1.5,1.0,1.0,1.0,1.5,-1.0,-1.0,-1.0,-1.0}; // Old test beam Nov 2022
 // }
@@ -475,8 +475,7 @@ struct hstPerCh { //istogrammi per tutti i canali dell'oscilloscopio.
     //hIntegNInRoriginalW-> GetXaxis()->SetTitle("Integral [mA]");
     //hIntegNInRoriginalW-> GetYaxis()->SetTitle("Entries");
     hNPeaks_1->GetXaxis()->SetTitle("Time [ns]");
-    
-      
+
       
     
   }

@@ -52,6 +52,7 @@ class read_data {
   
   double _tmax;
   bool isNov2021TestBeam;
+  bool isJuly2022TestBeam;
   int dim;
   int nMaxCh;
   

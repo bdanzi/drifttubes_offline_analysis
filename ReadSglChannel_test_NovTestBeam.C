@@ -31,7 +31,67 @@ using namespace std;
 void ReadSglChannel_test_NovTestBeam(){
   
   gStyle->SetOptFit(1111);
+  // For the axis titles:
+  gStyle->SetTitleColor(1, "XYZ");
+  gStyle->SetTitleFont(42, "XYZ");
+  //gStyle->SetTitleSize(0.02, "XYZ");
+  gStyle->SetTitleXSize(0.03); // Another way to set the size?
+  gStyle->SetTitleYSize(0.03);
+  gStyle->SetTitleXOffset(1.6);//0.9);
+  gStyle->SetTitleYOffset(1.8); // => 1.15 if exponents
+  // theStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset  
+  // For the axis labels:
+  gStyle->SetLabelColor(1, "XYZ");
+  gStyle->SetLabelFont(42, "XYZ");
+  gStyle->SetLabelOffset(0.007, "XYZ");
+  gStyle->SetLabelSize(0.03, "XYZ");  
+  // For the axis:
+  gStyle->SetAxisColor(1, "XYZ");
+  gStyle->SetStripDecimals(kTRUE);
+  gStyle->SetTickLength(0.03, "XYZ");
+  gStyle->SetNdivisions(510, "XYZ");
+  gStyle->SetPadTickX(1);  // To get tick marks on the opposite side of the
+  // For the Global title:
+  gStyle->SetTitleFont(42);
+  gStyle->SetTitleColor(1);
+  gStyle->SetTitleTextColor(1);
+  gStyle->SetTitleFillColor(10);
+  gStyle->SetTitleFontSize(0.05);
+  gStyle->SetHistLineColor(kBlack);
+  gStyle->SetHistLineStyle(0);
+  gStyle->SetHistLineWidth(1);
+  // For the frame:
+  gStyle->SetFrameBorderMode(0);
+  gStyle->SetFrameBorderSize(1);
+  gStyle->SetFrameFillColor(0);
+  gStyle->SetFrameFillStyle(0);
+  gStyle->SetFrameLineColor(1);
+  gStyle->SetFrameLineStyle(1);
+  gStyle->SetFrameLineWidth(1);
   
+  // For the statistics box:
+  gStyle->SetOptFile(0);
+  //theStyle->SetOptStat(0); // To display the mean and RMS:   SetOptStat("mr");
+  gStyle->SetOptStat("emr");
+  gStyle->SetStatColor(kWhite);
+  gStyle->SetStatFont(42);
+  // theStyle->SetStatFontSize(0.05);
+  gStyle->SetStatTextColor(1);
+  gStyle->SetStatFormat("6.4g");
+  gStyle->SetStatBorderSize(1);
+  gStyle->SetPadBorderMode(0);
+  gStyle->SetFrameBorderMode(0);
+  gStyle->SetPadBottomMargin(0.12);
+  gStyle->SetPadLeftMargin(0.14);
+  gStyle->cd();  
+  // For the canvas:
+  gStyle->SetCanvasBorderMode(0);
+  gStyle->SetCanvasColor(kWhite);
+  gStyle->SetCanvasDefH(600); //Height of canvas
+  gStyle->SetCanvasDefW(900); //Width of canvas
+  gStyle->SetCanvasDefX(0);   //POsition on screen
+  gStyle->SetCanvasDefY(0);
+
   int channel=0;
   int ev=0;
   struct stat st = {0};
@@ -106,10 +166,10 @@ void ReadSglChannel_test_NovTestBeam(){
     // int Channel_2cm[] = {10,11,12}; // Nov 2021 Test Beam
 	// int Channel_1p5cm[] = {0}; // NO Nov 2021 Test Beam
 	// }
-	// else if(!isNov2021TestBeam){
+	// else if(isJuly2022TestBeam){
 	int Channel_1cm[] = {1,2,3,5,6,8,9,10}; // July 2022 Test Beam
     int Channel_2cm[] = {15}; // NO in July 2022 Test Beam
-	int Channel_1p5cm[] = {0,4,7,11}; // New Test Beam
+	int Channel_1p5cm[] = {0,4,7,11}; // New Test Beam Channel 0 is weird, I would skip it!
 	// }
   int Channel_1cm_size = sizeof Channel_1cm / sizeof Channel_1cm[0];
   int Channel_2cm_size = sizeof Channel_2cm / sizeof Channel_2cm[0];
@@ -126,17 +186,18 @@ void ReadSglChannel_test_NovTestBeam(){
   if ((isScanAngleStudy || isScanHVStudy) && isJuly2022TestBeam){ number_of_graphs_summary = 4;}
   if ((isGasMixtureStudy) && isJuly2022TestBeam){ number_of_graphs_summary = 3;}
   if ((isScanSamplingStudy) && isJuly2022TestBeam){ number_of_graphs_summary = 2;}
-  TCanvas *aveph_summary_1cm = new TCanvas("aveph_summary_1cm","Aveph 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *aveph_summary_2cm = new TCanvas("aveph_summary_2cm",Form("Aveph %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *aveph_summary_1cm = new TCanvas("aveph_summary_1cm","Aveph 1 cm cell size Drift Tubes",600,600);
+  TCanvas *aveph_summary_2cm = new TCanvas("aveph_summary_2cm",Form("Aveph %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_aveph_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_aveph_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   gr_aveph_summary_2cm->SetTitle(Form("Aveph %s cm cell size Drift Tubes",tubes.Data()));
   gr_aveph_summary_2cm->SetMarkerColor(kBlue);
+  gr_aveph_summary_2cm->SetLineColor(kBlue);
   if(isScanAngleStudy){
   gr_aveph_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_aveph_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_aveph_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_aveph_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -145,13 +206,16 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_aveph_summary_2cm->GetXaxis()->SetTitle("Gas Mixtures");
   }
   gr_aveph_summary_2cm->GetYaxis()->SetTitle("Average Pulse height (V)");
+
   gr_aveph_summary_1cm->SetTitle("Aveph 1 cm cell size Drift Tubes");
   gr_aveph_summary_1cm->GetYaxis()->SetTitle("Average Pulse Height (V)");
+  gr_aveph_summary_1cm->SetMarkerColor(kBlue);
+  gr_aveph_summary_1cm->SetLineColor(kBlue);
   if(isScanAngleStudy){
   gr_aveph_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_aveph_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_aveph_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_aveph_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -160,17 +224,18 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_aveph_summary_1cm->GetXaxis()->SetTitle("Gas Mixtures");
   }
   
-  TCanvas *rms_summary_1cm = new TCanvas("rms_summary_1cm","Rms 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *rms_summary_2cm = new TCanvas("rms_summary_2cm",Form("Rms %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *rms_summary_1cm = new TCanvas("rms_summary_1cm","Rms 1 cm cell size Drift Tubes",600,600);
+  TCanvas *rms_summary_2cm = new TCanvas("rms_summary_2cm",Form("Rms %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_rms_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_rms_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   gr_rms_summary_2cm->SetTitle(Form("Rms %s cm cell size Drift Tubes",tubes.Data()));
   gr_rms_summary_2cm->SetMarkerColor(kBlue);
+  gr_rms_summary_2cm->SetLineColor(kBlue);
  if(isScanAngleStudy){
   gr_rms_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_rms_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_rms_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_rms_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -181,12 +246,13 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_rms_summary_2cm->GetYaxis()->SetTitle("Rms (mV)");
   gr_rms_summary_1cm->SetTitle("Rms 1 cm cell size Drift Tubes");
   gr_rms_summary_1cm->SetMarkerColor(kBlue);
+  gr_rms_summary_1cm->SetLineColor(kBlue);
   gr_rms_summary_1cm->GetYaxis()->SetTitle("Rms (mV)");
  if(isScanAngleStudy){
   gr_rms_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_rms_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_rms_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_rms_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -195,17 +261,18 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_rms_summary_1cm->GetXaxis()->SetTitle("Gas Mixtures");
   }
 
-  TCanvas *bsl_summary_1cm = new TCanvas("bsl_summary_1cm","Bsl 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *bsl_summary_2cm = new TCanvas("bsl_summary_2cm",Form("Bsl %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *bsl_summary_1cm = new TCanvas("bsl_summary_1cm","Bsl 1 cm cell size Drift Tubes",600,600);
+  TCanvas *bsl_summary_2cm = new TCanvas("bsl_summary_2cm",Form("Bsl %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_bsl_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_bsl_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   gr_bsl_summary_2cm->SetTitle(Form("Bsl %s cm cell size Drift Tubes",tubes.Data()));
   gr_bsl_summary_2cm->SetMarkerColor(kBlue);
+  gr_bsl_summary_2cm->SetLineColor(kBlue);
   if(isScanAngleStudy){
   gr_bsl_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_bsl_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_bsl_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_bsl_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -216,12 +283,13 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_bsl_summary_2cm->GetYaxis()->SetTitle("Baseline (V)");
   gr_bsl_summary_1cm->SetTitle("Bsl 1 cm cell size Drift Tubes");
   gr_bsl_summary_1cm->SetMarkerColor(kBlue);
+  gr_bsl_summary_1cm->SetLineColor(kBlue);
   gr_bsl_summary_1cm->GetYaxis()->SetTitle("Baseline (V)");
   if(isScanAngleStudy){
   gr_bsl_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_bsl_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_bsl_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_bsl_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -231,18 +299,19 @@ void ReadSglChannel_test_NovTestBeam(){
   }
   
 
-  TCanvas *epc_summary_1cm = new TCanvas("epc_summary_1cm","Epc 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *epc_summary_2cm = new TCanvas("epc_summary_2cm",Form("Epc %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *epc_summary_1cm = new TCanvas("epc_summary_1cm","Epc 1 cm cell size Drift Tubes",600,600);
+  TCanvas *epc_summary_2cm = new TCanvas("epc_summary_2cm",Form("Epc %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_epc_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_epc_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   TLegend *leg_epc_summary_1cm= new TLegend(0.5,0.75,0.85,0.85); 
   gr_epc_summary_2cm->SetTitle(Form("Epc %s cm cell size Drift Tubes",tubes.Data()));
   gr_epc_summary_2cm->SetMarkerColor(kBlue);
+  gr_epc_summary_2cm->SetLineColor(kBlue);
   if(isScanAngleStudy){
   gr_epc_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_epc_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_epc_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_epc_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -253,12 +322,13 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_epc_summary_2cm->GetYaxis()->SetTitle("Electrons per Cluster");
   gr_epc_summary_1cm->SetTitle("Epc 1 cm cell size Drift Tubes");
   gr_epc_summary_1cm->SetMarkerColor(kBlue);
+  gr_epc_summary_1cm->SetLineColor(kBlue);
   gr_epc_summary_1cm->GetYaxis()->SetTitle("Electrons per Cluster");
   if(isScanAngleStudy){
   gr_epc_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_epc_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_epc_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_epc_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -267,18 +337,19 @@ void ReadSglChannel_test_NovTestBeam(){
   gr_epc_summary_1cm->GetXaxis()->SetTitle("Gas Mixtures");
   }
   
-  TCanvas *integral_summary_1cm = new TCanvas("integral_summary_1cm","Integral 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *integral_summary_2cm = new TCanvas("integral_summary_2cm",Form("Integral %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *integral_summary_1cm = new TCanvas("integral_summary_1cm","Integral 1 cm cell size Drift Tubes",600,600);
+  TCanvas *integral_summary_2cm = new TCanvas("integral_summary_2cm",Form("Integral %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_integral_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_integral_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   gr_integral_summary_2cm->SetTitle(Form("Integral %s cm cell size Drift Tubes",tubes.Data()));
   gr_integral_summary_2cm->SetMarkerColor(kBlue);
+  gr_integral_summary_2cm->SetLineColor(kBlue);
   gr_integral_summary_2cm->GetYaxis()->SetTitle("Charge (pC)");
   if(isScanAngleStudy){
   gr_integral_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_integral_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_integral_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_integral_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -288,11 +359,12 @@ void ReadSglChannel_test_NovTestBeam(){
   }
   gr_integral_summary_1cm->SetTitle("Integral 1 cm cell size Drift Tubes");
   gr_integral_summary_1cm->SetMarkerColor(kBlue);
+  gr_integral_summary_1cm->SetLineColor(kBlue);
   if(isScanAngleStudy){
   gr_integral_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_integral_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_integral_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_integral_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -302,18 +374,19 @@ void ReadSglChannel_test_NovTestBeam(){
   }
   gr_integral_summary_1cm->GetYaxis()->SetTitle("Charge (pC)");
   
-  TCanvas *maximum_summary_1cm = new TCanvas("maximum_summary_1cm","Maximum 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *maximum_summary_2cm = new TCanvas("maximum_summary_2cm",Form("Maximum %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *maximum_summary_1cm = new TCanvas("maximum_summary_1cm","Maximum 1 cm cell size Drift Tubes",600,600);
+  TCanvas *maximum_summary_2cm = new TCanvas("maximum_summary_2cm",Form("Maximum %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_maximum_summary_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_maximum_summary_2cm = new TGraphErrors(number_of_graphs_summary);
   gr_maximum_summary_2cm->SetTitle(Form("Maximum %s cm cell size Drift Tubes",tubes.Data()));
   gr_maximum_summary_2cm->SetMarkerColor(kBlue);
+  gr_maximum_summary_2cm->SetLineColor(kBlue);
   gr_maximum_summary_2cm->GetYaxis()->SetTitle("Voltage (V)");
 if(isScanAngleStudy){
   gr_maximum_summary_2cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_maximum_summary_2cm->GetXaxis()->SetTitle("HV");
+  gr_maximum_summary_2cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_maximum_summary_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -323,11 +396,12 @@ if(isScanAngleStudy){
   }
   gr_maximum_summary_1cm->SetTitle("Maximum 1 cm cell size Drift Tubes");
   gr_maximum_summary_1cm->SetMarkerColor(kBlue);
+  gr_maximum_summary_1cm->SetLineColor(kBlue);
 if(isScanAngleStudy){
   gr_maximum_summary_1cm->GetXaxis()->SetTitle("Track angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_maximum_summary_1cm->GetXaxis()->SetTitle("HV");
+  gr_maximum_summary_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_maximum_summary_1cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -338,13 +412,13 @@ if(isScanAngleStudy){
   gr_maximum_summary_1cm->GetYaxis()->SetTitle("Voltage (V)");
   
 
-  TCanvas *efficiency_electrons_1cm = new TCanvas("efficiency_electrons_1cm","Electron Finding Efficiency 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *efficiency_electrons_2cm = new TCanvas("efficiency_electrons_2cm",Form("Electron Finding Efficiency %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *efficiency_electrons_1cm = new TCanvas("efficiency_electrons_1cm","Electron Finding Efficiency 1 cm cell size Drift Tubes",600,600);
+  TCanvas *efficiency_electrons_2cm = new TCanvas("efficiency_electrons_2cm",Form("Electron Finding Efficiency %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_efficiency_electrons_1cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_efficiency_electrons_2cm = new TGraphErrors(number_of_graphs_summary);
   
-  TCanvas *efficiency_clusters_1cm = new TCanvas("efficiency_clusters_1cm","Cluster Finding Efficiency 1 cm cell size Drift Tubes",200,10,500,300);
-  TCanvas *efficiency_clusters_2cm = new TCanvas("efficiency_clusters_2cm",Form("Cluster Finding Efficiency %s cm cell size Drift Tubes",tubes.Data()),200,10,500,300);
+  TCanvas *efficiency_clusters_1cm = new TCanvas("efficiency_clusters_1cm","Cluster Finding Efficiency 1 cm cell size Drift Tubes",600,600);
+  TCanvas *efficiency_clusters_2cm = new TCanvas("efficiency_clusters_2cm",Form("Cluster Finding Efficiency %s cm cell size Drift Tubes",tubes.Data()),600,600);
   TGraphErrors* gr_efficiency_clusters_2cm = new TGraphErrors(number_of_graphs_summary);
   TGraphErrors* gr_efficiency_clusters_1cm = new TGraphErrors(number_of_graphs_summary);
   
@@ -355,6 +429,8 @@ if(isScanAngleStudy){
   
   gr_efficiency_electrons_2cm->SetMarkerColor(kBlue);
   gr_efficiency_clusters_2cm->SetMarkerColor(kBlue);
+  gr_efficiency_electrons_2cm->SetLineColor(kBlue);
+  gr_efficiency_clusters_2cm->SetLineColor(kBlue);
   
   if(isScanAngleStudy){
   gr_efficiency_electrons_2cm->GetXaxis()->SetTitle("Track Angle (deg)");
@@ -363,10 +439,10 @@ if(isScanAngleStudy){
   gr_efficiency_clusters_1cm->GetXaxis()->SetTitle("Track Angle (deg)");
   }
   else if(isScanHVStudy){
-  gr_efficiency_electrons_2cm->GetXaxis()->SetTitle("HV");
-  gr_efficiency_clusters_2cm->GetXaxis()->SetTitle("HV");
-  gr_efficiency_electrons_1cm->GetXaxis()->SetTitle("HV");
-  gr_efficiency_clusters_1cm->GetXaxis()->SetTitle("HV");
+  gr_efficiency_electrons_2cm->GetXaxis()->SetTitle("HV Configuration");
+  gr_efficiency_clusters_2cm->GetXaxis()->SetTitle("HV Configuration");
+  gr_efficiency_electrons_1cm->GetXaxis()->SetTitle("HV Configuration");
+  gr_efficiency_clusters_1cm->GetXaxis()->SetTitle("HV Configuration");
   }
   else if(isScanSamplingStudy){
   gr_efficiency_electrons_2cm->GetXaxis()->SetTitle("Sampling Rate (GSa/s)");
@@ -433,23 +509,25 @@ if(isScanAngleStudy){
       fscanf(fp,"%d",&channel); //number of channels for which I show plots (4-14)
       fscanf(fp,"%d",&ev); //number of events for which I show plots (0-...)
 //   if(isNov2021TestBeam){
-//   	string Runs_80_20[] = {"histosTB_run_127.root", "histosTB_run_117.root"}; // 2021 Nov Test Beam
-//   	string Runs_90_10[] = {"histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root", "histosTB_run_86.root", "histosTB_run_87.root", "histosTB_run_88.root", "histosTB_run_89.root", "histosTB_run_90.root", "histosTB_run_91.root", "histosTB_run_92.root", "histosTB_run_93.root", "histosTB_run_94.root", "histosTB_run_95.root", "histosTB_run_96.root", "histosTB_run_97.root" ,"histosTB_run_98.root", "histosTB_run_99.root", "histosTB_run_100.root", "histosTB_run_101.root"};
-//   	string Runs_85_15[] = {"histosTB_run_0.root"}; // No data for Nov 2021, 2022 Test Beam to be inserted
-//   	string Runs_alpha_0[] = {"histosTB_run_99.root", "histosTB_run_117.root", "histosTB_run_86.root", "histosTB_run_100.root", "histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root"}; // 2021 Test Beam
-//   	string Runs_alpha_15[] = {"histosTB_run_98.root", "histosTB_run_87.root", "histosTB_run_97.root"}; // 2021 Nov Test Beam
-//   	string Runs_alpha_30[] = {"histosTB_run_96.root", "histosTB_run_88.root", "histosTB_run_95.root"}; // 2021 Nov Test Beam
-//   	string Runs_alpha_45[] = {"histosTB_run_94.root", "histosTB_run_89.root", "histosTB_run_93.root"}; // 2021 Nov Test Beam
-//   	string Runs_alpha_60[] = {"histosTB_run_91.root", "histosTB_run_127.root", "histosTB_run_90.root" ,"histosTB_run_92.root"}; // 2021 Nov Test Beam
+  	// string Runs_80_20[] = {"histosTB_run_117.root", "histosTB_run_127.root"}; // 2021 Nov Test Beam
+  	// //string Runs_90_10[] = {"histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root", "histosTB_run_86.root", "histosTB_run_87.root", "histosTB_run_88.root", "histosTB_run_89.root", "histosTB_run_90.root", "histosTB_run_91.root", "histosTB_run_92.root", "histosTB_run_93.root", "histosTB_run_94.root", "histosTB_run_95.root", "histosTB_run_96.root", "histosTB_run_97.root" ,"histosTB_run_98.root", "histosTB_run_99.root", "histosTB_run_100.root", "histosTB_run_101.root"};
+  	// // Scan Angle Study
+	// string Runs_90_10[] = {"histosTB_run_99.root","histosTB_run_98.root", "histosTB_run_96.root", "histosTB_run_94.root","histosTB_run_91.root"};
+	// string Runs_85_15[] = {"histosTB_run_0.root"}; // No data for Nov 2021, 2022 Test Beam to be inserted
+  	// string Runs_alpha_0[] = {"histosTB_run_99.root", "histosTB_run_117.root", "histosTB_run_86.root", "histosTB_run_100.root", "histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root"}; // 2021 Test Beam
+  	// string Runs_alpha_15[] = {"histosTB_run_98.root", "histosTB_run_87.root", "histosTB_run_97.root"}; // 2021 Nov Test Beam
+  	// string Runs_alpha_30[] = {"histosTB_run_96.root", "histosTB_run_88.root", "histosTB_run_95.root"}; // 2021 Nov Test Beam
+  	// string Runs_alpha_45[] = {"histosTB_run_94.root", "histosTB_run_89.root", "histosTB_run_93.root"}; // 2021 Nov Test Beam
+  	// string Runs_alpha_60[] = {"histosTB_run_91.root", "histosTB_run_127.root", "histosTB_run_90.root" ,"histosTB_run_92.root"}; // 2021 Nov Test Beam
 //   }
-//   else if(!isNov2021TestBeam){
+//   else if(isJuly2022TestBeam){
 	//string Runs_80_20[] = {"histosTB_run_39.root","histosTB_run_40.root", "histosTB_run_41.root", "histosTB_run_42.root","histosTB_run_43.root","histosTB_run_44.root","histosTB_run_45.root","histosTB_run_46.root"}; // 2022 July Test Beam
-	// Scan Study: HV
-	string Runs_80_20[] = {"histosTB_run_40.root","histosTB_run_41.root","histosTB_run_42.root","histosTB_run_43.root"};
-  	// Scan Study: Angle
+	////Scan Study: HV
+	//string Runs_80_20[] = {"histosTB_run_40.root","histosTB_run_41.root","histosTB_run_42.root","histosTB_run_43.root"};
+  	//// Scan Study: Angle
 	//string Runs_80_20[] = {"histosTB_run_44.root", "histosTB_run_45.root","histosTB_run_41.root","histosTB_run_46.root"};
-	// Scan Study: Gas mixture
-	//string Runs_80_20[] = {"histosTB_run_41.root"};
+	////Scan Study: Gas mixture
+	string Runs_80_20[] = {"histosTB_run_41.root"};
 	// Scan Study: Sampling rate
 	string Runs_90_10[] = {"histosTB_run_9.root","histosTB_run_10.root"}; // 2022 July Test Beam
   	string Runs_85_15[] = {"histosTB_run_63.root"}; // 2022 July Test Beam
@@ -475,8 +553,11 @@ if(isScanAngleStudy){
       int isRuns_alpha_30 = 0;
       int isRuns_alpha_45 = 0;
       int isRuns_alpha_60 = 0;
+	  TString gasMixture("");
       for (int i = 0; i < Runs_80_20_size; i++) {
 	if (Runs_80_20[i] == name_file_compact) {
+	  gasMixture = gasMixture.Append("Gas Mixture He:IsoB 80/20");
+	  cout << gasMixture.Data() << endl;
 	  isRuns_80_20 = 1;
 	  cluster_per_cm_mip = 18.;
 	  printf("Gas mixture changed to 80/20 with Number of Cluster/cm (MIP) to be %0.1f!\n",cluster_per_cm_mip);
@@ -485,6 +566,8 @@ if(isScanAngleStudy){
       }
       for (int i = 0; i < Runs_90_10_size; i++) {
 	if (Runs_90_10[i] == name_file_compact) {
+	  gasMixture = gasMixture.Append("Gas Mixture He:IsoB 90/10");
+	  cout << gasMixture.Data() << endl;
 	  isRuns_90_10 = 1;
 	  cluster_per_cm_mip = 12.;
 	  printf("Gas mixture changed to 90/10 with Number of Cluster/cm (MIP) to be %0.1f!\n",cluster_per_cm_mip);
@@ -493,6 +576,8 @@ if(isScanAngleStudy){
       }
       for (int i = 0; i < Runs_85_15_size; i++) {
 	if (Runs_85_15[i] == name_file_compact) {
+	  gasMixture = gasMixture.Append("Gas Mixture He:IsoB 85/15");
+	  cout << gasMixture.Data() << endl;
 	  isRuns_85_15 = 1;
 	  cluster_per_cm_mip = 15.;
 	  printf("Gas mixture changed to 85/15 with Number of Cluster/cm (MIP) to be %0.1f!\n",cluster_per_cm_mip);
@@ -743,9 +828,10 @@ if(isScanAngleStudy){
 	    rms_maximum_1cm = rms_maximum_1cm + h17->GetRMS();
 	  }
 	  //max->cd(2);
+	  h17->Fit("landau");
 	  gPad->SetLogy(0);
 	  gPad->SetLogx(0);
-	  h17->Draw( "same");
+	  h17->Draw("same");
 	  
 	  
 	  
@@ -776,20 +862,20 @@ if(isScanAngleStudy){
 	  	gPad->SetLogy(1);
 	  }
 	  h4->Draw("same");
-	  TPaveText *pt_1cm = new TPaveText(0.11,0.7,0.25,0.75,"NDC");
-	  pt_1cm->SetTextSize(0.05);
+	  TPaveText *pt_1cm = new TPaveText(0.1,0.84,0.6,0.89,"NDC");
+	  pt_1cm->SetTextSize(0.06);
 	  pt_1cm->SetTextColor(kRed);
-	  pt_1cm->SetFillColor(0);
+	  pt_1cm->SetFillColor(kYellow);
 	  pt_1cm->SetTextAlign(12);
-	  pt_1cm->AddText(Form("Expected Electron Peaks: %.1f",expected_electrons));
+	  pt_1cm->AddText(Form("Expected Electron Peaks: %.1f - Track angle (deg) %0.1f",expected_electrons, alpha));
 	  pt_1cm->Draw("same");
-	  TPaveText *pt_1cm_alpha = new TPaveText(0.11,0.65,0.25,0.7,"NDC");
+	  TPaveText *pt_1cm_alpha = new TPaveText(0.2,0.84,0.62,0.88,"NDC");
 	  pt_1cm_alpha->SetTextSize(0.05);
 	  pt_1cm_alpha->SetTextColor(kRed);
 	  pt_1cm_alpha->SetFillColor(0);
 	  pt_1cm_alpha->SetTextAlign(12);
 	  pt_1cm_alpha->AddText(Form("Track angle (deg): %.1f",alpha));
-	  pt_1cm_alpha->Draw("same");
+	  //pt_1cm_alpha->Draw("same");
 	  
 	  TH1F *h20=(TH1F*)file->Get(Form("H-Ch%i_signal/hNPeaks_clust_ch%i",i,i));
 	  if (h20==0x0) { continue; }
@@ -800,7 +886,7 @@ if(isScanAngleStudy){
 	    mean_clusters_1cm = mean_clusters_1cm + h20->GetMean();
 	    rms_clusters_1cm = rms_clusters_1cm + h20->GetRMS();
 	  }
-	  if(expected_cluster>0){
+	  if(expected_cluster > 0.){
 	    h20->Fit("gaus");
 	    //printf("Hello");
 	  }
@@ -812,18 +898,19 @@ if(isScanAngleStudy){
 	    f11->SetParameters(0,h20->GetMean());
 	    h20->Fit("f11","R");
 	  }
-	  h20->Draw("same");
-	  TPaveText *pt_1cm_cluster = new TPaveText(0.11,0.7,0.25,0.85,"NDC");
-	  pt_1cm_cluster->SetTextSize(0.05);
-	  pt_1cm_cluster->SetTextColor(kRed);
-	  pt_1cm_cluster->SetTextAlign(12);
-	  pt_1cm_cluster->SetFillColor(0);
-	  pt_1cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
 	  if(isLogarithm){
 	  	gPad->SetLogy(1);
 	  }
+	  h20->Draw("same");
+	  TPaveText *pt_1cm_cluster =  new TPaveText(0.2,0.84,0.6,0.88,"NDC");
+	  pt_1cm_cluster->SetTextSize(0.07);
+	  pt_1cm_cluster->SetTextColor(kRed);
+	  pt_1cm_cluster->SetFillColor(kYellow);
+	  pt_1cm_cluster->SetTextAlign(12);
+	  pt_1cm_cluster->AddText(Form("Expected Clusters: %.1f - Track Angle (deg) %0.1f",expected_cluster,alpha));
 	  pt_1cm_cluster->Draw("same");
-	  pt_1cm_alpha->Draw("same");
+	
+	  //pt_1cm_alpha->Draw("same");
 	  
 	  TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hNElectrons_per_cluster_ch%i",i,i));
 	  if (h31==0x0) { continue; }
@@ -836,16 +923,16 @@ if(isScanAngleStudy){
 	  //h31->GetXaxis()->SetRangeUser(0.,5.);
 	  //h31->Fit("expo");
 	  h31->Draw("same");
-	  TPaveText *cluster_population_1cm = new TPaveText(0.11,0.7,0.25,0.85,"NDC");
-	  cluster_population_1cm->SetTextSize(0.05);
+	//   if(isLogarithm){
+	//   	gPad->SetLogy(1);
+	//   }
+	  TPaveText *cluster_population_1cm = new TPaveText(0.4,0.85,0.7,0.88,"NDC");
+	  cluster_population_1cm->SetTextSize(0.055);
 	  cluster_population_1cm->SetTextColor(kRed);
 	  cluster_population_1cm->SetTextAlign(12);
-	  cluster_population_1cm->SetFillColor(0);
-	  cluster_population_1cm->AddText(Form("Expected Electrons per Cluster: %.1f",cluster_population));
-	  if(isLogarithm){
-	  	gPad->SetLogy(1);
-	  }
-	  pt_1cm_alpha->Draw("same");
+	  cluster_population_1cm->SetFillColor(kYellow);
+	  cluster_population_1cm->AddText(Form("Expected Electrons per Cluster: %.1f - Track angle (deg) %0.1f",cluster_population,alpha));
+	  //pt_1cm_alpha->Draw("same");
 	  cluster_population_1cm->Draw("same");
 	  
 	  TH1F *h32=(TH1F*)file->Get(Form("H-Ch%i_signal/hTimeDifference_ch%i",i,i));
@@ -856,10 +943,10 @@ if(isScanAngleStudy){
 	  //TF1  *f4 = new TF1("f4","[0]*exp(-x/[1])",0,12);
 	  f4->SetParameters(0,4000.);
 	  f4->SetParameters(1,3);
-	  h32->Fit("f4","R");
-	  if(isLogarithm){
-	  	gPad->SetLogy(1);
-	  }
+	//   h32->Fit("f4","R");
+	//   if(isLogarithm){
+	//   	gPad->SetLogy(1);
+	//   }
 	  h32->Draw("same");
 	  //pt_1cm_alpha->Draw("same");
 	  //h31->GetXaxis()->SetRangeUser(0.,5.);
@@ -875,10 +962,10 @@ if(isScanAngleStudy){
 	  TF1  *f1 = new TF1("f1","[0]*exp(-x/[1])",10,40);
 	  f1->SetParameters(0,1000);
 	  f1->SetParameters(1,10);
-	  h33->Fit("f1","R");
-	  if(isLogarithm){
-	  	gPad->SetLogy(1);
-	  }
+	//   h33->Fit("f1","R");
+	//   if(isLogarithm){
+	//   	gPad->SetLogy(1);
+	//   }
 	  h33->Draw("same");
 	  
 	  TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
@@ -1011,6 +1098,8 @@ if(isScanAngleStudy){
 	rms_electrons_1cm = rms_electrons_1cm/expected_electrons;
 	
 	aveph_summary_1cm->cd();
+	aveph_summary_1cm->SetGridx();
+  	aveph_summary_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_aveph_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,aveph_1cm);
 	}
@@ -1024,7 +1113,8 @@ if(isScanAngleStudy){
 	gr_aveph_summary_1cm->SetMarkerStyle(21);
 	gr_aveph_summary_1cm->SetMarkerSize(0.5);
 	gr_aveph_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_aveph_summary_1cm = new TLatex(gr_aveph_summary_1cm->GetX()[number_of_trials], gr_aveph_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_aveph_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_aveph_summary_1cm = new TLatex(gr_aveph_summary_1cm->GetX()[number_of_trials], gr_aveph_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_aveph_summary_1cm->SetTextSize(0.01); 
 	latex_aveph_summary_1cm->SetTextColor(kRed);
 	gr_aveph_summary_1cm->GetListOfFunctions()->Add(latex_aveph_summary_1cm);
@@ -1032,6 +1122,8 @@ if(isScanAngleStudy){
 	
  
 	rms_summary_1cm->cd(); 
+	rms_summary_1cm->SetGridx();
+  	rms_summary_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_rms_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,rms_1cm_var);
 	}
@@ -1045,13 +1137,16 @@ if(isScanAngleStudy){
 	gr_rms_summary_1cm->SetMarkerStyle(21);
 	gr_rms_summary_1cm->SetMarkerSize(0.5);
 	gr_rms_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_rms_summary_1cm = new TLatex(gr_rms_summary_1cm->GetX()[number_of_trials], gr_rms_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_rms_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_rms_summary_1cm = new TLatex(gr_rms_summary_1cm->GetX()[number_of_trials], gr_rms_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_rms_summary_1cm->SetTextSize(0.01); 
 	latex_rms_summary_1cm->SetTextColor(kRed);
 	gr_rms_summary_1cm->GetListOfFunctions()->Add(latex_rms_summary_1cm);
 	gr_rms_summary_1cm->Draw("sameAP");
 	
-	epc_summary_1cm->cd(); 
+	epc_summary_1cm->cd();
+	epc_summary_1cm->SetGridx();
+  	epc_summary_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_epc_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,epc_1cm);
 	}
@@ -1065,7 +1160,8 @@ if(isScanAngleStudy){
 	gr_epc_summary_1cm->SetMarkerStyle(21);
 	gr_epc_summary_1cm->SetMarkerSize(0.5);
 	gr_epc_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_epc_summary_1cm = new TLatex(gr_epc_summary_1cm->GetX()[number_of_trials], gr_epc_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_epc_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_epc_summary_1cm = new TLatex(gr_epc_summary_1cm->GetX()[number_of_trials], gr_epc_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_epc_summary_1cm->SetTextSize(0.01); 
 	latex_epc_summary_1cm->SetTextColor(kRed);
 	gr_epc_summary_1cm->GetListOfFunctions()->Add(latex_epc_summary_1cm);
@@ -1075,6 +1171,8 @@ if(isScanAngleStudy){
 	// leg->AddEntry(tmpsignal_1.back(),"Waveform"); 
 	
 	bsl_summary_1cm->cd();
+	bsl_summary_1cm->SetGridx();
+  	bsl_summary_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_bsl_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,bsl_1cm_var);
 	}
@@ -1088,13 +1186,16 @@ if(isScanAngleStudy){
 	gr_bsl_summary_1cm->SetMarkerStyle(21);
 	gr_bsl_summary_1cm->SetMarkerSize(0.5);
 	gr_bsl_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_bsl_summary_1cm = new TLatex(gr_bsl_summary_1cm->GetX()[number_of_trials], gr_bsl_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_bsl_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_bsl_summary_1cm = new TLatex(gr_bsl_summary_1cm->GetX()[number_of_trials], gr_bsl_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_bsl_summary_1cm->SetTextSize(0.01); 
 	latex_bsl_summary_1cm->SetTextColor(kRed);
 	gr_bsl_summary_1cm->GetListOfFunctions()->Add(latex_bsl_summary_1cm);
 	gr_bsl_summary_1cm->Draw("sameAP");
 	
 	maximum_summary_1cm->cd(); 
+	maximum_summary_1cm->SetGridx();
+  	maximum_summary_1cm->SetGridy();
 	if(isScanAngleStudy){  
 	gr_maximum_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,maximum_1cm);
 	}
@@ -1108,13 +1209,16 @@ if(isScanAngleStudy){
 	gr_maximum_summary_1cm->SetMarkerStyle(21);
 	gr_maximum_summary_1cm->SetMarkerSize(0.5);
 	gr_maximum_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_maximum_summary_1cm = new TLatex(gr_maximum_summary_1cm->GetX()[number_of_trials], gr_maximum_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_maximum_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_maximum_summary_1cm = new TLatex(gr_maximum_summary_1cm->GetX()[number_of_trials], gr_maximum_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_maximum_summary_1cm->SetTextSize(0.01); 
 	latex_maximum_summary_1cm->SetTextColor(kRed);
 	gr_maximum_summary_1cm->GetListOfFunctions()->Add(latex_maximum_summary_1cm);
 	gr_maximum_summary_1cm->Draw("sameAP");
 	
 	integral_summary_1cm->cd();
+	integral_summary_1cm->SetGridx();
+  	integral_summary_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_integral_summary_1cm->SetPoint(counter_filling_electrons_1cm,alpha,integral_1cm);
 	}
@@ -1128,13 +1232,16 @@ if(isScanAngleStudy){
 	gr_integral_summary_1cm->SetMarkerStyle(21);
 	gr_integral_summary_1cm->SetMarkerSize(0.5);
 	gr_integral_summary_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_integral_summary_1cm = new TLatex(gr_integral_summary_1cm->GetX()[number_of_trials], gr_integral_summary_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_integral_summary_1cm->SetLineColor(kBlue);
+	TLatex *latex_integral_summary_1cm = new TLatex(gr_integral_summary_1cm->GetX()[number_of_trials], gr_integral_summary_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_integral_summary_1cm->SetTextSize(0.01); 
 	latex_integral_summary_1cm->SetTextColor(kRed);
 	gr_integral_summary_1cm->GetListOfFunctions()->Add(latex_integral_summary_1cm);
 	gr_integral_summary_1cm->Draw("sameAP");
 	
 	efficiency_electrons_1cm->cd();
+	efficiency_electrons_1cm->SetGridx();
+  	efficiency_electrons_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_efficiency_electrons_1cm->SetPoint(counter_filling_electrons_1cm,alpha,mean_electrons_1cm);
 	}
@@ -1148,13 +1255,16 @@ if(isScanAngleStudy){
 	gr_efficiency_electrons_1cm->SetMarkerStyle(21);
 	gr_efficiency_electrons_1cm->SetMarkerSize(0.5);
 	gr_efficiency_electrons_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_efficiency_electrons_1cm = new TLatex(gr_efficiency_electrons_1cm->GetX()[number_of_trials], gr_efficiency_electrons_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_efficiency_electrons_1cm->SetLineColor(kBlue);
+	TLatex *latex_efficiency_electrons_1cm = new TLatex(gr_efficiency_electrons_1cm->GetX()[number_of_trials], gr_efficiency_electrons_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_efficiency_electrons_1cm->SetTextSize(0.01); 
 	latex_efficiency_electrons_1cm->SetTextColor(kRed);
 	gr_efficiency_electrons_1cm->GetListOfFunctions()->Add(latex_efficiency_electrons_1cm);
 	gr_efficiency_electrons_1cm->Draw("sameAP");
 	
 	efficiency_clusters_1cm->cd();
+	efficiency_clusters_1cm->SetGridx();
+  	efficiency_clusters_1cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_efficiency_clusters_1cm->SetPoint(counter_filling_clusters_1cm,alpha,mean_clusters_1cm);
 	}
@@ -1168,7 +1278,8 @@ if(isScanAngleStudy){
 	gr_efficiency_clusters_1cm->SetMarkerStyle(21);
 	gr_efficiency_clusters_1cm->SetMarkerSize(0.5);
 	gr_efficiency_clusters_1cm->SetMarkerColor(kBlue);
-	TLatex *latex_efficiency_clusters_1cm = new TLatex(gr_efficiency_clusters_1cm->GetX()[number_of_trials], gr_efficiency_clusters_1cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_efficiency_clusters_1cm->SetLineColor(kBlue);
+	TLatex *latex_efficiency_clusters_1cm = new TLatex(gr_efficiency_clusters_1cm->GetX()[number_of_trials], gr_efficiency_clusters_1cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
 	latex_efficiency_clusters_1cm->SetTextSize(0.01); 
 	latex_efficiency_clusters_1cm->SetTextColor(kRed);
 	gr_efficiency_clusters_1cm->GetListOfFunctions()->Add(latex_efficiency_clusters_1cm);
@@ -1263,7 +1374,7 @@ if(isScanAngleStudy){
 	}
 	
 
-	if(isChannel_2cm || isChannel_1p5cm){
+	if((isChannel_2cm && isNov2021TestBeam) || (isChannel_1p5cm && isJuly2022TestBeam)){
 	  //2cm/1cm 1,8/0,8 = 2,25
 	  if(isChannel_2cm){
 	  drift_size = 1.8;
@@ -1273,7 +1384,7 @@ if(isScanAngleStudy){
 	  }
 	  expected_electrons = cluster_per_cm_mip * drift_size*relativistic_rise * cluster_population * 1/cos_alpha;
 	  expected_cluster = cluster_per_cm_mip * drift_size*relativistic_rise * 1/cos_alpha;
-	  
+	 
 	  TH1F *h17=(TH1F*)file->Get(Form("H-Ch%i_signal/hMaxVInR_ch%i",i,i));
 	  if (h17==0x0) { continue; }
 	  if(isNov2021TestBeam) {max_2cm->cd(i-9);}
@@ -1283,9 +1394,10 @@ if(isScanAngleStudy){
 	    rms_maximum_2cm = rms_maximum_2cm + h17->GetRMS();
 	  }
 	  //max->cd(2);
+	  h17->Fit("landau");
 	  gPad->SetLogy(0);
 	  gPad->SetLogx(0);
-	  h17->Draw("same" );
+	  h17->Draw("same");
 	  
 	  TH1F *h3=(TH1F*)file->Get(Form("H-Ch%i_signal/hBsl_ch%i",i,i));
 	  if (h3==0x0) { continue; }
@@ -1314,21 +1426,22 @@ if(isScanAngleStudy){
 	  if(isLogarithm){
 	  	gPad->SetLogy(1);
 	  }
+	//   h4->Fit("landau");
 	  h4->Draw("same");
-	  TPaveText *pt_2cm = new TPaveText(0.11,0.7,0.25,0.75,"NDC");
-	  pt_2cm->SetTextSize(0.05);
+	  TPaveText *pt_2cm = new TPaveText(0.11,0.84,0.88,0.88,"NDC");
+	  pt_2cm->SetTextSize(0.06);
 	  pt_2cm->SetTextColor(kRed);
-	  pt_2cm->SetFillColor(0);
+	  pt_2cm->SetFillColor(kYellow);
 	  pt_2cm->SetTextAlign(12);
-	  pt_2cm->AddText(Form("Expected Electron Peaks: %.1f",expected_electrons));
+	  pt_2cm->AddText(Form("Expected Electron Peaks: %.1f - Track angle (deg) %0.1f",expected_electrons,alpha));
 	  pt_2cm->Draw("same");
-	  TPaveText *pt_2cm_alpha = new TPaveText(0.11,0.65,0.25,0.7,"NDC");
+	  TPaveText *pt_2cm_alpha = new TPaveText(0.2,0.84,0.62,0.88,"NDC");
 	  pt_2cm_alpha->SetTextSize(0.05);
 	  pt_2cm_alpha->SetTextColor(kRed);
 	  pt_2cm_alpha->SetFillColor(0);
 	  pt_2cm_alpha->SetTextAlign(12);
 	  pt_2cm_alpha->AddText(Form("Track angle (deg): %.1f",alpha));
-	  pt_2cm_alpha->Draw("same");
+	  //pt_2cm_alpha->Draw("same");
 	  
 	  TH1F *h5=(TH1F*)file->Get(Form("H-Ch%i_signal/hHPeaks_ch%i",i,i));
 	  if (h5==0x0) { continue; }
@@ -1413,10 +1526,10 @@ if(isScanAngleStudy){
 	  TF1  *f2 = new TF1("f2","[0]*exp(-x/[1])",10,40);
 	  f2->SetParameters(0,4000);
 	  f2->SetParameters(1,10);
-	  h33->Fit("f2","R");
-	  if(isLogarithm){
-	  	gPad->SetLogy(1);
-	  }
+	  // h33->Fit("f2","R");
+	//   if(isLogarithm){
+	//   	gPad->SetLogy(1);
+	//   }
 	  //pt_2cm_alpha->Draw("same");
 	  //h33->Fit("expo");
 	  h33->Draw("same");
@@ -1449,11 +1562,12 @@ if(isScanAngleStudy){
 	if(isNov2021TestBeam) {npeaks_clustser_2cm->cd(i-9);}
 	else if(isJuly2022TestBeam) {npeaks_clustser_2cm->cd(counter_plots_1p5cm);}
 	h20->GetXaxis()->SetRangeUser(0.,90.);
+
 	if(isRuns_90_10 || isRuns_80_20 || isRuns_85_15){
 	  mean_clusters_2cm = mean_clusters_2cm + h20->GetMean();
 	  rms_clusters_2cm = rms_clusters_2cm + h20->GetRMS();
 	}
-	if(expected_cluster>0){
+	if(expected_cluster > 0.){
 	  h20->Fit("gaus");
 	}
 	else{
@@ -1468,14 +1582,14 @@ if(isScanAngleStudy){
 	  gPad->SetLogy(1);
 	}
 	h20->Draw("same");
-	TPaveText *pt_2cm_cluster = new TPaveText(0.11,0.7,0.25,0.8,"NDC");
-	pt_2cm_cluster->SetTextSize(0.05);
+	TPaveText *pt_2cm_cluster =  new TPaveText(0.12,0.85,0.6,0.88,"NDC");
+	pt_2cm_cluster->SetTextSize(0.055);
 	pt_2cm_cluster->SetTextColor(kRed);
-	pt_2cm_cluster->SetFillColor(0);
+	pt_2cm_cluster->SetFillColor(kYellow);
 	pt_2cm_cluster->SetTextAlign(12);
-	pt_2cm_cluster->AddText(Form("Expected Clusters: %.1f",expected_cluster));
+	pt_2cm_cluster->AddText(Form("Expected Clusters: %.1f - Track Angle (deg) %0.1f",expected_cluster,alpha));
 	pt_2cm_cluster->Draw("same");
-	pt_2cm_alpha->Draw("same");
+	//pt_2cm_alpha->Draw("same");
 	
 	TH1F *h31=(TH1F*)file->Get(Form("H-Ch%i_signal/hNElectrons_per_cluster_ch%i",i,i));
 	if (h31==0x0) { continue; }
@@ -1488,15 +1602,14 @@ if(isScanAngleStudy){
 	//h31->GetXaxis()->SetRangeUser(0.,5.);
 	//h31->Fit("expo");
 	h31->Draw("same");
-	TPaveText *cluster_population_2cm = new TPaveText(0.11,0.7,0.25,0.8,"NDC");
+	TPaveText *cluster_population_2cm = new TPaveText(0.13,0.85,0.6,0.88,"NDC");
 	gPad->SetLogy(0);
-	cluster_population_2cm->SetTextSize(0.05);
+	cluster_population_2cm->SetTextSize(0.055);
 	cluster_population_2cm->SetTextColor(kRed);
 	cluster_population_2cm->SetTextAlign(12);
-	cluster_population_2cm->SetFillColor(0);
-	cluster_population_2cm->AddText(Form("Expected Electrons per Cluster: %.1f",cluster_population));
-	gPad->SetLogy(0);
-	pt_2cm_alpha->Draw("same");
+	cluster_population_2cm->SetFillColor(kYellow);
+	cluster_population_2cm->AddText(Form("Expected Electrons per Cluster: %.1f - Track Angle (deg) %0.1f",cluster_population,alpha));
+	//pt_2cm_alpha->Draw("same");
 	cluster_population_2cm->Draw("same");
 	
 	
@@ -1508,25 +1621,25 @@ if(isScanAngleStudy){
 	//TF1  *f3 = new TF1("f3","[0]*exp(-x/[1])",0,12);
 	f3->SetParameters(0,4000.);
 	f3->SetParameters(1,3);
-	h32->Fit("f3","R");
+	// h32->Fit("f3","R");
 	h32->Draw("same");
-	if(isLogarithm){
-	  	gPad->SetLogy(1);
-	}
+	// if(isLogarithm){
+	//   	gPad->SetLogy(1);
+	// }
 	pt_2cm_alpha->Draw("same");
 	//h31->GetXaxis()->SetRangeUser(0.,5.);
 	//h31->Fit("expo");
 	counter_plots_1p5cm = counter_plots_1p5cm + 1;
 	} // if on 2 cm or 1.5 cm tubes
       } // loop on all tubes 
-      
+     
       if(isRuns_90_10 || isRuns_80_20 || isRuns_85_15){ 
 
 	aveph_2cm = aveph_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	rms_aveph_2cm = rms_aveph_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	
-	epc_2cm = epc_2cm/(float) (isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size;
-	rms_epc_2cm = rms_epc_2cm/(float) (isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size;
+	epc_2cm = epc_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
+	rms_epc_2cm = rms_epc_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	
 	integral_2cm = (integral_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size));
 	rms_integral_2cm = (rms_integral_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size));
@@ -1540,6 +1653,7 @@ if(isScanAngleStudy){
 	mean_clusters_2cm = mean_clusters_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	rms_clusters_2cm = rms_clusters_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	
+	cout <<"Mean" << mean_clusters_2cm <<"Track Angle"<< alpha << endl;
 	mean_electrons_2cm = mean_electrons_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	rms_electrons_2cm = rms_electrons_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 	
@@ -1547,12 +1661,16 @@ if(isScanAngleStudy){
 	rms_maximum_2cm = rms_maximum_2cm/(float) ((isNov2021TestBeam) > 0 ? Channel_2cm_size : Channel_1p5cm_size);
 
 	//Normalization
+	//cout <<"Expected Cluster" << expected_cluster <<"Track Angle"<< alpha << endl;
 	mean_clusters_2cm = mean_clusters_2cm/expected_cluster;
+	//cout <<"After division" << mean_clusters_2cm << endl <<"Track Angle"<< alpha << endl;
 	mean_electrons_2cm = mean_electrons_2cm/expected_electrons;
 	rms_clusters_2cm = rms_clusters_2cm/expected_cluster;
 	rms_electrons_2cm = rms_electrons_2cm/expected_electrons;
 	
 	aveph_summary_2cm->cd();
+	aveph_summary_2cm->SetGridx();
+  	aveph_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_aveph_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,aveph_2cm);
 	}
@@ -1566,13 +1684,16 @@ if(isScanAngleStudy){
     gr_aveph_summary_2cm->SetMarkerStyle(21);
     gr_aveph_summary_2cm->SetMarkerSize(0.5);
     gr_aveph_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_aveph_summary_2cm = new TLatex(gr_aveph_summary_2cm->GetX()[number_of_trials], gr_aveph_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_aveph_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_aveph_summary_2cm = new TLatex(gr_aveph_summary_2cm->GetX()[number_of_trials], gr_aveph_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_aveph_summary_2cm->SetTextSize(0.01); 
     latex_aveph_summary_2cm->SetTextColor(kRed);
     gr_aveph_summary_2cm->GetListOfFunctions()->Add(latex_aveph_summary_2cm);
     gr_aveph_summary_2cm->Draw("sameAP");
     
     rms_summary_2cm->cd();
+	rms_summary_2cm->SetGridx();
+  	rms_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_rms_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,rms_2cm_var);
 	}
@@ -1586,13 +1707,16 @@ if(isScanAngleStudy){
     gr_rms_summary_2cm->SetMarkerStyle(21);
     gr_rms_summary_2cm->SetMarkerSize(0.5);
     gr_rms_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_rms_summary_2cm = new TLatex(gr_rms_summary_2cm->GetX()[number_of_trials], gr_rms_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_rms_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_rms_summary_2cm = new TLatex(gr_rms_summary_2cm->GetX()[number_of_trials], gr_rms_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_rms_summary_2cm->SetTextSize(0.01); 
     latex_rms_summary_2cm->SetTextColor(kRed);
     gr_rms_summary_2cm->GetListOfFunctions()->Add(latex_rms_summary_2cm);
     gr_rms_summary_2cm->Draw("sameAP");
     
     epc_summary_2cm->cd();
+	epc_summary_2cm->SetGridx();
+  	epc_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_epc_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,epc_2cm);
 	}
@@ -1606,7 +1730,8 @@ if(isScanAngleStudy){
     gr_epc_summary_2cm->SetMarkerStyle(21);
     gr_epc_summary_2cm->SetMarkerSize(0.5);
     gr_epc_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_epc_summary_2cm = new TLatex(gr_epc_summary_2cm->GetX()[number_of_trials], gr_epc_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_epc_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_epc_summary_2cm = new TLatex(gr_epc_summary_2cm->GetX()[number_of_trials], gr_epc_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_epc_summary_2cm->SetTextSize(0.01); 
     latex_epc_summary_2cm->SetTextColor(kRed);
     gr_epc_summary_2cm->GetListOfFunctions()->Add(latex_epc_summary_2cm);
@@ -1616,6 +1741,8 @@ if(isScanAngleStudy){
     // leg->AddEntry(tmpsignal_1.back(),"Waveform");
 
     bsl_summary_2cm->cd();
+	bsl_summary_2cm->SetGridx();
+  	bsl_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_bsl_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,bsl_2cm_var);
 	}
@@ -1629,13 +1756,16 @@ if(isScanAngleStudy){
     gr_bsl_summary_2cm->SetMarkerStyle(21);
     gr_bsl_summary_2cm->SetMarkerSize(0.5);
     gr_bsl_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_bsl_summary_2cm = new TLatex(gr_bsl_summary_2cm->GetX()[number_of_trials], gr_bsl_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_bsl_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_bsl_summary_2cm = new TLatex(gr_bsl_summary_2cm->GetX()[number_of_trials], gr_bsl_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_bsl_summary_2cm->SetTextSize(0.01); 
     latex_bsl_summary_2cm->SetTextColor(kRed);
     gr_bsl_summary_2cm->GetListOfFunctions()->Add(latex_bsl_summary_2cm);
     gr_bsl_summary_2cm->Draw("sameAP");
     
     maximum_summary_2cm->cd();
+	maximum_summary_2cm->SetGridx();
+  	maximum_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_maximum_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,maximum_2cm);
 	}
@@ -1649,13 +1779,16 @@ if(isScanAngleStudy){
     gr_maximum_summary_2cm->SetMarkerStyle(21);
     gr_maximum_summary_2cm->SetMarkerSize(0.5);
     gr_maximum_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_maximum_summary_2cm = new TLatex(gr_maximum_summary_2cm->GetX()[number_of_trials], gr_maximum_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_maximum_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_maximum_summary_2cm = new TLatex(gr_maximum_summary_2cm->GetX()[number_of_trials], gr_maximum_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_maximum_summary_2cm->SetTextSize(0.01); 
     latex_maximum_summary_2cm->SetTextColor(kRed);
     gr_maximum_summary_2cm->GetListOfFunctions()->Add(latex_maximum_summary_2cm);
     gr_maximum_summary_2cm->Draw("sameAP");
     
     integral_summary_2cm->cd();
+	integral_summary_2cm->SetGridx();
+  	integral_summary_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_integral_summary_2cm->SetPoint(counter_filling_electrons_2cm,alpha,integral_2cm);
 	}
@@ -1669,13 +1802,16 @@ if(isScanAngleStudy){
     gr_integral_summary_2cm->SetMarkerStyle(21);
     gr_integral_summary_2cm->SetMarkerSize(0.5);
     gr_integral_summary_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_integral_summary_2cm = new TLatex(gr_integral_summary_2cm->GetX()[number_of_trials], gr_integral_summary_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_integral_summary_2cm->SetLineColor(kBlue);
+    TLatex *latex_integral_summary_2cm = new TLatex(gr_integral_summary_2cm->GetX()[number_of_trials], gr_integral_summary_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_integral_summary_2cm->SetTextSize(0.01); 
     latex_integral_summary_2cm->SetTextColor(kRed);
     gr_integral_summary_2cm->GetListOfFunctions()->Add(latex_integral_summary_2cm);
     gr_integral_summary_2cm->Draw("sameAP");
     
     efficiency_electrons_2cm->cd();
+	efficiency_electrons_2cm->SetGridx();
+  	efficiency_electrons_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_efficiency_electrons_2cm->SetPoint(counter_filling_electrons_2cm,alpha,mean_electrons_2cm);
 	}
@@ -1689,13 +1825,16 @@ if(isScanAngleStudy){
     gr_efficiency_electrons_2cm->SetMarkerStyle(21);
     gr_efficiency_electrons_2cm->SetMarkerSize(0.5);
     gr_efficiency_electrons_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_efficiency_electrons_2cm = new TLatex(gr_efficiency_electrons_2cm->GetX()[number_of_trials], gr_efficiency_electrons_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_efficiency_electrons_2cm->SetLineColor(kBlue);
+    TLatex *latex_efficiency_electrons_2cm = new TLatex(gr_efficiency_electrons_2cm->GetX()[number_of_trials], gr_efficiency_electrons_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_efficiency_electrons_2cm->SetTextSize(0.01); 
     latex_efficiency_electrons_2cm->SetTextColor(kRed);
     gr_efficiency_electrons_2cm->GetListOfFunctions()->Add(latex_efficiency_electrons_2cm);
     gr_efficiency_electrons_2cm->Draw("sameAP");
     
     efficiency_clusters_2cm->cd();
+	efficiency_clusters_2cm->SetGridx();
+  	efficiency_clusters_2cm->SetGridy();
 	if(isScanAngleStudy){
 	gr_efficiency_clusters_2cm->SetPoint(counter_filling_clusters_2cm,alpha,mean_clusters_2cm);
 	}
@@ -1709,7 +1848,8 @@ if(isScanAngleStudy){
     gr_efficiency_clusters_2cm->SetMarkerStyle(21);
     gr_efficiency_clusters_2cm->SetMarkerSize(0.5);
     gr_efficiency_clusters_2cm->SetMarkerColor(kBlue);
-    TLatex *latex_efficiency_clusters_2cm = new TLatex(gr_efficiency_clusters_2cm->GetX()[number_of_trials], gr_efficiency_clusters_2cm->GetY()[number_of_trials],Form("DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
+	gr_efficiency_clusters_2cm->SetLineColor(kBlue);
+    TLatex *latex_efficiency_clusters_2cm = new TLatex(gr_efficiency_clusters_2cm->GetX()[number_of_trials], gr_efficiency_clusters_2cm->GetY()[number_of_trials],Form("%s DERIV N1 %s N2 %s N3 %s N4 %s scale_cut %s",gasMixture.Data(),N1.Data(),N2.Data(),N3.Data(),N4.Data(),scale_cut.Data())); 
     latex_efficiency_clusters_2cm->SetTextSize(0.01); 
     latex_efficiency_clusters_2cm->SetTextColor(kRed);
     gr_efficiency_clusters_2cm->GetListOfFunctions()->Add(latex_efficiency_clusters_2cm);
