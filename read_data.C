@@ -88,10 +88,10 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Float_t _gsample
   //_tmax = 853.3e-9;//1.0e-6;//853.3e-9;//1.0e-6;//853.3e-9;//1.0e-6;
   _tmax = (float) 1/(_gsample)*dim;
   if(isNov2021TestBeam){
-  nMaxCh = 12;
+    nMaxCh = 12;
   }
   else if(isJuly2022TestBeam){
-   nMaxCh = 15;
+    nMaxCh = 15;
   }
   tmax=_tmax;  //to fix compilation problem
   double timeRes;
@@ -159,18 +159,18 @@ void read_data::Loop(Char_t *output, Int_t MidEv,Int_t eventn,  Float_t _gsample
   std::vector<int> trigCh; //vettore di interi per i canali di trigger.
   trigCh.clear();
 #ifndef _OSC // For test beam usage
-if(isNov2021TestBeam){
-  trigCh.push_back(0);
-  trigCh.push_back(1);
-  trigCh.push_back(2);
-  trigCh.push_back(3);
-}
-else if(isJuly2022TestBeam){
-  trigCh.push_back(12);
-  trigCh.push_back(13);
+  if(isNov2021TestBeam){
+    trigCh.push_back(0);
+    trigCh.push_back(1);
+    trigCh.push_back(2);
+    trigCh.push_back(3);
+  }
+  else if(isJuly2022TestBeam){
+    trigCh.push_back(12);
+    trigCh.push_back(13);
   trigCh.push_back(14);
   trigCh.push_back(15);
-}
+  }
 #else //for muon data - Oscilloscope in the lab
   trigCh.push_back(7);//osc1
   trigCh.push_back(8);//osc2
@@ -210,33 +210,33 @@ else if(isJuly2022TestBeam){
   Float_t cluster_population = 1.6;
   Int_t NPeak;
   string name_file_compact = outChar;
-	// if(isNov2021TestBeam){
-		// string Runs_80_20[] = {"histosTB_run_127.root", "histosTB_run_117.root"}; // 2021 Nov Test Beam
-		// string Runs_90_10[] = {"histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root", "histosTB_run_86.root", "histosTB_run_87.root", "histosTB_run_88.root", "histosTB_run_89.root", "histosTB_run_90.root", "histosTB_run_91.root", "histosTB_run_92.root", "histosTB_run_93.root", "histosTB_run_94.root", "histosTB_run_95.root", "histosTB_run_96.root", "histosTB_run_97.root" ,"histosTB_run_98.root", "histosTB_run_99.root", "histosTB_run_100.root", "histosTB_run_101.root"};
-		// string Runs_85_15[] = {"histosTB_run_0.root"}; // No data for Nov 2021, 2022 Test Beam to be inserted
-		// string Runs_alpha_0[] = {"histosTB_run_99.root", "histosTB_run_117.root", "histosTB_run_86.root", "histosTB_run_100.root", "histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root"}; // 2021 Test Beam
-		// string Runs_alpha_15[] = {"histosTB_run_98.root", "histosTB_run_87.root", "histosTB_run_97.root"}; // 2021 Nov Test Beam
-		// string Runs_alpha_30[] = {"histosTB_run_96.root", "histosTB_run_88.root", "histosTB_run_95.root"}; // 2021 Nov Test Beam
-		// string Runs_alpha_45[] = {"histosTB_run_94.root", "histosTB_run_89.root", "histosTB_run_93.root"}; // 2021 Nov Test Beam
-		// string Runs_alpha_60[] = {"histosTB_run_91.root", "histosTB_run_127.root", "histosTB_run_90.root" ,"histosTB_run_92.root"}; // 2021 Nov Test Beam
-	// }
-	// else if(isJuly2022TestBeam){
-	//string Runs_80_20[] = {"histosTB_run_39.root","histosTB_run_40.root", "histosTB_run_41.root", "histosTB_run_42.root","histosTB_run_43.root","histosTB_run_44.root","histosTB_run_45.root","histosTB_run_46.root"}; // 2022 July Test Beam
-	//Scan Study: HV
-	//string Runs_80_20[] = {"histosTB_run_40.root","histosTB_run_41.root","histosTB_run_42.root","histosTB_run_43.root"};
-  	//Scan Study: Angle
-	//string Runs_80_20[] = {"histosTB_run_44.root", "histosTB_run_45.root","histosTB_run_41.root","histosTB_run_46.root"};
-	//Scan Study: gas mixture
-	string Runs_80_20[] = {"histosTB_run_41.root"};
-	// Scan Study: Sampling rate
-	string Runs_90_10[] = {"histosTB_run_9.root","histosTB_run_10.root"}; // 2022 July Test Beam
-  	string Runs_85_15[] = {"histosTB_run_63.root"}; // 2022 July Test Beam
-  	string Runs_alpha_0[] = {"histosTB_run_44.root"}; // 2022 July Test Beam
-  	string Runs_alpha_15[] = {"histosTB_run_0.root"}; // We didn't take data at 15°, 2022 July Test Beam
-  	string Runs_alpha_30[] = {"histosTB_run_45.root"}; // 2022 July Test Beam
-  	string Runs_alpha_45[] = {"histosTB_run_39.root","histosTB_run_40.root", "histosTB_run_41.root", "histosTB_run_42.root","histosTB_run_43.root","histosTB_run_9.root","histosTB_run_10.root","histosTB_run_63.root"}; // 2022 July Test Beam
-  	string Runs_alpha_60[] = {"histosTB_run_46.root"}; // 2022 July Test Beam
-//   }
+  // if(isNov2021TestBeam){
+  // string Runs_80_20[] = {"histosTB_run_127.root", "histosTB_run_117.root"}; // 2021 Nov Test Beam
+  // string Runs_90_10[] = {"histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root", "histosTB_run_86.root", "histosTB_run_87.root", "histosTB_run_88.root", "histosTB_run_89.root", "histosTB_run_90.root", "histosTB_run_91.root", "histosTB_run_92.root", "histosTB_run_93.root", "histosTB_run_94.root", "histosTB_run_95.root", "histosTB_run_96.root", "histosTB_run_97.root" ,"histosTB_run_98.root", "histosTB_run_99.root", "histosTB_run_100.root", "histosTB_run_101.root"};
+  // string Runs_85_15[] = {"histosTB_run_0.root"}; // No data for Nov 2021, 2022 Test Beam to be inserted
+  // string Runs_alpha_0[] = {"histosTB_run_99.root", "histosTB_run_117.root", "histosTB_run_86.root", "histosTB_run_100.root", "histosTB_run_72.root", "histosTB_run_73.root", "histosTB_run_74.root"}; // 2021 Test Beam
+  // string Runs_alpha_15[] = {"histosTB_run_98.root", "histosTB_run_87.root", "histosTB_run_97.root"}; // 2021 Nov Test Beam
+  // string Runs_alpha_30[] = {"histosTB_run_96.root", "histosTB_run_88.root", "histosTB_run_95.root"}; // 2021 Nov Test Beam
+  // string Runs_alpha_45[] = {"histosTB_run_94.root", "histosTB_run_89.root", "histosTB_run_93.root"}; // 2021 Nov Test Beam
+  // string Runs_alpha_60[] = {"histosTB_run_91.root", "histosTB_run_127.root", "histosTB_run_90.root" ,"histosTB_run_92.root"}; // 2021 Nov Test Beam
+  // }
+  // else if(isJuly2022TestBeam){
+  //string Runs_80_20[] = {"histosTB_run_39.root","histosTB_run_40.root", "histosTB_run_41.root", "histosTB_run_42.root","histosTB_run_43.root","histosTB_run_44.root","histosTB_run_45.root","histosTB_run_46.root"}; // 2022 July Test Beam
+  //Scan Study: HV
+  //string Runs_80_20[] = {"histosTB_run_40.root","histosTB_run_41.root","histosTB_run_42.root","histosTB_run_43.root"};
+  //Scan Study: Angle
+  //string Runs_80_20[] = {"histosTB_run_44.root", "histosTB_run_45.root","histosTB_run_41.root","histosTB_run_46.root"};
+  //Scan Study: gas mixture
+  string Runs_80_20[] = {"histosTB_run_41.root"};
+  // Scan Study: Sampling rate
+  string Runs_90_10[] = {"histosTB_run_9.root","histosTB_run_10.root"}; // 2022 July Test Beam
+  string Runs_85_15[] = {"histosTB_run_63.root"}; // 2022 July Test Beam
+  string Runs_alpha_0[] = {"histosTB_run_44.root"}; // 2022 July Test Beam
+  string Runs_alpha_15[] = {"histosTB_run_0.root"}; // We didn't take data at 15°, 2022 July Test Beam
+  string Runs_alpha_30[] = {"histosTB_run_45.root"}; // 2022 July Test Beam
+  string Runs_alpha_45[] = {"histosTB_run_39.root","histosTB_run_40.root", "histosTB_run_41.root", "histosTB_run_42.root","histosTB_run_43.root","histosTB_run_9.root","histosTB_run_10.root","histosTB_run_63.root"}; // 2022 July Test Beam
+  string Runs_alpha_60[] = {"histosTB_run_46.root"}; // 2022 July Test Beam
+  //   }
   int Runs_80_20_size = sizeof Runs_80_20 / sizeof Runs_80_20[0];
   int Runs_90_10_size = sizeof Runs_90_10 / sizeof Runs_90_10[0];
   int Runs_85_15_size = sizeof Runs_85_15 / sizeof Runs_85_15[0];
@@ -302,12 +302,12 @@ else if(isJuly2022TestBeam){
     }
   }
   for (int i = 0; i < Runs_alpha_45_size; i++) {
-        if (Runs_alpha_45[i] == name_file_compact) {
-	  isRuns_alpha_45 = 1;
-	  alpha = 45.;
-	  printf("Track Angle Changed to be %0.1f!\n",alpha);
-	  break;
-        }
+    if (Runs_alpha_45[i] == name_file_compact) {
+      isRuns_alpha_45 = 1;
+      alpha = 45.;
+      printf("Track Angle Changed to be %0.1f!\n",alpha);
+      break;
+    }
   }
   for (int i = 0; i < Runs_alpha_60_size; i++) {
     if (Runs_alpha_60[i] == name_file_compact) {
@@ -380,42 +380,42 @@ else if(isJuly2022TestBeam){
     int counter_1cm=0;
     int counter_1p5cm=0;
     int counter_2cm=0;
-	// if(isNov2021TestBeam){
+    // if(isNov2021TestBeam){
     // int Channel_1cm[] = {4,5,6,7,8,9}; // Nov 2021 Test Beam
     // int Channel_2cm[] = {10,11,12}; // Nov 2021 Test Beam
-	// int Channel_1p5cm[] = {0}; // NO Nov 2021 Test Beam
-	// }
-	// else if(isJuly2022TestBeam){
-	int Channel_1cm[] = {1,2,3,5,6,8,9,10}; // July 2022 Test Beam
+    // int Channel_1p5cm[] = {0}; // NO Nov 2021 Test Beam
+    // }
+    // else if(isJuly2022TestBeam){
+    int Channel_1cm[] = {1,2,3,5,6,8,9,10}; // July 2022 Test Beam
     int Channel_2cm[] = {15}; // NO in July 2022 Test Beam
-	int Channel_1p5cm[] = {0,4,7,11}; // New Test Beam
-	// }
+    int Channel_1p5cm[] = {0,4,7,11}; // New Test Beam
+    // }
     int Channel_1cm_size = sizeof Channel_1cm / sizeof Channel_1cm[0];
     int Channel_2cm_size = sizeof Channel_2cm / sizeof Channel_2cm[0];
     int Channel_1p5cm_size = sizeof Channel_1p5cm / sizeof Channel_1p5cm[0];
     int isChannel_1cm = 0;
     int isChannel_2cm = 0;
     int isChannel_1p5cm = 0;
-	// if(isNov2021TestBeam){
+    // if(isNov2021TestBeam){
     // int top_first_driftTubes_line[] = {4,5,6,7,8,9}; // 2021 Nov Test Beam
-  	// int top_second_driftTubes_line[] = {13,14}; // 2021 Nov Test Beam
-  	// int top_third_driftTubes_line[] = {10,11,12}; // 2021 Nov Test Beam
-	// }
-	// else if(isJuly2022TestBeam){
-	int top_first_driftTubes_line[] = {8,6,5,1}; // 2022 July Test Beam all 1.0 cm upstream downstream
-  	int top_second_driftTubes_line[] = {7,4,11}; // 2022 July Test Beam 1.5 cm
-  	//int top_third_driftTubes_line[] = {0}; // 2022 July Test Beam 1.5 cm
-	int top_third_driftTubes_line[] = {3,2,10,9}; // 2022 July Test Beam 1.0 cm
-	// }
-  	int top_first_driftTubes_line_size = sizeof top_first_driftTubes_line / sizeof top_first_driftTubes_line[0];
-  	int top_second_driftTubes_line_size = sizeof top_second_driftTubes_line / sizeof top_second_driftTubes_line[0];
-  	int top_third_driftTubes_line_size = sizeof top_third_driftTubes_line / sizeof top_third_driftTubes_line[0];
-  	int istop_first_driftTubes_line = 0;
-	int istop_second_driftTubes_line = 0;
-	int istop_third_driftTubes_line = 0;
-	int counter_top_first_driftTubes_line_size = 0;
-  	int counter_top_second_driftTubes_line_size = 0;
-  	int counter_top_third_driftTubes_line_size = 0;
+    // int top_second_driftTubes_line[] = {13,14}; // 2021 Nov Test Beam
+    // int top_third_driftTubes_line[] = {10,11,12}; // 2021 Nov Test Beam
+    // }
+    // else if(isJuly2022TestBeam){
+    int top_first_driftTubes_line[] = {8,6,5,1}; // 2022 July Test Beam all 1.0 cm upstream downstream
+    int top_second_driftTubes_line[] = {7,4,11}; // 2022 July Test Beam 1.5 cm
+    //int top_third_driftTubes_line[] = {0}; // 2022 July Test Beam 1.5 cm
+    int top_third_driftTubes_line[] = {3,2,10,9}; // 2022 July Test Beam 1.0 cm
+    // }
+    int top_first_driftTubes_line_size = sizeof top_first_driftTubes_line / sizeof top_first_driftTubes_line[0];
+    int top_second_driftTubes_line_size = sizeof top_second_driftTubes_line / sizeof top_second_driftTubes_line[0];
+    int top_third_driftTubes_line_size = sizeof top_third_driftTubes_line / sizeof top_third_driftTubes_line[0];
+    int istop_first_driftTubes_line = 0;
+    int istop_second_driftTubes_line = 0;
+    int istop_third_driftTubes_line = 0;
+    int counter_top_first_driftTubes_line_size = 0;
+    int counter_top_second_driftTubes_line_size = 0;
+    int counter_top_third_driftTubes_line_size = 0;
     // Loop to fill the waveforms  - Customization for Jul 2022 and Nov 2021 Beam Tests
     for (auto point : wd->getX742Data()) {
       
@@ -487,7 +487,7 @@ else if(isJuly2022TestBeam){
             break;
 	  }
 	}
-
+	
 	// Cout chekcs
 	//cout << "nPt in Waves:" << Waves[channel].nPt() << endl;
 	//cout << "Rms in Waves:" << Waves[channel].rms << endl;
@@ -501,17 +501,17 @@ else if(isJuly2022TestBeam){
 	  if(isChannel_1cm){
 	    counter_1cm=counter_1cm+1;
 	  }
-
+	  
 	  if(istop_first_driftTubes_line){
-		  counter_top_first_driftTubes_line_size = counter_top_first_driftTubes_line_size+1;
+	    counter_top_first_driftTubes_line_size = counter_top_first_driftTubes_line_size+1;
 	  }
-
+	  
 	  if(istop_second_driftTubes_line){
-		  counter_top_second_driftTubes_line_size = counter_top_second_driftTubes_line_size+1;
+	    counter_top_second_driftTubes_line_size = counter_top_second_driftTubes_line_size+1;
 	  }
-	
-      if(istop_third_driftTubes_line){
-		  counter_top_third_driftTubes_line_size = counter_top_third_driftTubes_line_size+1;
+	  
+	  if(istop_third_driftTubes_line){
+	    counter_top_third_driftTubes_line_size = counter_top_third_driftTubes_line_size+1;
 	  }
 
 	  if(isChannel_2cm){
@@ -565,7 +565,7 @@ else if(isJuly2022TestBeam){
 	  break;
         }
       }
-	  
+      
 
       bool isTrg=false;
       for(auto trgCh : trigCh) { if (channel==trgCh) { isTrg=true;}}
@@ -695,7 +695,7 @@ else if(isJuly2022TestBeam){
       //cout << "Waveform max:" << Waves[channel].max << endl; 
 		//cout << "Waveform rms x 10:" << 10 * Waves[channel].rms << endl; 
       //if(!isTrg && Waves[channel].max > 0.05 && ((isChannel_1cm && Waves[channel].charge_integInR > 20 && Waves[channel].charge_integInR < 160) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60 && Waves[channel].charge_integInR < 200)) && (counter_top_first_driftTubes_line_size>=2 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){  // we are dealing with Volts , charge in pC
-	if(!isTrg && Waves[channel].max > 0.05 && ((isChannel_1cm && Waves[channel].charge_integInR > 20 ) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60)) && (counter_top_first_driftTubes_line_size>=2 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){  // we are dealing with Volts , charge in pC
+      if(!isTrg && Waves[channel].max > 0.05 && ((isChannel_1cm && Waves[channel].charge_integInR > 20 ) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60)) && (counter_top_first_driftTubes_line_size>=2 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){  // we are dealing with Volts , charge in pC
 	
 	N_signalevents[channel]= 1.0;
 	//cout << channel << endl; 
@@ -725,13 +725,13 @@ else if(isJuly2022TestBeam){
 	    ((hstPerCh*)HstPerCh[channel])->hHPeaks->Fill(pkHgt[ipk]);
 	    ((hstPerCh*)HstPerCh[channel])->hHNPeaks->Fill(ipk+1,pkHgt[ipk]);
 	  }
-	
+	  
 	  ((hstPerCh*)HstPerCh[channel])->hNClusterFCluster->Fill((float)X[pkPos_clust[0]],NPeak_clust);
 	  ((hstPerCh*)HstPerCh[channel])->hNPeakFPeak->Fill((float)X[pkPos[0]],NPeak);
 	  
 	  ((hstPerCh*)HstPerCh[channel])->hNPeaks->Fill((float)NPeak);
 	  if(((isChannel_2cm) && (float) X[pkPos_clust[0]]< 200.) || isChannel_1cm || isChannel_1p5cm){
-		((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
+	    ((hstPerCh*)HstPerCh[channel])->hNPeaks_clust->Fill((float)NPeak_clust);
 	  }
 	  ((hstPerCh*)HstPerCh[channel])->hNPeaks_1->Fill(X[pkPos[NPeak-1]]); 
 	  ((hstPerCh*)HstPerCh[channel])->hTFstPeaks->Fill(X[pkPos[0]]);
@@ -740,10 +740,10 @@ else if(isJuly2022TestBeam){
 	    ((hstPerCh*)HstPerCh[channel])->hTPeaks->Fill(X[pkPos[ipk]]);
 	    
 	  }
-	((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves[channel]).rms*1000);      
-	((hstPerCh*)HstPerCh[channel])->hMaxVInR->Fill(((wave)Waves[channel]).maxInR);
-	((hstPerCh*)HstPerCh[channel])->hBsl->Fill(((wave)Waves[channel]).bsln);
-	((hstPerCh*)HstPerCh[channel])->hIntegN->Fill(((wave)Waves[channel]).charge_integInR);
+	  ((hstPerCh*)HstPerCh[channel])->hRms->Fill(((wave)Waves[channel]).rms*1000);      
+	  ((hstPerCh*)HstPerCh[channel])->hMaxVInR->Fill(((wave)Waves[channel]).maxInR);
+	  ((hstPerCh*)HstPerCh[channel])->hBsl->Fill(((wave)Waves[channel]).bsln);
+	  ((hstPerCh*)HstPerCh[channel])->hIntegN->Fill(((wave)Waves[channel]).charge_integInR);
 	}
 	//((hstPerCh*)HstPerCh[channel])->hMaxVNSmooth->Fill(((wave)tmpWSG_signal[channel]).nMax());
 	//((hstPerCh*)HstPerCh[channel])->hInteg->Fill(((wave)Waves[channel]).integ);
@@ -779,7 +779,7 @@ else if(isJuly2022TestBeam){
       // cout << "\nAfter the threshold voltage is set, the channel hits are: \n"; 
       //for (int i = 0; i < N_signalevents.size(); i++) 
       //cout << "Event: " << jentry << " Ch: " << i << " Hits: " << N_signalevents[i] << "\n"; 
-	  //cout << "\n"; 
+      //cout << "\n"; 
       
       bool savesignal_1 = true;
       bool uniqueCanvas = false;
@@ -793,7 +793,7 @@ else if(isJuly2022TestBeam){
 	  if (firstEntering_filter){
 	    tmpCvsignal_1.push_back( new TCanvas(Form("CvSignal_1_ev%d",jentry),Form("tmpSignal_1_ev%d",jentry)) );
 	    tmpCvsignal_1.back()->Divide(3,4);
-			firstEntering_filter=false;
+	    firstEntering_filter=false;
 	  }
 	  
 	  tmpCvsignal_1.back()->cd(channel-nTriggerChannels+1);
@@ -841,10 +841,10 @@ else if(isJuly2022TestBeam){
 	  
 	  bool Studies = true;
 	  // Nov2021
-	//   int ChannelDiameter[13] = {-1,-1,-1,-1,10,15,20,20,25,25,20,25,40}; // Old test beam correspondance
-	//   float ChannelCellSize[13] = {-1.0,-1.0,-1.0,-1.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0};
-	   static int ChannelDiameter[16] = {20,20,15,15,25,20,20,15,20,25,25,15,-1,-1,-1,-1}; // Old test beam Nov 2022
-	   static float ChannelCellSize[16] = {1.5,1.0,1.0,1.0,1.5,1.0,1.0,1.5,1.0,1.0,1.0,1.5,-1.0,-1.0,-1.0,-1.0}; // Old test beam Nov 2022
+	  //   int ChannelDiameter[13] = {-1,-1,-1,-1,10,15,20,20,25,25,20,25,40}; // Old test beam correspondance
+	  //   float ChannelCellSize[13] = {-1.0,-1.0,-1.0,-1.0,1.0,1.0,1.0,1.0,1.0,1.0,2.0,2.0,2.0};
+	  static int ChannelDiameter[16] = {20,20,15,15,25,20,20,15,20,25,25,15,-1,-1,-1,-1}; // Old test beam Nov 2022
+	  static float ChannelCellSize[16] = {1.5,1.0,1.0,1.0,1.5,1.0,1.0,1.5,1.0,1.0,1.0,1.5,-1.0,-1.0,-1.0,-1.0}; // Old test beam Nov 2022
 	  //else if(!uniqueCanvas && (X[pkPos[NPeak-1]< 20 || X[pkPos[NPeak-1]> 250 || X[pkPos[0]>350)){
 	  tmpCvsignal_1.push_back( new TCanvas(Form("CvSignal_1_Ch%d_ev%d",channel,jentry),Form("tmpSignal_1_Ch%d_ev%d",channel,jentry)) );
 	  tmpCvsignal_1.back()->cd();
@@ -863,35 +863,35 @@ else if(isJuly2022TestBeam){
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves[channel].deriv[0]) );
 	  tmpsignal_1.back()->SetLineColor(kBlue);
 	  if(Studies){
-	  	tmpsignal_1.back()->Draw("Lsame");
-	  	leg->AddEntry(tmpsignal_1.back(),"First Derivative (Bin method)");
+	    tmpsignal_1.back()->Draw("Lsame");
+	    leg->AddEntry(tmpsignal_1.back(),"First Derivative (Bin method)");
 	  }
 	  tmpsignal_1.push_back( new TGraph ( dim, &X[0], &Waves[channel].sderiv[0]) );
 	  tmpsignal_1.back()->SetLineColor(kRed);
 	  if(Studies){
-	  	tmpsignal_1.back()->Draw("Lsame");
-	  	leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method)");
+	    tmpsignal_1.back()->Draw("Lsame");
+	    leg->AddEntry(tmpsignal_1.back(),"Second Derivative (Bin method)");
 	  }
 	  TLine *line = new TLine(X[0], (Waves[channel].rms)/(sqrt(2)), X[Waves[channel].nPt() - 1],(Waves[channel].rms)/(sqrt(2)));
 	  line->SetLineColor(kOrange);
 	  line->SetLineWidth(2);
 	  if(Studies){
-	  	line->Draw("same");
-	  	leg->AddEntry(line,"Sigma of the First Derivative (Bin method)");
+	    line->Draw("same");
+	    leg->AddEntry(line,"Sigma of the First Derivative (Bin method)");
 	  }
 	  TLine *line_1 = new TLine(X[0], (Waves[channel].rms)/(2), X[Waves[channel].nPt() -1],(Waves[channel].rms)/(2));
 	  line_1->SetLineColor(kPink);
 	  line_1->SetLineWidth(2);
 	  if(Studies){
-	  	line_1->Draw("same");
-	  	leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method)");
+	    line_1->Draw("same");
+	    leg->AddEntry(line_1,"Sigma of the Second Derivative (Bin method)");
 	  }
 	  TLine *line_2 = new TLine(X[0], (Waves[channel].rms), X[Waves[channel].nPt() - 1],Waves[channel].rms);
 	  line_2->SetLineColor(kViolet);
 	  line_2->SetLineWidth(2);
 	  if(Studies){
-	  	line_2->Draw("same");
-	  	leg->AddEntry(line_2,"Rms (Bin method)");
+	    line_2->Draw("same");
+	    leg->AddEntry(line_2,"Rms (Bin method)");
 	  }
 	  leg->Draw("same");
 	  
@@ -918,7 +918,7 @@ else if(isJuly2022TestBeam){
 	    drift_size = 1.8;
 	  }
 	  else if(isChannel_1p5cm){
-		  drift_size = 1.2;
+	    drift_size = 1.2;
 	  }
 	  expected_cluster = cluster_per_cm_mip * drift_size * relativistic_rise * 1/cos_alpha;
 	  // 1.5 mm per each wall -> 1.5 cm becomes 1.2 cm
@@ -969,7 +969,7 @@ else if(isJuly2022TestBeam){
 	}
 	//else if(!uniqueCanvas && jentry<=200 && NPeak>0 && ((wave)Waves[channel]).nnIntegInR()>0.1 && ((channel <= 10 && channel != 4 && channel != 0 && channel !=7 && counter_1cm>=4) || (channel == 0 || channel == 4 || channel == 7 || channel == 11 && counter_1p5cm>=3))){
 	else if(!uniqueCanvas && NPeak>0 && NPeak_clust>0 && jentry<=1000 && Waves[channel].max > 0.05  && ((isChannel_1cm && Waves[channel].charge_integInR > 20) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60)) && (counter_top_first_driftTubes_line_size>=2 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){
-	//else if(!uniqueCanvas && NPeak>0 && NPeak_clust>0 && jentry<=200 && Waves[channel].max > 0.05 && ((isChannel_1cm && Waves[channel].charge_integInR > 20 ) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60)) && (counter_top_first_driftTubes_line_size>=3 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){
+	  //else if(!uniqueCanvas && NPeak>0 && NPeak_clust>0 && jentry<=200 && Waves[channel].max > 0.05 && ((isChannel_1cm && Waves[channel].charge_integInR > 20 ) || ((isChannel_2cm || isChannel_1p5cm) && Waves[channel].charge_integInR > 60)) && (counter_top_first_driftTubes_line_size>=3 || counter_top_third_driftTubes_line_size>=2 || counter_top_second_driftTubes_line_size>=2)){
 	  tmpCvsignal_1.back()->Write();          
 	}
 	theFile->cd("/");
