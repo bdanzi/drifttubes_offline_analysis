@@ -122,7 +122,7 @@ void comparison(TString fldName="."){
 		meanE_slope[i]=pol->GetParError(0);
 		cout << "i"<<i<<" slope "<< mean_slope [i]<< endl;
     }
-   cvSlops->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/Slope.png", "png");
+   cvSlops->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/Slope.png", "png");
 //   cvSlops->Print("/home/federica/eclipse-workspace/test_beam/Plot/Confronto_miscele/Slope.png", "png");
    //    cvSlops->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/norm_loss/Slope.png", "png");
 
@@ -147,7 +147,7 @@ void comparison(TString fldName="."){
 
 		cout<<" i "<< i <<" costante "<<mean_const[i] <<endl;
     }
-       cvConst->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/Constant.png", "png");
+       cvConst->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/Constant.png", "png");
 //	   cvConst->Print("/home/federica/eclipse-workspace/test_beam/Plot/Confronto_miscele/Constant.png", "png");
 //       cvConst->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/norm_loss/Constant.png", "png");
 
@@ -192,7 +192,7 @@ const double ymin=0.0;//2.0;//1.8;
     legend->AddEntry(exp[i],hmix[i].c_str(),"l");
     legend->Draw();
     }
-    cGain->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/GainTot.png", "png");
+    cGain->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/GainTot.png", "png");
   //  cGain->Print("/home/federica/eclipse-workspace/test_beam/Plot/Confronto_miscele/GainTot.png", "png");
  //   cGain->Print("/home/federica/eclipse-workspace/test_beam/Plot/confronto_miscele_control/norm_loss/GainTot.png", "png");
 

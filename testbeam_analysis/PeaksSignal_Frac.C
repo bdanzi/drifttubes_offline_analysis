@@ -1,9 +1,9 @@
-//#include "SignalCont.h"
-//#include "ConvSignalCont.h"
-//#include "PeakCont.h"
-//#include "PeakData.h"
-//#include "CellCont.h"
-#include "dataUtils.h"
+#include "include/SignalCont.hh"
+#include "include/ConvSignalCont.hh"
+#include "include/PeakCont.hh"
+#include "include/PeakData.hh"
+#include "include/CellCont.hh"
+#include "include/dataUtils.h"
 
 void PeaksSignalFrac(TString fName="", Int_t swId=11, Float_t timeRes=0.5e-9, Float_t noise=0.9e-3, Int_t cEv=-1)
 {

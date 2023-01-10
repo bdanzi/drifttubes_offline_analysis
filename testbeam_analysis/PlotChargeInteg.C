@@ -122,7 +122,7 @@ void PlotChargeInteg(TString fldName=".",int cnvId=0, TString fOutName="") {///h
 		MPv_it++;
 		errMPv_it++;
 	}
-	cv->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/gain_chargeinteg.png", "png");
+	cv->Print("/home/federica/eclipse-workspace/test_beam/Plot/gain.png", "png");
 
 	//grafico per la pendenza
 	TCanvas *cSlope=new TCanvas();
@@ -136,7 +136,7 @@ void PlotChargeInteg(TString fldName=".",int cnvId=0, TString fOutName="") {///h
 	grSlope->GetXaxis()->SetRangeUser(-1,12);
 	grSlope->GetYaxis()->SetTitleOffset(1.25);
 	grSlope->Draw("AP");
-	cSlope->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/slope_chargeinteg.png", "png");
+	cSlope->Print("/home/federica/eclipse-workspace/test_beam/Plot/slope.png", "png");
 
 	//grafico per la costante
 	TCanvas *cConst=new TCanvas();
@@ -149,7 +149,7 @@ void PlotChargeInteg(TString fldName=".",int cnvId=0, TString fOutName="") {///h
 	grConst->GetYaxis()->SetTitleOffset(1.25);
 	grConst->GetXaxis()->SetRangeUser(-1,12);
 	grConst->Draw("AP");
-	cConst->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/Constant_chargeinteg.png", "png");
+	cConst->Print("/home/federica/eclipse-workspace/test_beam/Plot/Constant.png", "png");
 
 
 	if (myfile.is_open()) { myfile.close(); }

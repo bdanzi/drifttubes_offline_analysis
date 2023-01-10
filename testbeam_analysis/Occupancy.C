@@ -30,11 +30,7 @@ void Occupancy(TString file=""){
 	TH1F *h1=new TH1F("h1","Channel Occupancy",100,0,24);
 	TH1F *h2=new TH1F("h2","Full events with no duplicates",1000,-1,2000);
 	TH1F *h3=new TH1F("h3","Full events ",1000,-1,2000);
-	TH1F *h4=new TH1F ("h4"," Multiplicity",20,0,20);
-	int oldEntry;
-	oldEntry=-1;
-	int mult;
-	mult=0;
+
 	while(getline(tmpf,line)) {
 		stringstream tmpL(line);
 		tmpL>>s1>>tmpEntry>>s2>>tmpChannel;
@@ -43,15 +39,7 @@ void Occupancy(TString file=""){
 		channel.push_back(tmpChannel);
 		entry.push_back(tmpEntry);
 		h3->Fill(tmpEntry);
-		if(tmpEntry!=oldEntry){
-			if(oldEntry!=-1)h4->Fill(mult);
-			oldEntry=tmpEntry;
-			mult=1;
-		}
-			else{mult++;}
-
 	}
-	h4->Fill(mult);
 
 	vector<int> entry_nd=entry;
 	int tmpentry_nd;
@@ -60,7 +48,7 @@ void Occupancy(TString file=""){
 	cout<<" size of delete vector "<< entry_nd.size()<<" size of original vector "<<entry.size()<<endl;
 	for(int i=0;i<entry_nd.size();++i){
 		tmpentry_nd=entry_nd[i];
-//		cout<<tmpentry_nd<<endl;
+		cout<<tmpentry_nd<<endl;
 		h2->Fill(tmpentry_nd);
 	}
 
@@ -96,11 +84,7 @@ void Occupancy(TString file=""){
 	h3->GetXaxis()->SetTitle("Full events");
 	h3->GetYaxis()->SetTitle("Entries");
 
-	TCanvas *c5=new TCanvas();
-	c5->cd();
-	h4->Draw();
-	h4->GetXaxis()->SetTitle("Multiplicity");
-	h4->GetYaxis()->SetTitle("Entries");
+
 
 	tmpf.close();
 }

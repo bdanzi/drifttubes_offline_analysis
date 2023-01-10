@@ -23,7 +23,7 @@
 
 using namespace std;
 
-void lognormal(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TString sname = "/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
+void lognormal(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TString sname = "/mnt/c/dati_root/histosOSC_run-00013.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
   ofstream myfile;
   if (!fOutName.IsNull()) {
     myfile.open (fOutName.Data());
@@ -101,7 +101,7 @@ void lognormal(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TS
     	   stat2->SetX1NDC(0.5);    //set new x start position
     	   stat2->SetX2NDC(0.9);    //set new x end position
     	   stat2->SetTextColor(kGreen+2);
-    	   c2->Print(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/H%i_Integral_control.png",i), "png");
+    	   c2->Print(Form("/home/federica/eclipse-workspace/test_beam/Plot/Integral_control/H%i_Integral_control.png",i), "png");
 		  //c2->Print(Form("/home/federica/eclipse-workspace/test_beam/Plot/Integral_control/norm_loss/H%i_Integral_control.png",i), "png");
     	   chn[nPresCh]=i;
     	   meanLog[nPresCh]=fSig->GetParameter(1);//segnale

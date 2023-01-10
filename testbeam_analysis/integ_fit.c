@@ -18,7 +18,7 @@
 
 using namespace std;
 
-void integ_fit(TString fname="/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root", TString sname = "/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
+void integ_fit(TString fname="/lustrehome/federica1992/file_root/histosOSC_run-00034.root", TString sname = "/lustrehome/federica1992/file_root/histosOSC_run-00034.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
 
   ofstream myfile;
   if (!fOutName.IsNull()) {
@@ -76,7 +76,7 @@ void integ_fit(TString fname="/lustrehome/bdanzi/offline_analysis/testbeam_analy
 		
 
 	c1->cd()->SetLogy();
-	for(int i =4; i<=14; ++i){
+	for(int i =0; i<=11; ++i){
      TH1F *h1=(TH1F*)file->Get(Form("H-Ch%i_signal/hIntegNInR_ch%i",i,i));// NOISE	    
 		if (h1==0x0) { continue; }
 		h1->Rebin(2);
@@ -99,7 +99,7 @@ void integ_fit(TString fname="/lustrehome/bdanzi/offline_analysis/testbeam_analy
 		/* //leg->SetHeader("Histogram"); */
 		/* leg->AddEntry(h1, "Noise Integral", "l"); */
 		/* leg->Draw(); */
-		c1->Print(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/H%i_Integral_noise.png",i), "png");
+		c1->Print(Form("/home/federica/eclipse-workspace/test_beam/Plot/H%i_Integral_noise.png",i), "png");
 		chn[nPresCh]=i;
 		meanNoise[nPresCh]=fGaus->GetParameter(1); //noise
 		sgmNoise[nPresCh]=fGaus->GetParameter(2);
@@ -113,7 +113,7 @@ void integ_fit(TString fname="/lustrehome/bdanzi/offline_analysis/testbeam_analy
  
    c2->cd()->SetLogy();
 	nPresCh=0;
-	for(int i =4; i<=14; ++i){
+	for(int i =0; i<=11; ++i){
   		TH1F *h2=(TH1F*)file2->Get(Form("H-Ch%i_signal/hIntegNInRC2_ch%i",i,i));//SIGNAL
 		if (h2==0x0) { continue; }
 		h2->Rebin(2);
@@ -148,7 +148,7 @@ void integ_fit(TString fname="/lustrehome/bdanzi/offline_analysis/testbeam_analy
 		/* leg->SetFillColor(0); */
 		/* leg->AddEntry(h2, "Signal integral", "l"); */
 		/* leg->Draw(); */
-		c2->Print(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/H%i_Integral_signal.png",i), "png");
+		c2->Print(Form("/home/federica/eclipse-workspace/test_beam/Plot/Integral_signal/H%i_Integral_signal.png",i), "png");
 		chn[nPresCh]=i;
 		meanL[nPresCh]=fSig2->GetParameter(7/*4*/);//segnale
 		sigmaL[nPresCh]=fSig2->GetParameter(8/*5*/);

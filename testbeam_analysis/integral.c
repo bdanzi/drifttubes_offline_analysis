@@ -22,18 +22,16 @@ void integral(/*char file[300]="H-CH0_signal/hMinVNInR_ch0"*/){
 TF1 *fit_function = new TF1("fit_function", "gaus");
 fit_function->SetNpx(1000);
 
-TFile *_file0 = new TFile("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root","read");
-TFile *_file1 = new TFile("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root","read");
-
+TFile *_file0 = new TFile("/mnt/c/dati_root/histosOSC_run-00033-47.root","read");
 //_file0->ls();
- _file0->cd("H-Ch10_signal");                                         
- TH1F *h1=(TH1F*)gDirectory->Get("hIntegNInR_ch10");                 
+ _file0->cd("H-Ch0_signal");                                         
+ TH1F *h1=(TH1F*)gDirectory->Get("hIntegNInR_ch0");                 
 h1->SetLineColor(kBlue);
 
-
+TFile *_file1 = new TFile("/mnt/c/dati_root/histosOSC_run-00028-55.root","read");
 // _file1->ls();
- _file1->cd("H-Ch10_signal");                                        
- TH1F *h2=(TH1F*)gDirectory->Get("hIntegNInR_ch10");                  
+ _file1->cd("H-Ch0_signal");                                        
+ TH1F *h2=(TH1F*)gDirectory->Get("hIntegNInR_ch0");                  
 h2->SetLineColor(kGreen);
  
 TCanvas *c1=new TCanvas("c1","c1");
@@ -71,6 +69,6 @@ leg->SetFillColor(0);
 leg->AddEntry(h1, "Filtered signal", "l");
 leg->AddEntry(h2, "Filtered noise", "l"); 
 leg->Draw();
- c1->Print("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/H10_IntegNInRangeLog.png", "png");                 
+ c1->Print("~/plot_tesi/H0_IntegNInRangeLog.png", "png");                 
 }
 

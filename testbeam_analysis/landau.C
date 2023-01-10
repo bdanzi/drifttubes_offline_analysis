@@ -17,7 +17,7 @@
 #include <cstdlib>
 using namespace std;
 
-void landau(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TString sname = "/lustrehome/bdanzi/offline_analysis/testbeam_analysis/histosTB_run_4.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
+void landau(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TString sname = "/mnt/c/dati_root/histosOSC_run-00013.root", TString fOutName=""){ //"/mnt/c/file_txt/ly2-3-4_90-10/1650.txt"
 
   ofstream myfile;
   if (!fOutName.IsNull()) {
@@ -72,7 +72,7 @@ void landau(/*TString fname="/mnt/c/dati_root/histosOSC_run-00010.root",*/ TStri
 		/* leg->AddEntry(h2, "Signal integral", "l"); */
 		/* leg->Draw(); */
 
-		c2->Print(Form("/lustrehome/bdanzi/offline_analysis/testbeam_analysis/Plots/histosTB_run_4.root/H%i_Integral_signal.png",i), "png");
+		//c2->Print(Form("/home/federica/eclipse-workspace/test_beam/Plot/Integral_signal/H%i_Integral_signal.png",i), "png");
 
 
 		chn[nPresCh]=i;
