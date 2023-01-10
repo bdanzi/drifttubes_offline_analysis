@@ -1,5 +1,2 @@
-histosTB_run_91.root 12 10000
-histosTB_run_94.root 12 5000 
-histosTB_run_96.root 12 5000 
-histosTB_run_98.root 12 5000 
-histosTB_run_99.root 12 5000 
+histosTB_run_9_N1_8.0_N2_1.1_N3_0.1_N4_0.1_cut_scale_0.26_sampling_1.5.root 8.0 1.1 0.1 0.1 0.26 1.5 histosTB_run_9.root 16 10000
+histosTB_run_10_N1_8.0_N2_1.1_N3_0.1_N4_0.1_cut_scale_0.26_sampling_2.0.root 8.0 1.1 0.1 0.1 0.26 2.0 histosTB_run_10.root 16 10000

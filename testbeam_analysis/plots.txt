@@ -1,17 +1,6 @@
-histosTB_run_86.root 12 5000
-histosTB_run_87.root 12 5000
-histosTB_run_88.root 12 5000
-histosTB_run_89.root 12 10000
-histosTB_run_90.root 12 10000
-histosTB_run_91.root 12 10000
-histosTB_run_92.root 12 10000
-histosTB_run_93.root 12 5000
-histosTB_run_94.root 12 5000 
-histosTB_run_95.root 12 5000
-histosTB_run_97.root 12 5000 
-histosTB_run_96.root 12 5000 
-histosTB_run_98.root 12 5000 
-histosTB_run_99.root 12 5000 
-histosTB_run_127.root 12 5000 
-histosTB_run_117.root 12 5000
+histosTB_run_10.root 11 10000
+histosTB_run_39.root 11 10000
+histosTB_run_41.root 11 10000
+histosTB_run_63.root 11 10000
+
 

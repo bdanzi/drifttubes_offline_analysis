@@ -1,0 +1,13 @@
+bash submit_recas.sh 
+It will produce:
+- executable submit_executable.sh
+- config file that can be run as job in Recas
+bash submit_executable.sh
+It will produce:
+- by using the plots.txt, per each .root file in the first column, per each channel in the second column,
+per each event in the third column some physical quantities which are related to 1) number of peaks 2) maxima 3) integral of the wavefunction 4) wave functions 5) minima
+
+bash submit_root_to_histos_root.sh
+It will produce:
+- executable submit_executable_conversion*.sh per each run_*.root file that has to be converted in a root file containing histos
+- config files that can be run as job in recas

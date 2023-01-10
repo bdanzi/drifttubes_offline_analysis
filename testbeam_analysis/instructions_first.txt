@@ -1,0 +1,24 @@
+the run_4.root is referred to the data run taken in November 11th with 60 degree and HV+20.
+
+Here the line command for the analysis code:
+
+IMPORTANT : open another Terminal SHELL w.r.t. where you are doing the root file conversion
+cd /eos/user/b/bdanzi/TestBeam2022/analysistestbeam2022/analysis_2021/drifttubes_offline_analysis/dchdatareade_test_beam
+make clean
+make
+cd /eos/home-b/bdanzi/TestBeam2022/analysistestbeam2022/analysis_2021/drifttubes_offline_analysis/testbeam_analysis
+make clean
+make
+cd /eos/home-b/bdanzi/TestBeam2022/analysistestbeam2022/analysis_2021/drifttubes_offline_analysis/testbeam_analysis/CMSSW_10_6_22/src
+cmsenv
+source setDCDataReaderEnv.sh (change the path to your WaveDir directory)
+bash compile.sh
+./read_data . 4 0 -10 1 >& file4.log &
+
+4 is the run number
+
+0 -10 is the number of events to be processed
+
+1 GSPS 
+
+
