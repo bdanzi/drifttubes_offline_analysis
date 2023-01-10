@@ -179,7 +179,7 @@ void InverseFFT(Double_t *ReFFT, Double_t *ImFFT, Int_t N, wave &outW) {
 
    for (Int_t i=0; i<N; i++) {
 	   float tmpVal = ifft->GetPointReal(i)/((Double_t)N);
-	   outW.addPnt(tmpVal);
+	   //outW.addPnt(tmpVal);
    }
 
 }
