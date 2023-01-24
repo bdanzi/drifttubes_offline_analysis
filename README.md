@@ -40,7 +40,7 @@ The focus is on the 165 GeV/c momentum muon beam runs from 11st of November. A f
 On Bari ReCAS and in the `testbeam_analysis\` directory of this repository:
 
 ```bash
-$ source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc10-opt/setup.sh
+$ source /cvmfs/sft.cern.ch/lcg/views/LCG_102/x86_64-centos7-gcc11-opt/setup.sh
 $ source setDCDataReaderEnv.sh
 $ bash compile.sh
 $ bash submit_first.sh
