@@ -1,4 +1,4 @@
-Int_t ClusterizationFindPeaks(Float_t cut,Int_t *nElectrons_per_cluster,Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_t rms, Int_t *pkPos_clust, Float_t *pkHgt_clust, Int_t *pkPos, Float_t *pkHgt, Int_t NPeak, Float_t timeRes,Int_t isChannel_1cm, Int_t isChannel_2cm, Int_t isChannel_1p5cm, Float_t scale_cut) {
+Int_t ClusterizationFindPeaks(Float_t cut,Int_t *nElectrons_per_cluster,Int_t jentry, Int_t skipFstBin, Int_t channel, Int_t npt, Float_t rms, Int_t *pkPos_clust, Float_t *pkHgt_clust, Int_t *pkPos, Float_t *pkHgt, Int_t NPeak, Float_t timeRes,Int_t isChannel_1cm, Int_t isChannel_2cm, Int_t isChannel_1p5cm, Float_t scale_cut, Int_t isRuns_90_10, Int_t isRuns_85_15, Int_t isRuns_80_20) {
   
   Int_t nPks_constant = NPeak;
   Int_t NPeak_clust = 0;
@@ -16,9 +16,15 @@ Int_t ClusterizationFindPeaks(Float_t cut,Int_t *nElectrons_per_cluster,Int_t je
   //   if(isChannel_1cm){
   //   cut = 0.24*sqrt(pkPos[ip]*timeRes);
   // }
-  
+    if(isRuns_90_10){
     cut = scale_cut*sqrt(pkPos[ip]*timeRes);
-  
+    }
+    else if(isRuns_80_20){
+      cut = scale_cut*sqrt(pkPos[ip]*timeRes) - 0.2*scale_cut*sqrt(pkPos[ip]*timeRes);
+    }
+    else if(isRuns_85_15){
+      cut = scale_cut*sqrt(pkPos[ip]*timeRes) - 0.1*scale_cut*sqrt(pkPos[ip]*timeRes);
+    }
   
     if(NPeak_clust == 0){
       pkHgt_clust[NPeak_clust]= pkHgt[ip];
